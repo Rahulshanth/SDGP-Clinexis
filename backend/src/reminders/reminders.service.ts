@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common'; // ALL ADD by VIDU
+// ALL ADD by VIDU*
+import { Injectable } from '@nestjs/common';
 
 interface DummyReminder {
   patientId: string;
@@ -10,18 +11,16 @@ interface DummyReminder {
 
 @Injectable()
 export class RemindersService {
-  // add by vidu
   private reminders: DummyReminder[] = [
     {
       patientId: 'patient-001',
       type: 'MEDICINE',
-      reminderTime: new Date(new Date().getTime() - 60000), // 1 min ago
+      reminderTime: new Date(new Date().getTime() - 60000),
       message: 'Take morning medicine',
       sent: false,
     },
   ];
 
-  // add by vidu
   createReminder(data: any) {
     const reminder: DummyReminder = {
       patientId: data.patientId,
@@ -35,7 +34,6 @@ export class RemindersService {
     return reminder;
   }
 
-  // add by vidu
   getPendingReminders() {
     const now = new Date();
     return this.reminders.filter(
@@ -43,7 +41,6 @@ export class RemindersService {
     );
   }
 
-  // add by vidu
   markAsSent(reminder: DummyReminder) {
     reminder.sent = true;
   }
