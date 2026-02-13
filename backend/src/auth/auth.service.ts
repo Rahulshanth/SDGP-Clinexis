@@ -23,6 +23,24 @@ export class AuthService {
         return {message: 'User registered successfully'}
     }
 
+    async login(dto: LoginDto) {
+    const user = await this.usersService.findByEmail(dto.email);
+    if (!user) throw new UnauthorizedException('Invalid credentials');
+
+    const passwordMatch = await bcrypt.compare(dto.password, user.password);
+    if (!passwordMatch) throw new UnauthorizedException('Invalid credentials');
+
+    const payload = {
+      userId: user._id,
+      email: user.email,
+      role: user.role,
+    };
+
+    return {
+      accessToken: this.jwtService.sign(payload),
+    };
+  }
+
     // Upto this
 
 }
