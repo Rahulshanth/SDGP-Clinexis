@@ -1,3 +1,6 @@
+//vinidi Register Module
+import { PharmacyModule } from './pharmacy/pharmacy.module';
+
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -15,6 +18,7 @@ import { UsersModule } from './users/users.module';
     MongooseModule.forRoot(process.env.MONGO_URI as string),
     UsersModule,
     AuthModule,
+    PharmacyModule,
   ],
   //controllers: [AppController],
   //providers: [AppService],
