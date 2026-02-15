@@ -20,6 +20,7 @@ import { SummarizationModule } from './summarization/summarization.module';
 
     UsersModule,
     AuthModule,
+    PharmacyModule,
   ],
   //controllers: [AppController],
   //providers: [AppService],
