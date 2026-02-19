@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 //import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+import { DoctorModule } from './doctors/doctor.module';
 import { SummarizationModule } from './summarization/summarization.module';
 import { PharmacyModule } from './pharmacy/pharmacy.module';
 
@@ -16,10 +17,11 @@ import { PharmacyModule } from './pharmacy/pharmacy.module';
 
     MongooseModule.forRoot(process.env.MONGO_URI as string),
 
-    UsersModule,
+    UsersModule,   
     AuthModule,
-    SummarizationModule,   // 🔹 keep this
-    PharmacyModule,        // 🔹 add this
+    SummarizationModule,   // 🔹 keep this - Rivithi
+    PharmacyModule,        // 🔹 add this - Vinidi
+    DoctorModule,          // By Rahul
   ],
   // controllers: [AppController],
   // providers: [AppService],
