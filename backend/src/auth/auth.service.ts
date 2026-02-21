@@ -31,7 +31,7 @@ export class AuthService {
     if (!passwordMatch) throw new UnauthorizedException('Invalid credentials');
 
     const payload = {
-      userId: user._id,
+      sub: user._id,
       email: user.email,
       role: user.role,
     };
