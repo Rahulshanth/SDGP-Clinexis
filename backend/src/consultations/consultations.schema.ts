@@ -27,7 +27,6 @@ messages: {
   text: string;
   timestamp: Date;
 }[];
-
   @Prop()
   summary: string;
 }
