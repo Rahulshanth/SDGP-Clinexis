@@ -1,14 +1,23 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { ConsultationsService } from './consultations.service';
-import { Consultation } from './consultations.schema';
+import { CreateConsultationDto } from './dto/create-consultation.dto';
 
 @Controller('consultations')
 export class ConsultationsController {
-  constructor(private readonly consultationsService: ConsultationsService) {}
+  constructor(
+    private readonly consultationsService: ConsultationsService,
+  ) {}
 
   @Post()
-  create(@Body() data: Partial<Consultation>) {
-    return this.consultationsService.create(data);
+  create(@Body() body: CreateConsultationDto) {
+    return this.consultationsService.create(body);
   }
 
   @Get()
@@ -26,3 +35,5 @@ export class ConsultationsController {
     return this.consultationsService.remove(id);
   }
 }
+
+//Added by Nadithi

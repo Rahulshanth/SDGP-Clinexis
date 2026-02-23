@@ -8,7 +8,12 @@ describe('ConsultationsController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ConsultationsController],
-      providers: [ConsultationsService],
+      providers: [
+        {
+          provide: ConsultationsService,
+          useValue: {},
+        },
+      ],
     }).compile();
 
     controller = module.get<ConsultationsController>(
@@ -20,3 +25,5 @@ describe('ConsultationsController', () => {
     expect(controller).toBeDefined();
   });
 });
+
+//Added by Nadithi

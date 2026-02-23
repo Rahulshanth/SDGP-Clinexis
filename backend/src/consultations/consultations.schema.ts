@@ -12,23 +12,39 @@ export class Consultation {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   patientId: Types.ObjectId;
 
-  @Prop({
-  type: [
-    {
-      sender: { type: String, enum: ['doctor', 'patient'], required: true },
-      text: { type: String, required: true },
-      timestamp: { type: Date, default: Date.now },
-    },
-  ],
-  default: [],
-})
-messages: {
-  sender: 'doctor' | 'patient';
-  text: string;
-  timestamp: Date;
-}[];
+  @Prop()
+  audio: string;
+
+  @Prop()
+  transcription: string;
+
+  @Prop({ default: 'pending' })
+  status: string;
+
   @Prop()
   summary: string;
+
+  @Prop()
+  summaryGeneratedAt: Date;
+
+  @Prop()
+  summaryVersion: number;
+
+  @Prop()
+  resultsText: string;
+
+  @Prop()
+  resultsAudio: string;
+
+  @Prop()
+  resultsSummary: string;
 }
 
 export const ConsultationSchema = SchemaFactory.createForClass(Consultation);
+
+// Indexing for performance
+ConsultationSchema.index({ doctorId: 1 });
+ConsultationSchema.index({ patientId: 1 });
+ConsultationSchema.index({ createdAt: -1 });
+
+//Added by Nadithi

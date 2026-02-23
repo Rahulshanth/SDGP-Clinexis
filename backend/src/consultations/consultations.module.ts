@@ -7,14 +7,13 @@ import { ConsultationsController } from './consultations.controller';
 @Module({
   imports: [
     MongooseModule.forFeature([
-      {
-        name: Consultation.name,
-        schema: ConsultationSchema,
-      },
+      { name: Consultation.name, schema: ConsultationSchema },
     ]),
   ],
   controllers: [ConsultationsController],
   providers: [ConsultationsService],
-  exports: [ConsultationsService], // optional but recommended
+  exports: [ConsultationsService],
 })
 export class ConsultationsModule {}
+
+//Added by Nadithi
