@@ -13,7 +13,7 @@ import { ConsultationsModule } from './consultations/consultations.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({isGlobal: true,}), // Added by Nadithi
     MongooseModule.forRoot(process.env.MONGODB_URI!),
     AuthModule,
     UsersModule,
