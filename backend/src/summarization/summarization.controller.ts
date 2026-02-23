@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Param } from '@nestjs/common';
+import { Controller, Post, Body, Param, BadRequestException } from '@nestjs/common';
 import { SummarizationService } from './summarization.service';
 import { SummarizeDto } from './dto/summarize.dto';
 
@@ -13,9 +13,13 @@ export class SummarizationController {
     @Param('id') consultationId: string,
     @Body() body: SummarizeDto,
   ) {
+    if (!body.consultationText) {
+      throw new BadRequestException('Consultation text is required');
+    }
+
     return this.summarizationService.summarize(
-      consultationId,
       body.consultationText,
+      consultationId,
     );
   }
 }
