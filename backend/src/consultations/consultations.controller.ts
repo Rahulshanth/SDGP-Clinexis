@@ -19,12 +19,11 @@ export class ConsultationsController {
       throw new BadRequestException('Audio file is required');
     }
 
-    //const paragraphs =
-      //await this.consultationsService.processAudio(file.buffer);
+    const paragraphs = await this.consultationsService.processAudio(file.buffer);
 
-    //return { paragraphs };  <-- After implement the whole logic inside consultations.service.ts , these comments wil be undone.
+    return { paragraphs };  
   }
 }
 
-//Done by Rahul on 20 th Feb   
+//Finish by Rahul on 25 th Feb   
 // git checkout feature/voice-to-text
