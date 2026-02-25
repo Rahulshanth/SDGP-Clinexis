@@ -1,4 +1,4 @@
-import { MongooseModule } from '@nestjs/mongoose';
+/*import { MongooseModule } from '@nestjs/mongoose';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
@@ -15,3 +15,4 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
   ],
 })
 export class DatabaseModule {}
+*/
