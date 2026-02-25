@@ -9,6 +9,7 @@ import { DoctorModule } from './doctors/doctor.module';
 import {PatientModule} from './patient/patient.module'
 import { SummarizationModule } from './summarization/summarization.module';
 import { PharmacyModule } from './pharmacy/pharmacy.module';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -16,7 +17,12 @@ import { PharmacyModule } from './pharmacy/pharmacy.module';
       isGlobal: true,
     }),
 
-    MongooseModule.forRoot(process.env.MONGO_URI as string),
+    MongooseModule.forRootAsync({
+  inject: [ConfigService],
+  useFactory: (configService: ConfigService) => ({
+    uri: configService.get<string>('MONGO_URI'),
+  }),      //Added by Nadithi on 25th Feb
+}),
 
     UsersModule,   
     AuthModule,
@@ -28,3 +34,4 @@ import { PharmacyModule } from './pharmacy/pharmacy.module';
   // providers: [AppService],
 })
 export class AppModule {}
+console.log('MONGO_URI:', process.env.MONGO_URI); //Added by Nadithi
