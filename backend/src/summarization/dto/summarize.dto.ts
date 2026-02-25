@@ -5,3 +5,5 @@ export class SummarizeDto {
   @IsNotEmpty()
   consultationText: string;
 }
+
+//edit by rivithi
