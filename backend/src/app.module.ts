@@ -9,7 +9,7 @@ import { DoctorModule } from './doctors/doctor.module';
 import {PatientModule} from './patient/patient.module'
 import { SummarizationModule } from './summarization/summarization.module';
 import { PharmacyModule } from './pharmacy/pharmacy.module';
-import { ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config'; //Added by Nadithi
 
 @Module({
   imports: [
