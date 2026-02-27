@@ -7,7 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { DoctorModule } from './doctors/doctor.module';
 import { SummarizationModule } from './summarization/summarization.module';
-import { PharmacyProfileModule } from './pharmacy-profile/pharmacy-profile.module';
+import { PharmacyProfileModule } from './pharmacy/pharmacy-profile/pharmacy-profile.module';
 import { PharmacyMatchingModule } from './pharmacy-matching/pharmacy-matching.module';
 
 @Module({
