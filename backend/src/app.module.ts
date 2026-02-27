@@ -5,9 +5,11 @@ import { ConfigModule } from '@nestjs/config';
 // import { AppService } from './app.service';        <-- Don't delete these comments
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
-//import { DoctorModule } from './doctor/doctor.module';
+import { DoctorModule } from './doctors/doctor.module';
 import { SummarizationModule } from './summarization/summarization.module';
 import { PharmacyModule } from './pharmacy/pharmacy.module';
+import { PharmacyProfileModule } from './pharmacy-profile/pharmacy-profile.module';
+import { PharmacyMatchingModule } from './pharmacy-matching/pharmacy-matching.module';
 
 @Module({
   imports: [
@@ -20,8 +22,10 @@ import { PharmacyModule } from './pharmacy/pharmacy.module';
     UsersModule,
     AuthModule,
     PharmacyModule, // add by Vinidi
+    PharmacyProfileModule,
+    PharmacyMatchingModule,
     SummarizationModule,// 🔹 keep this - Rivithi
-
+    DoctorModule,
 
   ],
   // controllers: [AppController],
