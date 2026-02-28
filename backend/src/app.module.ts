@@ -10,7 +10,7 @@ import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     ConfigModule.forRoot(), // load .env file
-    MongooseModule.forRoot(process.env.MONGO_URI!), // connect MongoDB
+    MongooseModule.forRoot(process.env.MONGO_URI as string), // connect MongoDB
     AuthModule,
     NlpModule,
   ],
