@@ -7,8 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { DoctorModule } from './doctors/doctor.module';
 import { SummarizationModule } from './summarization/summarization.module';
-import { PharmacyProfileModule } from './pharmacy/pharmacy-profile/pharmacy-profile.module';
-import { PharmacyMatchingModule } from './pharmacy-matching/pharmacy-matching.module';
+import { PharmacyModule } from './pharmacy/pharmacy.module';
 
 @Module({
   imports: [
@@ -20,8 +19,7 @@ import { PharmacyMatchingModule } from './pharmacy-matching/pharmacy-matching.mo
 
     UsersModule,
     AuthModule,
-    PharmacyProfileModule,
-    PharmacyMatchingModule,
+    PharmacyModule,
     SummarizationModule,// 🔹 keep this - Rivithi
     DoctorModule,
 
