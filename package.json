@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/Rahulshanth/SDGP-Clinexis/issues"
   },
-  "homepage": "https://github.com/Rahulshanth/SDGP-Clinexis#readme"
+  "homepage": "https://github.com/Rahulshanth/SDGP-Clinexis#readme",
+  "dependencies": {
+    "mongodb": "^7.1.0"
+  }
 }
