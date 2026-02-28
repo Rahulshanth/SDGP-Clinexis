@@ -1,9 +1,12 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
+import { NlpService } from './nlp.service';
 
 @Controller('nlp')
 export class NlpController {
-  @Get()
-  test() {
-    return 'NLP module working';
+  constructor(private readonly nlpService: NlpService) {}
+
+  @Post('extract')
+  async extract(@Body('text') text: string) {
+    return this.nlpService.extractMedicine(text);
   }
 }
