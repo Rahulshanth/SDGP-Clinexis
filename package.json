@@ -5,5 +5,8 @@
     "start:backend": "cd backend && npm run start:dev",
     "start:frontend": "cd frontend && npm run start",
     "start:all": "npm run start:backend & npm run start:frontend"
+  },
+  "dependencies": {
+    "@nestjs/mapped-types": "^2.1.0"
   }
 }
