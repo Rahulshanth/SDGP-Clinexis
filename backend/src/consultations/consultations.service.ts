@@ -1,16 +1,25 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { SpeechClient } from '@google-cloud/speech';
 import { protos } from '@google-cloud/speech';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, Types } from 'mongoose';
+import { Consultation } from './schemas/consultation.schema';
+
 
 @Injectable()
 export class ConsultationsService {
         private speechClient: SpeechClient;
 
-  constructor() {
+  constructor(@InjectModel(Consultation.name)
+    private consultationModel: Model<Consultation>,) {
     this.speechClient = new SpeechClient();
   }
 
-    async processAudio(audioBuffer: Buffer): Promise<string[]> {
+    async processAndSaveAudio(
+    audioBuffer: Buffer,
+    doctorId: string,
+    patientId: string,
+  ) : Promise<{ consultationId: any; paragraphs: string[] }> { // Restrict the return type to reduce errors
   try {
     const audioBytes = audioBuffer.toString('base64');
 
@@ -34,7 +43,8 @@ export class ConsultationsService {
     const [response] = await this.speechClient.recognize(request);
 
     if (!response.results?.length) {
-      return [];
+      //return [];
+      throw new Error('No transcription results');
     }
 
     const words =
@@ -42,11 +52,32 @@ export class ConsultationsService {
         .alternatives?.[0]?.words;
 
     if (!words || words.length === 0) {
-      return [];
+      //return [];
+      throw new Error('No words in transcription');
     }
 
-    return this.groupBySpeaker(words);
-  } catch (error) {
+    //  Group by speaker
+      const conversationParagraphs = this.groupBySpeaker(words);
+      
+      // Join paragraphs for full transcript
+      const fullTranscript = conversationParagraphs.join(' ');
+
+      // Save to MongoDB (THIS was missing in your version!)
+      const consultation = await this.consultationModel.create({
+        doctorId: new Types.ObjectId(doctorId),
+        patientId: new Types.ObjectId(patientId),
+        fullTranscript,
+        conversationParagraphs,
+      });
+
+      // Return just the array to match your controller
+      return {
+        consultationId: consultation._id,
+        paragraphs: conversationParagraphs,
+      };
+  } 
+  
+    catch (error) {
     console.error(error);
     throw new InternalServerErrorException(
       'Error processing speech-to-text',
@@ -78,4 +109,4 @@ export class ConsultationsService {
   }
 }
 
-// Yet to Finish 
+//  Finish  BY Rahul
