@@ -1,19 +1,15 @@
-// ALL ADD by VIDU*
+// ALL ADD by VIDU* code updated on 2026/03/03
+
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
 
 import { RemindersController } from './reminders.controller';
 import { RemindersService } from './reminders.service';
 import { ReminderScheduler } from './reminder.scheduler';
-import { Reminder, ReminderSchema } from './reminder.schema';
 
 @Module({
   imports: [
-    ScheduleModule.forRoot(),
-    MongooseModule.forFeature([
-      { name: Reminder.name, schema: ReminderSchema },
-    ]),
+    ScheduleModule.forRoot(), // Enables cron scheduler
   ],
   controllers: [RemindersController],
   providers: [RemindersService, ReminderScheduler],

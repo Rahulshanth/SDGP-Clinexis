@@ -1,4 +1,6 @@
-import { Injectable, Logger } from '@nestjs/common'; //ALL ADD by VIDU
+//Updated by vidu on 2026/03/03
+
+import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { RemindersService } from './reminders.service';
 
@@ -16,8 +18,9 @@ export class ReminderScheduler {
 
     pending.forEach((reminder) => {
       this.logger.log(
-        `Sending reminder to ${reminder.patientId}: ${reminder.message}`,
+        `Sending reminder to ${reminder.userId}: ${reminder.message}`,
       );
+
       this.remindersService.markAsSent(reminder);
     });
   }
