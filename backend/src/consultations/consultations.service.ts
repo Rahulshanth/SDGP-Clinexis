@@ -107,6 +107,10 @@ export class ConsultationsService {
 
     return paragraphs;
   }
+
+  async findById(id: string): Promise<Consultation | null> {
+    return this.consultationModel.findById(id).exec();
+  }  // Added according to controller by Rahul
 }
 
 //  Finish  BY Rahul
