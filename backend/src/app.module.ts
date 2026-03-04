@@ -18,8 +18,8 @@ import { PharmacyModule } from './pharmacy/pharmacy.module';
 
     UsersModule,
     AuthModule,
-    SummarizationModule,   // 🔹 keep this
-    PharmacyModule,        // 🔹 add this
+    SummarizationModule, // 🔹 keep this
+    PharmacyModule, // 🔹 add this
     RemindersModule, //  Add this locally(for now)
   ],
   // controllers: [AppController],

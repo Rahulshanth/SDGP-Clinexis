@@ -1,4 +1,4 @@
-//Updated by vidu on 2026/03/03
+//Updated by vidu on 2026/03/04
 
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
@@ -10,7 +10,7 @@ export class ReminderScheduler {
 
   constructor(private readonly remindersService: RemindersService) {}
 
-  @Cron('* * * * *') // every minute
+  @Cron('*/10 * * * * *') // every 10 seconds
   handleReminderCheck() {
     this.logger.log('Checking for pending reminders...');
 

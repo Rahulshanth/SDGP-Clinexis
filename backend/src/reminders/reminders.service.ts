@@ -1,4 +1,4 @@
-// ALL ADD by VIDU* code updated on 2026/03/03
+// ALL ADD by VIDU* code updated on 2026/03/04
 
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
@@ -45,7 +45,7 @@ export class RemindersService {
     return reminder;
   }
 
-  // 🔹 CREATE MEDICINE REMINDER (PATIENT)
+  // CREATE MEDICINE REMINDER (PATIENT)
   createMedicineReminder(data: {
     patientId: string;
     title: string;
@@ -62,7 +62,7 @@ export class RemindersService {
     });
   }
 
-  // 🔹 APPOINTMENT CANCELLATION (Doctor to Patient)
+  //  APPOINTMENT CANCELLATION (Doctor to Patient)
   notifyAppointmentCancelled(data: {
     patientId: string;
     doctorName: string;
@@ -77,12 +77,12 @@ export class RemindersService {
     });
   }
 
-  // 🔹 GET REMINDERS FOR USER
+  //  GET REMINDERS FOR USER
   getUserReminders(userId: string): Reminder[] {
     return this.reminders.filter((r) => r.userId === userId);
   }
 
-  // 🔹 DELETE REMINDER
+  // DELETE REMINDER
   deleteReminder(id: string): boolean {
     const index = this.reminders.findIndex((r) => r.id === id);
     if (index === -1) return false;
@@ -91,7 +91,7 @@ export class RemindersService {
     return true;
   }
 
-  // 🔹 GET PENDING (FOR SCHEDULER)
+  // GET PENDING (FOR SCHEDULER)
   getPendingReminders(): Reminder[] {
     const now = new Date();
     return this.reminders.filter(
@@ -99,7 +99,7 @@ export class RemindersService {
     );
   }
 
-  // 🔹 MARK AS SENT
+  // MARK AS SENT
   markAsSent(reminder: Reminder): void {
     reminder.sent = true;
   }

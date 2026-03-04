@@ -1,4 +1,4 @@
-// ALL ADD by VIDU* code updated on 2026/03/03
+// ALL ADD by VIDU* code updated on 2026/03/04
 
 import { Controller, Post, Body, Get, Param, Delete } from '@nestjs/common';
 import { RemindersService } from './reminders.service';
@@ -7,7 +7,7 @@ import { RemindersService } from './reminders.service';
 export class RemindersController {
   constructor(private readonly remindersService: RemindersService) {}
 
-  // 🔹 Create Medicine Reminder (Patient)
+  // Create Medicine Reminder (Patient)
   @Post('medicine')
   createMedicineReminder(
     @Body()
@@ -21,7 +21,7 @@ export class RemindersController {
     return this.remindersService.createMedicineReminder(body);
   }
 
-  // 🔹 Notify Appointment Cancelled (Doctor → Patient)
+  // Notify Appointment Cancelled (Doctor → Patient)
   @Post('appointment-cancelled')
   appointmentCancelled(
     @Body() body: { patientId: string; doctorName: string },
@@ -29,19 +29,19 @@ export class RemindersController {
     return this.remindersService.notifyAppointmentCancelled(body);
   }
 
-  // 🔹 Get Reminders For Specific User
+  // Get Reminders For Specific User
   @Get(':userId')
   getUserReminders(@Param('userId') userId: string) {
     return this.remindersService.getUserReminders(userId);
   }
 
-  // 🔹 Delete Reminder
+  // Delete Reminder
   @Delete(':id')
   deleteReminder(@Param('id') id: string) {
     return this.remindersService.deleteReminder(id);
   }
 
-  // 🔹 Get Pending Reminders (For Scheduler)
+  // Get Pending Reminders (For Scheduler)
   @Get('pending/all')
   getPending() {
     return this.remindersService.getPendingReminders();
