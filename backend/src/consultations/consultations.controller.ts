@@ -77,6 +77,10 @@ export class ConsultationsController {
       throw new ForbiddenException('Access denied');
     }
 
+    if (user.role === 'pharmacy') {
+      throw new ForbiddenException('Access denied');
+    }
+
     return {
       conversationParagraphs: consultation.conversationParagraphs,
     };

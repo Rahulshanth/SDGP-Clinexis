@@ -12,7 +12,16 @@ export class ConsultationsService {
 
   constructor(@InjectModel(Consultation.name)
     private consultationModel: Model<Consultation>,) {
+    // Render/Production: decode from base64
+  if (process.env.GOOGLE_SERVICE_ACCOUNT_BASE64) {
+    const credentials = JSON.parse(
+      Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_BASE64, 'base64').toString('utf8')
+    );
+    this.speechClient = new SpeechClient({ credentials });
+  } else {
+    // Local: use JSON file path from GOOGLE_APPLICATION_CREDENTIALS
     this.speechClient = new SpeechClient();
+  }
   }
 
     async processAndSaveAudio(
