@@ -1,3 +1,5 @@
+import * as dotenv from 'dotenv'; // Add this line to load the .env file
+dotenv.config();  // Load environment variables from .env file //add by rivithi
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module'; 
 import { ValidationPipe } from '@nestjs/common'; // Added by Rahul
