@@ -2,9 +2,12 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { RemindersModule } from './reminders/reminders.module';
-
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+import { DoctorModule } from './doctors/doctor.module';
+import { PatientModule } from './patient/patient.module';
 import { SummarizationModule } from './summarization/summarization.module';
 import { PharmacyModule } from './pharmacy/pharmacy.module';
 
@@ -18,11 +21,14 @@ import { PharmacyModule } from './pharmacy/pharmacy.module';
 
     UsersModule,
     AuthModule,
-    SummarizationModule, // 🔹 keep this
-    PharmacyModule, // 🔹 add this
-    RemindersModule, //  Add this locally(for now)
+
+    RemindersModule, // 🔹 add this - Vidu
+    SummarizationModule, // 🔹 keep this - Rivithi
+    PharmacyModule, // 🔹 add this - Vinidi
+    DoctorModule,
+    PatientModule, // By Rahul
   ],
-  // controllers: [AppController],
-  // providers: [AppService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
