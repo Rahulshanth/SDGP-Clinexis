@@ -21,7 +21,6 @@ import { PharmacyModule } from './pharmacy/pharmacy.module';
 
     UsersModule,
     AuthModule,
-
     RemindersModule, // 🔹 add this - Vidu
     SummarizationModule, // 🔹 keep this - Rivithi
     PharmacyModule, // 🔹 add this - Vinidi
