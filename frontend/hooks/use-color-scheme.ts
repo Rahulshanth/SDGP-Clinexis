@@ -1,5 +1,6 @@
 
-// DON'T USE THIS (RAHUL) USE THE HOOKS INSIDE  STORE FOLDER
+import { useColorScheme as useRNColorScheme } from 'react-native';
 
-
-//export { useColorScheme } from 'react-native';
+export function useColorScheme() {
+  return useRNColorScheme();
+}
