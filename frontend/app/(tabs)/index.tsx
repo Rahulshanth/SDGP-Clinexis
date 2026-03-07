@@ -1,3 +1,21 @@
+import { View, Text } from 'react-native';
+
+export default function HomeScreen() {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text style={{ fontSize: 24, fontWeight: 'bold' }}>
+        Clinexis App Running -  🚀RIVITHI AND NADITHI WILL DO THE FRONTEND
+      </Text>
+    </View>
+  );
+}
+
+
+
+                                // COMMENTED BY RAHUL ON 6TH MARCH  (JUST TO TEST THE APPLICATION FOR NOW)
+                                // Once we connect our real navigation/ folder, this file also gets deleted.
+
+
 /*import { Image } from 'expo-image';
 import { Platform, StyleSheet } from 'react-native';
 
@@ -97,14 +115,3 @@ const styles = StyleSheet.create({
   },
 });*/
 
-import { View, Text } from 'react-native';
-
-export default function HomeScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text style={{ fontSize: 24, fontWeight: 'bold' }}>
-        Clinexis App Running -  🚀VIDU
-      </Text>
-    </View>
-  );
-}

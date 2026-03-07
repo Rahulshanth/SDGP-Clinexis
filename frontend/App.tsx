@@ -1,4 +1,7 @@
-import React from "react";
+
+                                             //Don't DELETE OR MAKE CHANGES IN THIS
+
+/*import React from "react";
 import { Provider } from "react-redux";
 import { store } from "./store";
 import RootNavigator from "./navigation";
@@ -13,4 +16,5 @@ export default function App() {
       <RootNavigator />
     </Provider>
   );
-}
+}*/   
+                                           //Don't DELETE OR MAKE CHANGES IN THIS
