@@ -24,7 +24,7 @@ export class ConsultationsController {
   constructor(private readonly consultationsService: ConsultationsService) {}
 
   @Roles(UserRole.DOCTOR , UserRole.PATIENT)
-  @Post('audio')
+  @Post('upload-audio')
   @UseInterceptors(FileInterceptor('file'))
   async uploadAudio(
     @UploadedFile() file: Express.Multer.File,
@@ -84,6 +84,24 @@ export class ConsultationsController {
     return {
       conversationParagraphs: consultation.conversationParagraphs,
     };
+  }
+
+  @Roles(UserRole.DOCTOR , UserRole.PATIENT)
+  @Get()
+  async getAllConsultations(@Req() req) {
+    const user = req.user;
+
+    let consultations: any[];
+
+    if (user.role === 'doctor') {
+      consultations = await this.consultationsService.findByDoctorId(user.userId);
+    } else if (user.role === 'patient') {
+      consultations = await this.consultationsService.findByPatientId(user.userId);
+    } else {
+      throw new ForbiddenException('Access denied');
+    }
+
+    return consultations;
   }
 }
 
