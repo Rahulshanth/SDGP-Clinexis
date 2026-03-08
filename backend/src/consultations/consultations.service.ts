@@ -119,7 +119,15 @@ export class ConsultationsService {
 
   async findById(id: string): Promise<Consultation | null> {
     return this.consultationModel.findById(id).exec();
-  }  // Added according to controller by Rahul
+  }
+
+  async findByDoctorId(doctorId: string): Promise<Consultation[]> {
+    return this.consultationModel.find({ doctorId: new Types.ObjectId(doctorId) }).exec();
+  }
+
+  async findByPatientId(patientId: string): Promise<Consultation[]> {
+    return this.consultationModel.find({ patientId: new Types.ObjectId(patientId) }).exec();
+  }
 }
 
 //  Finish  BY Rahul

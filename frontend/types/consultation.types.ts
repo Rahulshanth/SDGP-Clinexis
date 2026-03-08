@@ -7,6 +7,8 @@ export interface Consultation {
   _id: string;
   doctorId: string;
   patientId: string;
+  fullTranscript: string;
   transcript: TranscriptParagraph[];
+  conversationParagraphs: string[];
   createdAt: string;
 } // Rahul

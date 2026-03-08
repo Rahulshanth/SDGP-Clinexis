@@ -11,6 +11,11 @@ export const uploadAudio = async (formData: FormData) => {
   return response.data;
 };
 
+export const getConsultationById = async (id: string) => {
+  const response = await api.get(`/consultations/${id}`);
+  return response.data;
+};
+
 export const getConsultations = async (): Promise<Consultation[]> => {
   const response = await api.get("/consultations");
   return response.data;
