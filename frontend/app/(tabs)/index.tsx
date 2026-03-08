@@ -1,4 +1,4 @@
-import { Image } from 'expo-image';
+/*import { Image } from 'expo-image';
 import { Platform, StyleSheet } from 'react-native';
 
 import { HelloWave } from '@/components/hello-wave';
@@ -94,5 +94,43 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     position: 'absolute',
+  },
+});*/
+
+import React, { useEffect } from 'react';
+import { View, Image, StyleSheet, StatusBar } from 'react-native';
+import { router } from 'expo-router';
+
+export default function SplashScreen() {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      router.replace('/welcome');
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <View style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="#2EA8FF" />
+      <Image
+        source={require('/Users/nadithimoonasingha/SDGP-Clinexis/frontend/assets/images/ClinexisLogo.png')}
+        style={styles.logo}
+        resizeMode="contain"
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#2EA8FF',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  logo: {
+    width: 280,
+    height: 280,
   },
 });
