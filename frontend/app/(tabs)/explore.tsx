@@ -1,4 +1,9 @@
-import { Image } from 'expo-image';
+
+
+                                // COMMENTED BY RAHUL ON 6TH MARCH (we don't need this)
+
+
+/*import { Image } from 'expo-image';
 import { Platform, StyleSheet } from 'react-native';
 
 import { Collapsible } from '@/components/ui/collapsible';
@@ -109,4 +114,4 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 8,
   },
-});
+});*/
