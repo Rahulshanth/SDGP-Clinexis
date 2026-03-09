@@ -49,8 +49,9 @@ export class ConsultationsService {
           encoding:
             protos.google.cloud.speech.v1.RecognitionConfig.AudioEncoding
               .LINEAR16,
-          sampleRateHertz: 48000,
-          languageCode: 'en-IN',
+          sampleRateHertz: 48000, // Did this according to postman
+
+          languageCode: 'en-IN', // Enhanced the voice type
           enableWordTimeOffsets: true,
           diarizationConfig: {
             enableSpeakerDiarization: true,
