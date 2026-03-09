@@ -9,6 +9,7 @@ import { DoctorModule } from './doctors/doctor.module';
 import {PatientModule} from './patient/patient.module'
 import { SummarizationModule } from './summarization/summarization.module';
 import { PharmacyModule } from './pharmacy/pharmacy.module';
+import { ConsultationsModule } from './consultations/consultations.module';
 
 @Module({
   imports: [
@@ -22,7 +23,7 @@ import { PharmacyModule } from './pharmacy/pharmacy.module';
     AuthModule,
     SummarizationModule,   // 🔹 keep this - Rivithi
     PharmacyModule,        // 🔹 add this - Vinidi
-    DoctorModule, PatientModule         // By Rahul
+    DoctorModule, PatientModule, ConsultationsModule         // By Rahul
   ],
   controllers: [AppController],
    providers: [AppService],
