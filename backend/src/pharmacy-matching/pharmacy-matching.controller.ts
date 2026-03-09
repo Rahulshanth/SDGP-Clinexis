@@ -1,41 +1,47 @@
-// Import NestJS decorators for creating routes
+// Import NestJS decorators to create API routes
 import { Controller, Get, Post, Body, Query } from '@nestjs/common';
 
-// Import the service that contains the matching logic
+// Import the pharmacy matching service
 import { PharmacyMatchingService } from './pharmacy-matching.service';
 
-// Base route for this controller
+// Base route for pharmacy matching APIs
 @Controller('api/pharmacy-matching')
 export class PharmacyMatchingController {
 
-  // Inject PharmacyMatchingService
+  // Inject the matching service
   constructor(private readonly pharmacyMatchingService: PharmacyMatchingService) {}
 
-  // API to search pharmacies by medicine and optional location
-  // Example: GET /api/pharmacy-matching/search?medicine=Paracetamol
+  // GET /api/pharmacy-matching/search?medicine=Paracetamol
+  // Search pharmacies that contain a specific medicine
   @Get('search')
   searchPharmacies(
     @Query('medicine') medicine: string,
-    @Query('location') location?: string
+    @Query('location') location?: string,
   ) {
     return this.pharmacyMatchingService.searchPharmacies(medicine, location);
   }
 
-  // API to find nearest pharmacies using latitude and longitude
-  // Example: GET /api/pharmacy-matching/nearest?lat=6.92&lng=80.77
+  // GET /api/pharmacy-matching/nearest?lat=6.92&lng=80.78
+  // Find pharmacies near a given location
   @Get('nearest')
   findNearestPharmacies(
     @Query('lat') lat: number,
-    @Query('lng') lng: number
+    @Query('lng') lng: number,
   ) {
     return this.pharmacyMatchingService.findNearest(lat, lng);
   }
 
-  // API to match pharmacy using request body
-  // Example: POST /api/pharmacy-matching/match
+  // POST /api/pharmacy-matching/match
+  // Match pharmacies based on multiple medicines
   @Post('match')
-  matchPharmacy(@Body() matchDto: any) {
-    return this.pharmacyMatchingService.matchPharmacy(matchDto);
+  matchPharmacy(@Body() body: any) {
+
+    // Example request body:
+    // {
+    //   "medicines": ["Paracetamol", "Ibuprofen"]
+    // }
+
+    return this.pharmacyMatchingService.matchPharmacies(body.medicines);
   }
 
 }

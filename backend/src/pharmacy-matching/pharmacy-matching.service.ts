@@ -32,24 +32,23 @@ export class PharmacyMatchingService {
   ];
 
 
-  // Search pharmacies that contain a medicine
+  // Search pharmacies that contain a specific medicine
   searchPharmacies(medicine: string, location?: string) {
 
-    // Filter pharmacies that have the medicine
+    // Filter pharmacies that contain the medicine
     let results = this.pharmacies.filter(p =>
       p.medicines.some(m =>
         m.toLowerCase().includes(medicine.toLowerCase())
       )
     );
 
-    // If location is provided, filter by location also
+    // Optional location filter
     if (location) {
       results = results.filter(p =>
         p.location.toLowerCase().includes(location.toLowerCase())
       );
     }
 
-    // Return search results
     return {
       success: true,
       count: results.length,
@@ -58,14 +57,14 @@ export class PharmacyMatchingService {
   }
 
 
-  // Find pharmacies near a location
+  // Find nearest pharmacies based on coordinates
   findNearest(lat: number, lng: number, radius: number = 5) {
 
     const results = this.pharmacies
-
-      // Calculate distance from user location
       .map(pharmacy => ({
         ...pharmacy,
+
+        // Calculate distance from user
         distance: this.calculateDistance(
           lat,
           lng,
@@ -77,7 +76,7 @@ export class PharmacyMatchingService {
       // Only include pharmacies inside radius
       .filter(p => p.distance <= radius)
 
-      // Sort by nearest
+      // Sort nearest first
       .sort((a, b) => a.distance - b.distance);
 
     return {
@@ -88,13 +87,44 @@ export class PharmacyMatchingService {
   }
 
 
-  // Main matching function used by controller
-  matchPharmacy(matchDto: any) {
+  // Match pharmacies based on multiple medicines
+  matchPharmacies(medicines: string[]) {
 
-    const { medicine, location } = matchDto;
+    const results = this.pharmacies.map(pharmacy => {
 
-    // Search pharmacies based on medicine and location
-    return this.searchPharmacies(medicine, location);
+      // Medicines available in this pharmacy
+      const availableMedicines = medicines.filter(med =>
+        pharmacy.medicines.some(p =>
+          p.toLowerCase().includes(med.toLowerCase())
+        )
+      );
+
+      // Medicines missing in this pharmacy
+      const missingMedicines = medicines.filter(med =>
+        !availableMedicines.includes(med)
+      );
+
+      return {
+        pharmacyId: pharmacy.id,
+        pharmacyName: pharmacy.name,
+        location: pharmacy.location,
+
+        matchedMedicines: availableMedicines,
+        missingMedicines: missingMedicines,
+
+        // Number of medicines matched
+        matchCount: availableMedicines.length
+      };
+    });
+
+    // Sort pharmacies by best match
+    results.sort((a, b) => b.matchCount - a.matchCount);
+
+    return {
+      success: true,
+      totalPharmacies: results.length,
+      data: results
+    };
   }
 
 
@@ -106,7 +136,7 @@ export class PharmacyMatchingService {
     lng2: number
   ): number {
 
-    const R = 6371; // Earth radius in km
+    const R = 6371; // Earth radius in KM
 
     const dLat = (lat2 - lat1) * (Math.PI / 180);
     const dLng = (lng2 - lng1) * (Math.PI / 180);
@@ -120,7 +150,6 @@ export class PharmacyMatchingService {
 
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-    // Return distance in KM
     return R * c;
   }
 
