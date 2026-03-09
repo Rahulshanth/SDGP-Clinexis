@@ -22,5 +22,4 @@ export class DoctorController {
       message: 'Doctor consultations fetched successfully',
     };
   }
-  
 }

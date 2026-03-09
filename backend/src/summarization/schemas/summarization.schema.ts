@@ -5,7 +5,6 @@ export type SummarizationDocument = Summarization & Document;
 
 @Schema({ timestamps: true })
 export class Summarization {
-
   @Prop({ required: true })
   consultationId: string;
 
@@ -28,5 +27,4 @@ export class Summarization {
   medications: string[];
 }
 
-export const SummarizationSchema =
-  SchemaFactory.createForClass(Summarization);
+export const SummarizationSchema = SchemaFactory.createForClass(Summarization);

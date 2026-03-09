@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
-import { AppController } from './app.controller';  
-import { AppService } from './app.service';   
+import { RemindersModule } from './reminders/reminders.module';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { DoctorModule } from './doctors/doctor.module';
-import {PatientModule} from './patient/patient.module'
+import { PatientModule } from './patient/patient.module';
 import { SummarizationModule } from './summarization/summarization.module';
 import { PharmacyModule } from './pharmacy/pharmacy.module';
 import { ConsultationsModule } from './consultations/consultations.module';
@@ -19,14 +20,16 @@ import { ConsultationsModule } from './consultations/consultations.module';
 
     MongooseModule.forRoot(process.env.MONGO_URI as string),
 
-    UsersModule,   
+    UsersModule,
     AuthModule,
-    SummarizationModule,   // 🔹 keep this - Rivithi
-    PharmacyModule,        // 🔹 add this - Vinidi
-    DoctorModule, 
-    PatientModule, ConsultationsModule         // By Rahul...
+    SummarizationModule, // 🔹 keep this - Rivithi
+    PharmacyModule, // 🔹 add this - Vinidi
+    DoctorModule,
+    PatientModule,
+    ConsultationsModule, // By Rahul
+    RemindersModule, // 🔹 add this - Vidu
   ],
   controllers: [AppController],
-   providers: [AppService],
+  providers: [AppService],
 })
 export class AppModule {}
