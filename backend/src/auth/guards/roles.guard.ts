@@ -1,4 +1,4 @@
-// from here to 
+// from here to
 import {
   Injectable,
   CanActivate,
@@ -23,8 +23,10 @@ export class RolesGuard implements CanActivate {
       return true;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const request = context.switchToHttp().getRequest();
-    const user = request.user;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const user = request.user as { role: UserRole };
 
     if (!user || !requiredRoles.includes(user.role)) {
       throw new ForbiddenException('Access denied: insufficient role');
