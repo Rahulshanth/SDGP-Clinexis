@@ -23,7 +23,8 @@ import { ConsultationsModule } from './consultations/consultations.module';
     AuthModule,
     SummarizationModule,   // 🔹 keep this - Rivithi
     PharmacyModule,        // 🔹 add this - Vinidi
-    DoctorModule, PatientModule, ConsultationsModule         // By Rahul
+    DoctorModule, 
+    PatientModule, ConsultationsModule         // By Rahul...
   ],
   controllers: [AppController],
    providers: [AppService],
