@@ -5,7 +5,7 @@ import { RemindersModule } from './reminders/reminders.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
+import { UsersModule } from  './users/users.module';
 import { DoctorModule } from './doctors/doctor.module';
 import { PatientModule } from './patient/patient.module';
 import { SummarizationModule } from './summarization/summarization.module';
