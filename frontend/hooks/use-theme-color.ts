@@ -1,15 +1,6 @@
 
 // DON'T USE THIS (RAHUL) USE THE HOOKS INSIDE  STORE FOLDER
 
-
-
-
-
-/**
- * Learn more about light and dark modes:
- * https://docs.expo.dev/guides/color-schemes/
- */
-
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
@@ -25,6 +16,6 @@ export function useThemeColor(
   } else {
     return Colors[theme][colorName];
   }
-} 
+}
 
 

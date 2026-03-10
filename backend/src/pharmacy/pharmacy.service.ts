@@ -1,4 +1,15 @@
+// Import Injectable so NestJS can use this service
 import { Injectable } from '@nestjs/common';
+
+// Import InjectModel to access MongoDB collection
+import { InjectModel } from '@nestjs/mongoose';
+
+// Import mongoose Model type
+import { Model } from 'mongoose';
+
+// Import Pharmacy schema and document type
+import { Pharmacy, PharmacyDocument } from './schemas/pharmacy.schema';
+
 
 @Injectable()
 export class PharmacyService {
@@ -38,10 +49,17 @@ export class PharmacyService {
       .filter((p) => p.quantity > 0)
       .sort((a, b) => a.price - b.price);
 
+  // Inject the Pharmacy MongoDB model
+  constructor(
+    @InjectModel(Pharmacy.name)
+    private pharmacyModel: Model<PharmacyDocument>,
+  ) {}
+
+  // Simple status check for testing the service
+  getStatus() {
     return {
-      success: true,
-      count: results.length,
-      data: results,
+      status: 'active',
+      message: 'Pharmacy service is running'
     };
   }
 }

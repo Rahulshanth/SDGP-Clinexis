@@ -10,6 +10,7 @@ import { SummarizationModule } from './summarization/summarization.module';
 import { PharmacyModule } from './pharmacy/pharmacy.module';
 import { PatientModule } from './patient/patient.module';
 import { ConsultationsModule } from './consultations/consultations.module';
+import { PharmacyInventoryModule } from './pharmacy-inventory/pharmacy-inventory.module';
 
 import { RemindersModule } from './reminders/reminders.module';
 
@@ -27,6 +28,7 @@ import { RemindersModule } from './reminders/reminders.module';
     SummarizationModule, // 🔹 keep this - Rivithi
     DoctorModule,
     PatientModule,
+    PharmacyInventoryModule,
     ConsultationsModule,
     RemindersModule,
   ],
