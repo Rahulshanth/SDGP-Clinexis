@@ -1,14 +1,8 @@
-import { Module } from '@nestjs/common';
-<<<<<<< HEAD
+﻿import { Module } from '@nestjs/common';
 import { NlpModule } from './nlp/nlp.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
-
-=======
-import { MongooseModule } from '@nestjs/mongoose';
-import { ConfigModule } from '@nestjs/config';
 import { RemindersModule } from './reminders/reminders.module';
->>>>>>> develop
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -21,12 +15,6 @@ import { ConsultationsModule } from './consultations/consultations.module';
 
 @Module({
   imports: [
-<<<<<<< HEAD
-    ConfigModule.forRoot(), // load .env file
-    //MongooseModule.forRoot(process.env.MONGO_URI as string), // connect MongoDB
-    AuthModule,
-    NlpModule,
-=======
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -41,7 +29,7 @@ import { ConsultationsModule } from './consultations/consultations.module';
     PatientModule,
     ConsultationsModule, // By Rahul
     RemindersModule, // 🔹 add this - Vidu
->>>>>>> develop
+    NlpModule,
   ],
   controllers: [AppController],
   providers: [AppService],
