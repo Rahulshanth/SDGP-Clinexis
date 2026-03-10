@@ -10,14 +10,12 @@ It combines the Pharmacy class with the Mongoose Document properties.
 */
 export type PharmacyDocument = Pharmacy & Document;
 
-
 /*
 This schema represents a single medicine item in the pharmacy stock.
 Each pharmacy can have multiple medicines.
 */
 @Schema()
 export class StockItem {
-
   // Name of the medicine
   @Prop({ required: true })
   medicineName: string;
@@ -29,7 +27,6 @@ export class StockItem {
   // Price of the medicine
   @Prop({ required: true })
   price: number;
-
 }
 
 /*
@@ -38,14 +35,12 @@ This allows MongoDB to store stock items as embedded documents
 */
 export const StockItemSchema = SchemaFactory.createForClass(StockItem);
 
-
 /*
 Main Pharmacy schema
 This represents a pharmacy in the system
 */
 @Schema({ timestamps: true }) // automatically adds createdAt and updatedAt
 export class Pharmacy {
-
   // Pharmacy name
   @Prop({ required: true })
   name: string;
@@ -65,7 +60,6 @@ export class Pharmacy {
   */
   @Prop({ type: [StockItemSchema], default: [] })
   stock: StockItem[];
-
 }
 
 /*
