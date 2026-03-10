@@ -134,3 +134,5 @@ const styles = StyleSheet.create({
     height: 280,
   },
 });
+
+//Added by Nadithi
