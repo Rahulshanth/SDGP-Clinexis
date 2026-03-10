@@ -24,7 +24,7 @@ import { PharmacyInventoryModule } from './pharmacy-inventory/pharmacy-inventory
     AuthModule,
     PharmacyModule,
     SummarizationModule,// 🔹 keep this - Rivithi
-    DoctorModule,
+    DoctorModule, PatientModule,
     PharmacyInventoryModule,
     ConsultationsModule
 
