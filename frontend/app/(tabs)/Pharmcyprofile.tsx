@@ -1,7 +1,5 @@
-// Import React
 import React from "react";
-
-// Import UI components from React Native
+import PharmacyBottomNav from "../../components/PharmacyBottomNav";
 import {
   View,
   Text,
@@ -9,517 +7,362 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  FlatList,
+  Platform,
 } from "react-native";
-
-// Import icons
-import { Ionicons, Feather } from "@expo/vector-icons";
-
-const pharmacyData = {
-  name: "HealthFirst Pharmacy",
-  license: "License #PH-99283-X",
-  rating: 4.8,
-  reviewCount: 1240,
-  phone: "+1 (555) 123-4567",
-  address: "123 Medical Plaza, Downtown",
-  isOpen: true,
-  hours: {
-    weekday: "08:00 AM - 09:00 PM",
-    weekend: "10:00 AM - 06:00 PM",
-  },
-  about: "HealthFirst Pharmacy is committed to providing quality healthcare services to our community. With experienced pharmacists and a wide range of medicines, we ensure the best care for you and your family.",
-  services: [
-    { id: "1", name: "Medicine Delivery", icon: "bicycle" },
-    { id: "2", name: "24/7 Pharmacy", icon: "clock" },
-  ],
-  reviews: [
-    {
-      id: "1",
-      user: "Sarah Johnson",
-      rating: 5,
-      date: "2 days ago",
-      comment: "Great service! The staff is very helpful and the delivery is always on time.",
-    },
-    {
-      id: "2",
-      user: "Michael Chen",
-      rating: 4,
-      date: "1 week ago",
-      comment: "Good pharmacy with a wide selection of medicines. Highly recommended.",
-    },
-    {
-      id: "3",
-      user: "Emily Davis",
-      rating: 5,
-      date: "2 weeks ago",
-      comment: "Best pharmacy in the area! Very professional and friendly staff.",
-    },
-  ],
-};
-
-const ServiceItem = ({ name, icon }: { name: string; icon: string }) => (
-  <View style={styles.serviceItem}>
-    <View style={styles.serviceIcon}>
-      <Feather name={icon as any} size={20} color="#007AFF" />
-    </View>
-    <Text style={styles.serviceText}>{name}</Text>
-  </View>
-);
-
-const ReviewItem = ({
-  user,
-  rating,
-  date,
-  comment,
-}: {
-  user: string;
-  rating: number;
-  date: string;
-  comment: string;
-}) => (
-  <View style={styles.reviewItem}>
-    <View style={styles.reviewHeader}>
-      <View style={styles.reviewAvatar}>
-        <Text style={styles.avatarText}>{user.charAt(0)}</Text>
-      </View>
-      <View style={styles.reviewInfo}>
-        <Text style={styles.reviewUser}>{user}</Text>
-        <View style={styles.reviewRating}>
-          {[1, 2, 3, 4, 5].map((star) => (
-            <Ionicons
-              key={star}
-              name="star"
-              size={12}
-              color={star <= rating ? "#FFD700" : "#E5E7EB"}
-            />
-          ))}
-          <Text style={styles.reviewDate}>{date}</Text>
-        </View>
-      </View>
-    </View>
-    <Text style={styles.reviewComment}>{comment}</Text>
-  </View>
-);
+import { Ionicons, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function PharmacyProfileScreen() {
+  const insets = useSafeAreaInsets();
+
   return (
-    <ScrollView style={styles.container}>
-      {/* HEADER */}
-      <View style={styles.header}>
-        <TouchableOpacity>
-          <Ionicons name="arrow-back" size={24} color="black" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Pharmacy Profile</Text>
-        <TouchableOpacity>
-          <Feather name="edit-2" size={20} color="#007AFF" />
-        </TouchableOpacity>
-      </View>
+    <View style={[styles.mainContainer, { paddingTop: Math.max(insets.top, 10) }]}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: Math.max(insets.bottom, 40) }}
+        style={styles.container}
+      >
+        {/* ================= HEADER ================= */}
+        <View style={styles.header}>
+          <TouchableOpacity style={styles.headerBtn}>
+            <Ionicons name="arrow-back" size={24} color="#334155" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Pharmacy Profile</Text>
+          <TouchableOpacity style={styles.headerBtn}>
+            <Ionicons name="settings-outline" size={22} color="#334155" />
+          </TouchableOpacity>
+        </View>
 
-      {/* PHARMACY INFO CARD */}
-      <View style={styles.infoCard}>
-        <View style={styles.logoContainer}>
-          <Image
-            source={{
-              uri: "https://cdn-icons-png.flaticon.com/512/3774/3774299.png",
-            }}
-            style={styles.logo}
-          />
-          <View
-            style={[
-              styles.statusBadge,
-              pharmacyData.isOpen ? styles.openBadge : styles.closedBadge,
-            ]}
-          >
-            <Text style={styles.statusText}>
-              {pharmacyData.isOpen ? "Open" : "Closed"}
-            </Text>
+        {/* ================= PROFILE CARD (TOP) ================= */}
+        <View style={styles.profileSection}>
+          <View style={styles.logoContainer}>
+            <View style={styles.logoBorder}>
+              <Image
+                source={{
+                  uri: "https://cdn-icons-png.flaticon.com/512/3774/3774299.png", 
+                  // using the provided image or placeholder
+                }}
+                style={styles.logo}
+                resizeMode="contain"
+              />
+            </View>
+            <View style={styles.verifiedBadge}>
+              <MaterialCommunityIcons name="check-decagram" size={20} color="#0ea5e9" />
+            </View>
+          </View>
+
+          <Text style={styles.pharmacyName}>Gagana Pharmacy</Text>
+          
+          <View style={styles.ratingRow}>
+            <Ionicons name="star" size={14} color="#0ea5e9" />
+            <Text style={styles.ratingText}>4.8</Text>
+            <Text style={styles.reviewsText}>(1.2k Reviews)</Text>
+          </View>
+          
+          <Text style={styles.licenseText}>License: #PH-99283-00</Text>
+
+          {/* EDIT BUTTON */}
+          <TouchableOpacity style={styles.editButton} activeOpacity={0.8}>
+            <Feather name="edit-2" size={16} color="#ffffff" style={{ marginRight: 8 }} />
+            <Text style={styles.editButtonText}>Edit Profile</Text>
+          </TouchableOpacity>
+
+          {/* ACTION BUTTONS */}
+          <View style={styles.actionContainer}>
+            <TouchableOpacity style={styles.actionButton} activeOpacity={0.7}>
+              <Ionicons name="call-outline" size={20} color="#0284c7" />
+              <Text style={styles.actionText}>Call</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.actionButton} activeOpacity={0.7}>
+              <MaterialCommunityIcons name="directions" size={20} color="#0284c7" />
+              <Text style={styles.actionText}>Directions</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.actionButton} activeOpacity={0.7}>
+              <Ionicons name="share-social-outline" size={20} color="#0284c7" />
+              <Text style={styles.actionText}>Share</Text>
+            </TouchableOpacity>
           </View>
         </View>
 
-        <Text style={styles.pharmacyName}>{pharmacyData.name}</Text>
-        <Text style={styles.license}>{pharmacyData.license}</Text>
-
-        {/* Rating */}
-        <View style={styles.ratingBox}>
-          <Ionicons name="star" size={16} color="#FFD700" />
-          <Text style={styles.ratingText}>{pharmacyData.rating}</Text>
-          <Text style={styles.reviewText}>
-            • {pharmacyData.reviewCount} Reviews
+        {/* ================= ABOUT SECTION ================= */}
+        <View style={styles.cardHeader}>
+          <Ionicons name="information-circle-outline" size={22} color="#0284c7" />
+          <Text style={styles.cardTitle}>About Pharmacy</Text>
+        </View>
+        <View style={[styles.cardContainer, styles.cardTopRoundedOnly]}>
+          <Text style={styles.aboutText}>
+            Dedicated to providing high-quality healthcare and medication management services to our community. Our mission is to ensure every patient receives personalized care and expert pharmacological advice for their chronic and acute needs.
           </Text>
         </View>
 
-        {/* Action Buttons */}
-        <View style={styles.actionContainer}>
-          <TouchableOpacity style={styles.actionButton}>
-            <Feather name="phone" size={18} color="#007AFF" />
-            <Text style={styles.actionText}>Call</Text>
-          </TouchableOpacity>
+        {/* Spacer between cards to create the split look */}
+        <View style={{ height: 16 }} />
 
-          <TouchableOpacity style={styles.actionButton}>
-            <Ionicons name="location-outline" size={18} color="#007AFF" />
-            <Text style={styles.actionText}>Directions</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.actionButton}>
-            <Feather name="share-2" size={18} color="#007AFF" />
-            <Text style={styles.actionText}>Share</Text>
-          </TouchableOpacity>
+        {/* ================= CONTACT INFORMATION ================= */}
+        <View style={styles.cardHeader}>
+          <Ionicons name="help-circle-outline" size={22} color="#0284c7" />
+          <Text style={styles.cardTitle}>Contact Information</Text>
         </View>
-      </View>
-
-      {/* CONTACT INFORMATION */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>CONTACT INFORMATION</Text>
-        <View style={styles.infoRow}>
-          <Ionicons name="call-outline" size={18} color="#6B7280" />
-          <Text style={styles.infoText}>{pharmacyData.phone}</Text>
-        </View>
-        <View style={styles.infoRow}>
-          <Ionicons name="location-outline" size={18} color="#6B7280" />
-          <Text style={styles.infoText}>{pharmacyData.address}</Text>
-        </View>
-        <View style={styles.infoRow}>
-          <Ionicons name="time-outline" size={18} color="#6B7280" />
-          <Text style={styles.infoText}>
-            Mon - Fri: {pharmacyData.hours.weekday}
-          </Text>
-          <View
-            style={[
-              styles.statusBadge,
-              pharmacyData.isOpen ? styles.openBadgeSmall : styles.closedBadgeSmall,
-            ]}
-          >
-            <Text style={styles.statusTextSmall}>
-              {pharmacyData.isOpen ? "Open" : "Closed"}
-            </Text>
+        <View style={[styles.cardContainer, styles.cardTopRoundedOnly]}>
+          
+          {/* Phone */}
+          <View style={styles.contactRow}>
+            <View style={styles.contactIconBg}>
+              <Ionicons name="call-outline" size={18} color="#64748b" />
+            </View>
+            <View style={styles.contactInfo}>
+              <Text style={styles.contactValue}>+1 (555) 123-4567</Text>
+              <Text style={styles.contactLabel}>Primary Contact Line</Text>
+            </View>
           </View>
+
+          {/* Email */}
+          <View style={styles.contactRow}>
+            <View style={styles.contactIconBg}>
+              <Ionicons name="mail-outline" size={18} color="#64748b" />
+            </View>
+            <View style={styles.contactInfo}>
+              <Text style={styles.contactValue}>contact@clinexiscentral.com</Text>
+              <Text style={styles.contactLabel}>Business Inquiries</Text>
+            </View>
+          </View>
+
+          {/* Location */}
+          <View style={[styles.contactRow, { borderBottomWidth: 0, paddingBottom: 0, marginBottom: 0 }]}>
+            <View style={styles.contactIconBg}>
+              <Ionicons name="location-outline" size={20} color="#64748b" />
+            </View>
+            <View style={styles.contactInfo}>
+              <Text style={styles.contactValue}>742 Medical Mile, Health City, HC 90210</Text>
+              <TouchableOpacity>
+                <Text style={styles.viewMapText}>View on Map</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
         </View>
-        <Text style={styles.weekendText}>
-          Sat - Sun: {pharmacyData.hours.weekend}
-        </Text>
-      </View>
 
-      {/* ABOUT */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>ABOUT</Text>
-        <Text style={styles.aboutText}>{pharmacyData.about}</Text>
-      </View>
+        {/* ================= LOGOUT ================= */}
+        <TouchableOpacity style={styles.logoutButton} activeOpacity={0.7}>
+          <Ionicons name="log-out-outline" size={20} color="#ef4444" style={{ marginRight: 8, transform: [{ rotateY: '180deg' }] }} />
+          <Text style={styles.logoutButtonText}>Logout Account</Text>
+        </TouchableOpacity>
 
-      {/* SERVICES */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>OUR SERVICES</Text>
-        <View style={styles.servicesContainer}>
-          {pharmacyData.services.map((service) => (
-            <ServiceItem key={service.id} name={service.name} icon={service.icon} />
-          ))}
-        </View>
-      </View>
-
-      {/* REVIEWS */}
-      <View style={styles.section}>
-        <View style={styles.reviewsHeader}>
-          <Text style={styles.sectionTitle}>REVIEWS</Text>
-          <TouchableOpacity>
-            <Text style={styles.seeAllText}>See All</Text>
-          </TouchableOpacity>
-        </View>
-        {pharmacyData.reviews.map((review) => (
-          <ReviewItem
-            key={review.id}
-            user={review.user}
-            rating={review.rating}
-            date={review.date}
-            comment={review.comment}
-          />
-        ))}
-      </View>
-
-      {/* CONTACT US BUTTON */}
-      <TouchableOpacity style={styles.contactButton}>
-        <Ionicons name="chatbubble-ellipses-outline" size={20} color="white" />
-        <Text style={styles.contactButtonText}>Contact Us</Text>
-      </TouchableOpacity>
-
-      {/* LOGOUT BUTTON */}
-      <TouchableOpacity style={styles.logoutButton}>
-        <Feather name="log-out" size={20} color="#DC2626" />
-        <Text style={styles.logoutButtonText}>Logout</Text>
-      </TouchableOpacity>
-
-      <View style={styles.bottomPadding} />
-    </ScrollView>
+      </ScrollView>
+      <PharmacyBottomNav activeTab="Profile" />
+    </View>
   );
 }
 
+// ================= STYLES =================
+
 const styles = StyleSheet.create({
-  container: {
+  mainContainer: {
     flex: 1,
-    backgroundColor: "#F5F7FB",
+    backgroundColor: "#ffffff",
+  },
+  container: {
+    paddingHorizontal: 16,
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: 20,
-    backgroundColor: "white",
+    paddingVertical: 12,
+    marginBottom: 10,
+  },
+  headerBtn: {
+    padding: 8,
   },
   headerTitle: {
     fontSize: 18,
-    fontWeight: "600",
-    color: "#111827",
+    fontWeight: "700",
+    color: "#1e293b",
   },
-  infoCard: {
-    backgroundColor: "white",
-    marginHorizontal: 16,
-    marginTop: 16,
-    borderRadius: 16,
-    padding: 20,
+  profileSection: {
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
+    marginTop: 10,
+    marginBottom: 30,
   },
   logoContainer: {
     position: "relative",
+    marginBottom: 16,
+  },
+  logoBorder: {
+    width: 110,
+    height: 110,
+    borderRadius: 55,
+    backgroundColor: "#ffffff",
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.1,
+    shadowRadius: 15,
+    elevation: 8,
   },
   logo: {
     width: 90,
     height: 90,
-    borderRadius: 50,
+    borderRadius: 45,
   },
-  statusBadge: {
+  verifiedBadge: {
     position: "absolute",
-    bottom: 0,
-    right: -5,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
+    bottom: 2,
+    right: 6,
+    backgroundColor: "#ffffff",
     borderRadius: 12,
-  },
-  openBadge: {
-    backgroundColor: "#059669",
-  },
-  closedBadge: {
-    backgroundColor: "#DC2626",
-  },
-  openBadgeSmall: {
-    backgroundColor: "#D1FAE5",
-  },
-  closedBadgeSmall: {
-    backgroundColor: "#FEE2E2",
-  },
-  statusText: {
-    color: "white",
-    fontSize: 12,
-    fontWeight: "600",
-  },
-  statusTextSmall: {
-    fontSize: 10,
-    fontWeight: "600",
+    padding: 2,
   },
   pharmacyName: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "#111827",
-    marginTop: 12,
+    fontSize: 24,
+    fontWeight: "800",
+    color: "#0f172a",
+    marginBottom: 6,
   },
-  license: {
-    color: "#6B7280",
-    marginTop: 4,
-  },
-  ratingBox: {
+  ratingRow: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#EFF6FF",
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
-    marginTop: 12,
+    marginBottom: 4,
+    gap: 4,
   },
   ratingText: {
-    marginLeft: 4,
-    color: "#111827",
-    fontWeight: "600",
     fontSize: 14,
+    fontWeight: "700",
+    color: "#0ea5e9",
   },
-  reviewText: {
-    marginLeft: 4,
-    color: "#6B7280",
-    fontSize: 14,
+  reviewsText: {
+    fontSize: 13,
+    color: "#64748b",
+    fontWeight: "500",
+  },
+  licenseText: {
+    fontSize: 12,
+    color: "#94a3b8",
+    fontWeight: "600",
+    marginBottom: 20,
+  },
+  editButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#0284c7",
+    width: "100%",
+    paddingVertical: 14,
+    borderRadius: 12,
+    marginBottom: 20,
+    shadowColor: "#0284c7",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+    elevation: 4,
+  },
+  editButtonText: {
+    color: "#ffffff",
+    fontSize: 16,
+    fontWeight: "700",
   },
   actionContainer: {
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
     width: "100%",
-    marginTop: 20,
+    gap: 12,
   },
   actionButton: {
+    flex: 1,
     alignItems: "center",
-    backgroundColor: "#F3F4F6",
-    paddingVertical: 12,
-    paddingHorizontal: 20,
+    justifyContent: "center",
+    backgroundColor: "#e0f2fe",
+    paddingVertical: 16,
     borderRadius: 12,
-    minWidth: 90,
   },
   actionText: {
-    marginTop: 6,
-    fontSize: 12,
-    color: "#374151",
-    fontWeight: "500",
+    marginTop: 8,
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#0f172a",
   },
-  section: {
-    backgroundColor: "white",
-    marginHorizontal: 16,
-    marginTop: 16,
-    borderRadius: 16,
-    padding: 16,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-  sectionTitle: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#6B7280",
-    marginBottom: 12,
-    letterSpacing: 0.5,
-  },
-  infoRow: {
+  cardHeader: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 14,
+    borderWidth: 1,
+    borderColor: "#f1f5f9",
+    borderBottomWidth: 0,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    gap: 8,
   },
-  infoText: {
-    marginLeft: 10,
-    color: "#374151",
-    flex: 1,
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#1e293b",
   },
-  weekendText: {
-    marginLeft: 28,
-    color: "#6B7280",
-    fontSize: 14,
+  cardContainer: {
+    borderWidth: 1,
+    borderColor: "#f1f5f9",
+    backgroundColor: "#ffffff",
+    padding: 20,
+  },
+  cardTopRoundedOnly: {
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16,
   },
   aboutText: {
-    color: "#4B5563",
-    lineHeight: 22,
-  },
-  servicesContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  serviceItem: {
-    alignItems: "center",
-    flex: 1,
-  },
-  serviceIcon: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: "#EFF6FF",
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  serviceText: {
-    fontSize: 12,
-    color: "#374151",
-    textAlign: "center",
-  },
-  reviewsHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  seeAllText: {
-    color: "#007AFF",
     fontSize: 14,
+    lineHeight: 24,
+    color: "#475569",
     fontWeight: "500",
   },
-  reviewItem: {
-    borderBottomWidth: 1,
-    borderBottomColor: "#F3F4F6",
-    paddingBottom: 12,
-    marginBottom: 12,
-  },
-  reviewHeader: {
+  contactRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 8,
+    paddingBottom: 16,
+    marginBottom: 16,
+    borderBottomWidth: 1,
+    borderColor: "#f1f5f9",
+    gap: 16,
   },
-  reviewAvatar: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: "#007AFF",
-    justifyContent: "center",
+  contactIconBg: {
+    width: 24,
     alignItems: "center",
   },
-  avatarText: {
-    color: "white",
-    fontWeight: "600",
-    fontSize: 16,
-  },
-  reviewInfo: {
-    marginLeft: 10,
+  contactInfo: {
     flex: 1,
   },
-  reviewUser: {
-    fontWeight: "600",
-    color: "#111827",
-  },
-  reviewRating: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: 2,
-  },
-  reviewDate: {
-    marginLeft: 8,
-    color: "#9CA3AF",
-    fontSize: 12,
-  },
-  reviewComment: {
-    color: "#4B5563",
+  contactValue: {
     fontSize: 14,
-    lineHeight: 20,
+    fontWeight: "700",
+    color: "#0f172a",
+    marginBottom: 4,
   },
-  contactButton: {
-    backgroundColor: "#007AFF",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    marginHorizontal: 16,
-    marginTop: 20,
-    padding: 16,
-    borderRadius: 12,
+  contactLabel: {
+    fontSize: 12,
+    color: "#94a3b8",
+    fontWeight: "500",
   },
-  contactButtonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "600",
-    marginLeft: 8,
+  viewMapText: {
+    fontSize: 12,
+    fontWeight: "700",
+    color: "#0ea5e9",
   },
   logoutButton: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "#ffffff",
     borderWidth: 1,
-    borderColor: "#FEE2E2",
-    backgroundColor: "#FEF2F2",
-    marginHorizontal: 16,
-    marginTop: 12,
-    padding: 16,
+    borderColor: "#fee2e2",
+    marginTop: 30,
+    paddingVertical: 16,
     borderRadius: 12,
   },
   logoutButtonText: {
-    color: "#DC2626",
-    fontSize: 16,
-    fontWeight: "600",
-    marginLeft: 8,
-  },
-  bottomPadding: {
-    height: 40,
-  },
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#ef4444",
+  }
 });
