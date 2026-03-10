@@ -12,6 +12,8 @@ import { PatientModule } from './patient/patient.module';
 import { ConsultationsModule } from './consultations/consultations.module';
 import { PharmacyInventoryModule } from './pharmacy-inventory/pharmacy-inventory.module';
 
+import { RemindersModule } from './reminders/reminders.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -26,7 +28,7 @@ import { PharmacyInventoryModule } from './pharmacy-inventory/pharmacy-inventory
     SummarizationModule,// 🔹 keep this - Rivithi
     DoctorModule, PatientModule,
     PharmacyInventoryModule,
-    ConsultationsModule
+    ConsultationsModule, RemindersModule
 
   ],
    controllers: [AppController],
