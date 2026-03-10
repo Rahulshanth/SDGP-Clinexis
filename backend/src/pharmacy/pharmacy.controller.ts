@@ -1,12 +1,19 @@
-import { Controller, Get, Query } from '@nestjs/common';
+// Import NestJS decorators
+import { Controller, Get, Post, Body } from '@nestjs/common';
+
+// Import pharmacy service
 import { PharmacyService } from './pharmacy.service';
 
-@Controller('api/pharmacies')
+// Base route for this controller
+@Controller('api/pharmacy')
 export class PharmacyController {
+
+  // Inject PharmacyService
   constructor(private readonly pharmacyService: PharmacyService) {}
 
-  @Get('search')
-  search(@Query('medicine') medicine: string) {
-    return this.pharmacyService.searchByMedicine(medicine);
+  // Endpoint to check if pharmacy service is running
+  @Get('status')
+  getStatus() {
+    return this.pharmacyService.getStatus();
   }
 }
