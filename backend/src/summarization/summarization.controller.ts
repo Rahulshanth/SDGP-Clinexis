@@ -4,9 +4,7 @@ import { SummarizeDto } from './dto/summarize.dto';
 
 @Controller('consultations')
 export class SummarizationController {
-  constructor(
-    private readonly summarizationService: SummarizationService,
-  ) {}
+  constructor(private readonly summarizationService: SummarizationService) {}
 
   @Post(':id/summarize')
   async summarize(
@@ -14,8 +12,9 @@ export class SummarizationController {
     @Body() body: SummarizeDto,
   ) {
     return this.summarizationService.summarize(
-      consultationId,
       body.consultationText,
+      consultationId,
     );
   }
 }
+//edit by rivithi

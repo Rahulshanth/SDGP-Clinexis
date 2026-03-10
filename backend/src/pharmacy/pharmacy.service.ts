@@ -13,6 +13,41 @@ import { Pharmacy, PharmacyDocument } from './schemas/pharmacy.schema';
 
 @Injectable()
 export class PharmacyService {
+  private pharmacies = [
+    {
+      id: 1,
+      name: 'HealthPlus',
+      medicineName: 'Paracetamol',
+      quantity: 20,
+      price: 100,
+    },
+    {
+      id: 2,
+      name: 'CityCare',
+      medicineName: 'Ibuprofen',
+      quantity: 10,
+      price: 150,
+    },
+    {
+      id: 3,
+      name: 'MediHub',
+      medicineName: 'Paracetamol',
+      quantity: 5,
+      price: 90,
+    },
+  ];
+
+  searchByMedicine(medicine: string) {
+    if (!medicine) {
+      return { success: false, message: 'Medicine name required' };
+    }
+
+    const results = this.pharmacies
+      .filter((p) =>
+        p.medicineName.toLowerCase().includes(medicine.toLowerCase()),
+      )
+      .filter((p) => p.quantity > 0)
+      .sort((a, b) => a.price - b.price);
 
   // Inject the Pharmacy MongoDB model
   constructor(
@@ -27,20 +62,4 @@ export class PharmacyService {
       message: 'Pharmacy service is running'
     };
   }
-
-  // Create a new pharmacy in MongoDB
-  async createPharmacy(data: any) {
-    return this.pharmacyModel.create(data);
-  }
-
-  // Get all pharmacies from database
-  async getAllPharmacies() {
-    return this.pharmacyModel.find();
-  }
-
-  // Find one pharmacy using ID
-  async getPharmacyById(id: string) {
-    return this.pharmacyModel.findById(id);
-  }
-
 }

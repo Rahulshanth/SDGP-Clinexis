@@ -1,4 +1,9 @@
-import { Link } from 'expo-router';
+
+
+                                                // COMMENTED BY RAHUL ON 6TH MARCH
+
+
+/*import { Link } from 'expo-router';
 import { StyleSheet } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
@@ -26,4 +31,4 @@ const styles = StyleSheet.create({
     marginTop: 15,
     paddingVertical: 15,
   },
-});
+}); */
