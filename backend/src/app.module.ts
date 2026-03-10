@@ -10,6 +10,7 @@ import { SummarizationModule } from './summarization/summarization.module';
 import { PharmacyModule } from './pharmacy/pharmacy.module';
 import { PatientModule } from './patient/patient.module';
 import { ConsultationsModule } from './consultations/consultations.module';
+import { PharmacyInventoryModule } from './pharmacy-inventory/pharmacy-inventory.module';
 
 @Module({
   imports: [
@@ -24,7 +25,7 @@ import { ConsultationsModule } from './consultations/consultations.module';
     PharmacyModule,
     SummarizationModule,// 🔹 keep this - Rivithi
     DoctorModule,
-    PatientModule,
+    PharmacyInventoryModule,
     ConsultationsModule
 
   ],
