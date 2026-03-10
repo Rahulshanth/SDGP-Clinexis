@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
-import { AppController } from './app.controller';  
-import { AppService } from './app.service';        
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { DoctorModule } from './doctors/doctor.module';
@@ -25,13 +25,14 @@ import { RemindersModule } from './reminders/reminders.module';
     UsersModule,
     AuthModule,
     PharmacyModule,
-    SummarizationModule,// 🔹 keep this - Rivithi
-    DoctorModule, PatientModule,
+    SummarizationModule, // 🔹 keep this - Rivithi
+    DoctorModule,
+    PatientModule,
     PharmacyInventoryModule,
-    ConsultationsModule, RemindersModule
-
+    ConsultationsModule,
+    RemindersModule,
   ],
-   controllers: [AppController],
-   providers: [AppService],
+  controllers: [AppController],
+  providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
