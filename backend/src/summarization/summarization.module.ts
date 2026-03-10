@@ -2,7 +2,10 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { SummarizationController } from './summarization.controller';
 import { SummarizationService } from './summarization.service';
-import { Summarization, SummarizationSchema } from './schemas/summarization.schema';
+import {
+  Summarization,
+  SummarizationSchema,
+} from './schemas/summarization.schema';
 
 @Module({
   imports: [

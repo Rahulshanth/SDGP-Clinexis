@@ -23,13 +23,13 @@ import { UserRole } from '../users/enums/user-role.enum';
 export class ConsultationsController {
   constructor(private readonly consultationsService: ConsultationsService) {}
 
-  @Roles(UserRole.DOCTOR , UserRole.PATIENT)
-  @Post('audio')
+  @Roles(UserRole.DOCTOR, UserRole.PATIENT)
+  @Post('upload-audio')
   @UseInterceptors(FileInterceptor('file'))
   async uploadAudio(
     @UploadedFile() file: Express.Multer.File,
-    @Body('doctorId') doctorId: string,    // Updated according schemas by rahul
-    @Body('patientId') patientId: string,  // Updated according schemas by rahul
+    @Body('doctorId') doctorId: string, // Updated according schemas by rahul
+    @Body('patientId') patientId: string, // Updated according schemas by rahul
   ) {
     if (!file) {
       throw new BadRequestException('Audio file is required');
@@ -41,19 +41,21 @@ export class ConsultationsController {
       );
     }
 
-    const paragraphs = await this.consultationsService.processAndSaveAudio( // Updated according schemas by rahul
+    const paragraphs = await this.consultationsService.processAndSaveAudio(
+      // Updated according schemas by rahul
       file.buffer,
       doctorId,
       patientId,
     );
 
-    return { paragraphs };  
+    return { paragraphs };
   }
 
-  @Roles(UserRole.DOCTOR , UserRole.PATIENT)
+  @Roles(UserRole.DOCTOR, UserRole.PATIENT)
   @Get(':id')
-  async getConsultationById(@Param('id') id: string, @Req() req) {
-    const user = req.user;
+  async getConsultationById(@Param('id') id: string, @Req() req: any) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const user = req.user as { role: string; userId: string };
 
     const consultation = await this.consultationsService.findById(id);
 
@@ -85,7 +87,31 @@ export class ConsultationsController {
       conversationParagraphs: consultation.conversationParagraphs,
     };
   }
+
+  @Roles(UserRole.DOCTOR, UserRole.PATIENT)
+  @Get()
+  async getAllConsultations(@Req() req: any) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const user = req.user as { role: string; userId: string };
+
+    let consultations: any[];
+
+    if (user.role === 'doctor') {
+      consultations = await this.consultationsService.findByDoctorId(
+        user.userId,
+      );
+    } else if (user.role === 'patient') {
+      consultations = await this.consultationsService.findByPatientId(
+        user.userId,
+      );
+    } else {
+      throw new ForbiddenException('Access denied');
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return consultations;
+  }
 }
 
-//Finish by Rahul on 25 th Feb   
+//Finish by Rahul on 25 th Feb
 // git checkout feature/voice-to-text
