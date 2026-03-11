@@ -1,5 +1,4 @@
-//Updated by vidu on 2026/03/04
-
+// All by Vidu  Updated on 2026/03/10
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { RemindersService } from './reminders.service';
@@ -10,18 +9,17 @@ export class ReminderScheduler {
 
   constructor(private readonly remindersService: RemindersService) {}
 
-  @Cron('*/10 * * * * *') // every 10 seconds
-  handleReminderCheck() {
+  @Cron('0 * * * * *') // every 60 seconds
+  async handleReminderCheck() {
     this.logger.log('Checking for pending reminders...');
+    const pending = await this.remindersService.getPendingReminders();
 
-    const pending = this.remindersService.getPendingReminders();
-
-    pending.forEach((reminder) => {
+    for (const reminder of pending) {
       this.logger.log(
-        `Sending reminder to ${reminder.userId}: ${reminder.message}`,
+        `Reminder due for patient ${reminder.patientId}: ${reminder.message}`,
       );
-
-      this.remindersService.markAsSent(reminder);
-    });
+      await this.remindersService.markAsSent((reminder as any)._id.toString());
+      // TODO Phase 4: OneSignal push notification goes here
+    }
   }
 }
