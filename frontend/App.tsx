@@ -1,16 +1,23 @@
-import React from "react";
-import { Provider } from "react-redux";
-import { store } from "./store";
-import RootNavigator from "./navigation";
-import { View, Text } from "react-native";
+/*import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import AuthNavigator from "./src/navigation/AuthNavigator";
 
 export default function App() {
   return (
-    <Provider store={store}>
-      <View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
-        <Text>Clinexis App Running 🚀</Text>
-      </View>  
-      <RootNavigator />
-    </Provider>
+    <NavigationContainer>
+      <AuthNavigator />
+    </NavigationContainer>
+  );
+}*/
+
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import AuthNavigator from "./navigation/AuthNavigator";
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <AuthNavigator />
+    </NavigationContainer>
   );
 }
