@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty } from 'class-validator';
+/*import { IsString, IsNotEmpty } from 'class-validator';
 
 export class SummarizeDto {
   @IsString()
@@ -6,4 +6,4 @@ export class SummarizeDto {
   consultationText: string;
 }
 
-//edit by rivithi
+//edit by rivithi*/

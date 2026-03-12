@@ -1,12 +1,23 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { PharmacyService } from './pharmacy.service';
 
-@Controller('api/pharmacies')
+@Controller('api/pharmacy')
 export class PharmacyController {
+
   constructor(private readonly pharmacyService: PharmacyService) {}
 
-  @Get('search')
-  search(@Query('medicine') medicine: string) {
-    return this.pharmacyService.searchByMedicine(medicine);
+  @Get('status')
+  getStatus() {
+    return this.pharmacyService.getStatus();
   }
+
+  @Get('health')
+  getHealth() {
+    return {
+      status: 'ok',
+      module: 'Pharmacy Module',
+      submodules: ['pharmacy-profile', 'pharmacy-matching'],
+    };
+  }
+
 }

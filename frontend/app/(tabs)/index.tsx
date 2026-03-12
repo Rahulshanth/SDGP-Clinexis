@@ -96,6 +96,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
 });*/
+
 /*
 import { View, Text } from 'react-native';
 
@@ -108,3 +109,44 @@ export default function HomeScreen() {
     </View>
   );
 }*/
+
+
+import React, { useEffect } from 'react';
+import { View, Image, StyleSheet, StatusBar } from 'react-native';
+import { router } from 'expo-router';
+
+export default function SplashScreen() {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      router.replace('/welcome');
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <View style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="#2EA8FF" />
+      <Image
+        source={require('/Users/nadithimoonasingha/SDGP-Clinexis/frontend/assets/images/ClinexisLogo.png')}
+        style={styles.logo}
+        resizeMode="contain"
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#2EA8FF',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  logo: {
+    width: 280,
+    height: 280,
+  },
+});
+
+//Added by Nadithi
