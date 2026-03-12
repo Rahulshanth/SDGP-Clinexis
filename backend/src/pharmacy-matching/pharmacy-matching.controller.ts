@@ -3,10 +3,15 @@ import { PharmacyMatchingService } from './pharmacy-matching.service';
 
 @Controller('api/pharmacy-matching')
 export class PharmacyMatchingController {
-  constructor(private readonly pharmacyMatchingService: PharmacyMatchingService) {}
+  constructor(
+    private readonly pharmacyMatchingService: PharmacyMatchingService,
+  ) {}
 
   @Get('search')
-  searchPharmacies(@Query('medicine') medicine: string, @Query('location') location?: string) {
+  searchPharmacies(
+    @Query('medicine') medicine: string,
+    @Query('location') location?: string,
+  ) {
     return this.pharmacyMatchingService.searchPharmacies(medicine, location);
   }
 

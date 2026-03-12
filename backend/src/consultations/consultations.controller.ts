@@ -17,8 +17,8 @@ export class ConsultationsController {
   @UseInterceptors(FileInterceptor('file'))
   async uploadAudio(
     @UploadedFile() file: Express.Multer.File,
-    @Body('doctorId') doctorId: string,    // Updated according schemas by rahul
-    @Body('patientId') patientId: string,  // Updated according schemas by rahul
+    @Body('doctorId') doctorId: string, // Updated according schemas by rahul
+    @Body('patientId') patientId: string, // Updated according schemas by rahul
   ) {
     if (!file) {
       throw new BadRequestException('Audio file is required');
@@ -30,15 +30,16 @@ export class ConsultationsController {
       );
     }
 
-    const paragraphs = await this.consultationsService.processAndSaveAudio( // Updated according schemas by rahul
+    const paragraphs = await this.consultationsService.processAndSaveAudio(
+      // Updated according schemas by rahul
       file.buffer,
       doctorId,
       patientId,
     );
 
-    return { paragraphs };  
+    return { paragraphs };
   }
 }
 
-//Finish by Rahul on 25 th Feb   
+//Finish by Rahul on 25 th Feb
 // git checkout feature/voice-to-text

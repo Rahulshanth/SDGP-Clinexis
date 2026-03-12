@@ -1,9 +1,19 @@
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Put,
+  Delete,
+} from '@nestjs/common';
 import { PharmacyProfileService } from './pharmacy-profile.service';
 
 @Controller('api/pharmacy-profile')
 export class PharmacyProfileController {
-  constructor(private readonly pharmacyProfileService: PharmacyProfileService) {}
+  constructor(
+    private readonly pharmacyProfileService: PharmacyProfileService,
+  ) {}
 
   @Get()
   findAll() {

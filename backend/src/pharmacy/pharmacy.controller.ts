@@ -3,7 +3,6 @@ import { PharmacyService } from './pharmacy.service';
 
 @Controller('api/pharmacy')
 export class PharmacyController {
-
   constructor(private readonly pharmacyService: PharmacyService) {}
 
   @Get('status')
@@ -19,5 +18,4 @@ export class PharmacyController {
       submodules: ['pharmacy-profile', 'pharmacy-matching'],
     };
   }
-
 }

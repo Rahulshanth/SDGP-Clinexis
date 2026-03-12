@@ -1,7 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { PharmacyProfile, PharmacyProfileDocument } from './schemas/pharmacy-profile.schema';
+import {
+  PharmacyProfile,
+  PharmacyProfileDocument,
+} from './schemas/pharmacy-profile.schema';
 import { CreatePharmacyDto } from './dto/create-pharmacy.dto';
 import { UpdatePharmacyDto } from './dto/update-pharmacy.dto';
 
@@ -30,11 +33,9 @@ export class PharmacyProfileService {
   }
 
   async update(id: string, updateDto: UpdatePharmacyDto) {
-    const updated = await this.pharmacyModel.findByIdAndUpdate(
-      id,
-      updateDto,
-      { new: true },
-    );
+    const updated = await this.pharmacyModel.findByIdAndUpdate(id, updateDto, {
+      new: true,
+    });
 
     if (!updated) {
       throw new NotFoundException('Pharmacy not found');

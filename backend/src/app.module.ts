@@ -20,11 +20,10 @@ import { PharmacyModule } from './pharmacy/pharmacy.module';
     UsersModule,
     AuthModule,
     PharmacyModule,
-    SummarizationModule,// 🔹 keep this - Rivithi
+    SummarizationModule, // 🔹 keep this - Rivithi
     DoctorModule,
-
   ],
   // controllers: [AppController],
   // providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
