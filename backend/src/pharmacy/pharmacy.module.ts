@@ -64,4 +64,4 @@ import { Pharmacy, PharmacySchema } from './schemas/pharmacy.schema';
 })
 
 // Define the Pharmacy Module
-export class PharmacyModule {}
+export class PharmacyModule { }
