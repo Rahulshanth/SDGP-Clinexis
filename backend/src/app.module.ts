@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
-import { AppController } from './app.controller';  
-import { AppService } from './app.service';        
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { DoctorModule } from './doctors/doctor.module';
@@ -11,6 +11,8 @@ import { PharmacyModule } from './pharmacy/pharmacy.module';
 import { PatientModule } from './patient/patient.module';
 import { ConsultationsModule } from './consultations/consultations.module';
 import { PharmacyInventoryModule } from './pharmacy-inventory/pharmacy-inventory.module';
+
+import { RemindersModule } from './reminders/reminders.module';
 
 @Module({
   imports: [
@@ -23,13 +25,14 @@ import { PharmacyInventoryModule } from './pharmacy-inventory/pharmacy-inventory
     UsersModule,
     AuthModule,
     PharmacyModule,
-    SummarizationModule,// 🔹 keep this - Rivithi
-    DoctorModule, PatientModule,
+    SummarizationModule, // 🔹 keep this - Rivithi
+    DoctorModule,
+    PatientModule,
     PharmacyInventoryModule,
-    ConsultationsModule
-
+    ConsultationsModule,
+    RemindersModule,
   ],
-   controllers: [AppController],
-   providers: [AppService],
+  controllers: [AppController],
+  providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

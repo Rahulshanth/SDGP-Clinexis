@@ -24,7 +24,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Pharmacy, PharmacySchema } from './schemas/pharmacy.schema';
 
 @Module({
-
   /*
   IMPORTS
 
@@ -32,11 +31,10 @@ import { Pharmacy, PharmacySchema } from './schemas/pharmacy.schema';
   used by this module.
   */
   imports: [
-
     // Register Pharmacy schema with MongoDB
     // This allows NestJS to access the "pharmacies" collection
     MongooseModule.forFeature([
-      { name: Pharmacy.name, schema: PharmacySchema }
+      { name: Pharmacy.name, schema: PharmacySchema },
     ]),
 
     // Module for pharmacy profile management
@@ -66,4 +64,4 @@ import { Pharmacy, PharmacySchema } from './schemas/pharmacy.schema';
 })
 
 // Define the Pharmacy Module
-export class PharmacyModule { }
+export class PharmacyModule {}

@@ -17,4 +17,11 @@ export class UsersService {
     return this.userModel.findOne({ email });
   }
   //upto this line
+
+  async findBySpecialization(specialization: string) {
+    return this.userModel.find({
+      role: 'doctor',
+      'profile.specialization': { $regex: specialization, $options: 'i' },
+    });
+  }
 }
