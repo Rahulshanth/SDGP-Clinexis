@@ -1,31 +1,14 @@
-// updated by vidu on 2026/03/03
-
-import { IsString, IsEnum, IsNotEmpty, IsISO8601 } from 'class-validator';
-
-//These define allowed values for roles and reminder types
-
-export enum UserRole {
-  PATIENT = 'PATIENT',
-  DOCTOR = 'DOCTOR',
-  PHARMACY = 'PHARMACY',
-}
-
-export enum ReminderType {
-  MEDICINE = 'MEDICINE',
-  APPOINTMENT = 'APPOINTMENT',
-  NOTIFICATION = 'NOTIFICATION',
-}
-
-//Used to validate incoming reminder creation requests
+// All by Vidu  Updated on 2026/03/10
+import {
+  IsString,
+  IsEnum,
+  IsNotEmpty,
+  IsISO8601,
+  IsOptional,
+} from 'class-validator';
+import { ReminderType } from '../schemas/reminder.schema';
 
 export class CreateReminderDto {
-  @IsString()
-  @IsNotEmpty()
-  userId: string;
-
-  @IsEnum(UserRole)
-  userRole: UserRole;
-
   @IsEnum(ReminderType)
   type: ReminderType;
 
@@ -39,4 +22,32 @@ export class CreateReminderDto {
 
   @IsISO8601()
   reminderTime: string;
+}
+
+export class AppointmentCancelledDto {
+  @IsString()
+  @IsNotEmpty()
+  patientId: string;
+
+  @IsString()
+  @IsNotEmpty()
+  doctorName: string;
+}
+
+export class CreateRemindersFromConsultationDto {
+  @IsString()
+  @IsNotEmpty()
+  consultationId: string;
+
+  @IsString()
+  @IsNotEmpty()
+  patientId: string;
+
+  @IsString()
+  @IsOptional()
+  doctorId?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  fullTranscript: string;
 }

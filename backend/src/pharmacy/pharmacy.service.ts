@@ -10,7 +10,6 @@ import { Model } from 'mongoose';
 // Import Pharmacy schema and document type
 import { Pharmacy, PharmacyDocument } from './schemas/pharmacy.schema';
 
-
 @Injectable()
 export class PharmacyService {
 
@@ -24,7 +23,7 @@ export class PharmacyService {
   getStatus() {
     return {
       status: 'active',
-      message: 'Pharmacy service is running'
+      message: 'Pharmacy service is running',
     };
   }
 

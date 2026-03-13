@@ -7,7 +7,6 @@ import { PharmacyService } from './pharmacy.service';
 // Base route for this controller
 @Controller('api/pharmacy')
 export class PharmacyController {
-
   // Inject PharmacyService
   constructor(private readonly pharmacyService: PharmacyService) {}
 
