@@ -25,9 +25,22 @@ ${text}
       }
     );
 
+    let result =
+      response.data.candidates?.[0]?.content?.parts?.[0]?.text || "[]";
+
+    // remove markdown formatting if AI adds it
+    result = result.replace(/```json|```/g, '').trim();
+
+    let medicines = [];
+
+    try {
+      medicines = JSON.parse(result);
+    } catch {
+      medicines = [];
+    }
+
     return {
-      aiResponse:
-        response.data.candidates?.[0]?.content?.parts?.[0]?.text || "No response"
+      medicines
     };
   }
 }
