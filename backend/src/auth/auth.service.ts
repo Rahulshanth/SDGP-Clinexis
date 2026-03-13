@@ -8,22 +8,22 @@ import { LoginDto } from '../users/dto/login.dto';
 // Written by Rahul
 @Injectable()
 export class AuthService {
-    constructor(
-        private usersService: UsersService,
-        private jwtService: JwtService
-    ) {}
+  constructor(
+    private usersService: UsersService,
+    private jwtService: JwtService,
+  ) {}
 
-    async register (dto: CreateUserDto) {
-        const hashedPassword = await bcrypt.hash(dto.password, 10);
-        const user = await this.usersService.createUser({
-            ...dto,
-            password: hashedPassword
-        });
-        
-        return {message: 'User registered successfully'}
-    }
+  async register(dto: CreateUserDto) {
+    const hashedPassword = await bcrypt.hash(dto.password, 10);
+    const user = await this.usersService.createUser({
+      ...dto,
+      password: hashedPassword,
+    });
 
-    async login(dto: LoginDto) {
+    return { message: 'User registered successfully' };
+  }
+
+  async login(dto: LoginDto) {
     const user = await this.usersService.findByEmail(dto.email);
     if (!user) throw new UnauthorizedException('Invalid credentials');
 
@@ -41,6 +41,5 @@ export class AuthService {
     };
   }
 
-    // Upto this
-
+  // Upto this
 }

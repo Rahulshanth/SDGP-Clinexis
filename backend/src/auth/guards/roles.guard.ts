@@ -1,4 +1,4 @@
-// from here to 
+// from here to
 import {
   Injectable,
   CanActivate,

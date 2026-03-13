@@ -51,4 +51,5 @@ export class PharmacyProfile {
   totalReviews: number;
 }
 
-export const PharmacyProfileSchema = SchemaFactory.createForClass(PharmacyProfile);
+export const PharmacyProfileSchema =
+  SchemaFactory.createForClass(PharmacyProfile);

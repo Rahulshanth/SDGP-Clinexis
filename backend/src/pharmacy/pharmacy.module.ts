@@ -11,4 +11,3 @@ import { PharmacyMatchingModule } from '../pharmacy-matching/pharmacy-matching.m
   exports: [PharmacyService],
 })
 export class PharmacyModule {}
-

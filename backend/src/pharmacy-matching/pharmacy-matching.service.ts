@@ -23,20 +23,20 @@ export class PharmacyMatchingService {
       id: 3,
       name: 'MediHub Pharmacy',
       location: 'North',
-      lat: 6.9400,
-      lng: 80.7900,
+      lat: 6.94,
+      lng: 80.79,
       medicines: ['Ibuprofen', 'Lisinopril', 'Atorvastatin'],
     },
   ];
 
   searchPharmacies(medicine: string, location?: string) {
-    let results = this.pharmacies.filter(p =>
-      p.medicines.some(m => m.toLowerCase().includes(medicine.toLowerCase()))
+    let results = this.pharmacies.filter((p) =>
+      p.medicines.some((m) => m.toLowerCase().includes(medicine.toLowerCase())),
     );
 
     if (location) {
-      results = results.filter(p =>
-        p.location.toLowerCase().includes(location.toLowerCase())
+      results = results.filter((p) =>
+        p.location.toLowerCase().includes(location.toLowerCase()),
       );
     }
 
@@ -49,11 +49,11 @@ export class PharmacyMatchingService {
 
   findNearest(lat: number, lng: number, radius: number = 5) {
     const results = this.pharmacies
-      .map(pharmacy => ({
+      .map((pharmacy) => ({
         ...pharmacy,
         distance: this.calculateDistance(lat, lng, pharmacy.lat, pharmacy.lng),
       }))
-      .filter(p => p.distance <= radius)
+      .filter((p) => p.distance <= radius)
       .sort((a, b) => a.distance - b.distance);
 
     return {
@@ -68,7 +68,12 @@ export class PharmacyMatchingService {
     return this.searchPharmacies(medicine, location);
   }
 
-  private calculateDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  private calculateDistance(
+    lat1: number,
+    lng1: number,
+    lat2: number,
+    lng2: number,
+  ): number {
     const R = 6371; // Earth's radius in km
     const dLat = (lat2 - lat1) * (Math.PI / 180);
     const dLng = (lng2 - lng1) * (Math.PI / 180);
