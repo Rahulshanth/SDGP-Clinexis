@@ -16,7 +16,6 @@ export class Consultation {
   conversationParagraphs: string[];
 }
 
-export const ConsultationSchema =
-  SchemaFactory.createForClass(Consultation);
+export const ConsultationSchema = SchemaFactory.createForClass(Consultation);
 
-  // Created on 25th Feb - By Rahul
+// Created on 25th Feb - By Rahul
