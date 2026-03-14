@@ -14,15 +14,22 @@ export class ConsultationsService {
     private consultationModel: Model<Consultation>,
   ) {
     // Render/Production: decode from base64
-  if (process.env.GOOGLE_SERVICE_ACCOUNT_BASE64) {
-    const credentials = JSON.parse(
-      Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_BASE64, 'base64').toString('utf8')
-    );
-    this.speechClient = new SpeechClient({ credentials });
-  } else {
-    // Local: use JSON file path from GOOGLE_APPLICATION_CREDENTIALS
-    this.speechClient = new SpeechClient();
-  }
+    if (process.env.GOOGLE_SERVICE_ACCOUNT_BASE64) {
+      //console.log('✅ Google credentials found! Loading from Base64... -RAHUL-');
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const credentials = JSON.parse(
+        Buffer.from(
+          process.env.GOOGLE_SERVICE_ACCOUNT_BASE64,
+          'base64',
+        ).toString('utf8'),
+      );
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      this.speechClient = new SpeechClient({ credentials });
+    } else {
+      //console.log('❌ Google credentials NOT found in .env!');
+      // Local: use JSON file path from GOOGLE_APPLICATION_CREDENTIALS
+      this.speechClient = new SpeechClient();
+    }
   }
 
   async processAndSaveAudio(
@@ -42,8 +49,9 @@ export class ConsultationsService {
           encoding:
             protos.google.cloud.speech.v1.RecognitionConfig.AudioEncoding
               .LINEAR16,
-          sampleRateHertz: 16000,
-          languageCode: 'en-US',
+          sampleRateHertz: 48000, // Did this according to postman
+
+          languageCode: 'en-IN', // Enhanced the voice type
           enableWordTimeOffsets: true,
           diarizationConfig: {
             enableSpeakerDiarization: true,
@@ -96,17 +104,21 @@ export class ConsultationsService {
   private groupBySpeaker(words: any[]): string[] {
     const paragraphs: string[] = [];
 
-    let currentSpeaker = words[0].speakerTag;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    let currentSpeaker = words[0].speakerTag as number;
     let currentSentence = '';
 
     for (const wordInfo of words) {
-      if (wordInfo.speakerTag !== currentSpeaker) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      if ((wordInfo.speakerTag as number) !== currentSpeaker) {
         paragraphs.push(currentSentence.trim());
         currentSentence = '';
-        currentSpeaker = wordInfo.speakerTag;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        currentSpeaker = wordInfo.speakerTag as number;
       }
 
-      currentSentence += wordInfo.word + ' ';
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      currentSentence += (wordInfo.word as string) + ' ';
     }
 
     if (currentSentence.trim()) {
@@ -118,7 +130,19 @@ export class ConsultationsService {
 
   async findById(id: string): Promise<Consultation | null> {
     return this.consultationModel.findById(id).exec();
-  }  // Added according to controller by Rahul
+  }
+
+  async findByDoctorId(doctorId: string): Promise<Consultation[]> {
+    return this.consultationModel
+      .find({ doctorId: new Types.ObjectId(doctorId) })
+      .exec();
+  }
+
+  async findByPatientId(patientId: string): Promise<Consultation[]> {
+    return this.consultationModel
+      .find({ patientId: new Types.ObjectId(patientId) })
+      .exec();
+  }
 }
 
 //  Finish  BY Rahul

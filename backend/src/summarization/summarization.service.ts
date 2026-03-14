@@ -2,7 +2,10 @@
 import { GoogleGenAI } from '@google/genai';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Summarization, SummarizationDocument } from './schemas/summarization.schema';
+import {
+  Summarization,
+  SummarizationDocument,
+} from './schemas/summarization.schema';
 
 @Injectable()
 export class SummarizationService {
@@ -64,7 +67,7 @@ ${text}
     };
 
     try {
-      parsed = JSON.parse(cleaned);
+      parsed = JSON.parse(cleaned) as typeof parsed;
     } catch {
       throw new InternalServerErrorException('AI did not return valid JSON');
     }

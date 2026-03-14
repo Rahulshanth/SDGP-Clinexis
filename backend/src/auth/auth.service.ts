@@ -14,8 +14,9 @@ export class AuthService {
   ) {}
 
   async register(dto: CreateUserDto) {
-    const hashedPassword = await bcrypt.hash(dto.password, 10);
-    const user = await this.usersService.createUser({
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    const hashedPassword = (await bcrypt.hash(dto.password, 10)) as string;
+    await this.usersService.createUser({
       ...dto,
       password: hashedPassword,
     });
@@ -27,7 +28,11 @@ export class AuthService {
     const user = await this.usersService.findByEmail(dto.email);
     if (!user) throw new UnauthorizedException('Invalid credentials');
 
-    const passwordMatch = await bcrypt.compare(dto.password, user.password);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    const passwordMatch = (await bcrypt.compare(
+      dto.password,
+      user.password,
+    )) as boolean;
     if (!passwordMatch) throw new UnauthorizedException('Invalid credentials');
 
     const payload = {

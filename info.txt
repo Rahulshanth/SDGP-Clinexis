@@ -1,0 +1,11 @@
+with one mobile both doctor and patient profile can be connected, 
+when doctor and patient both of them speaks after switch on the mic, the speech should converted into text through Google speech to text API , 
+then receive the google response and should send to database in backend then should be display in both patient consultation records table 
+which is inside patient profile in front end and Doctor consultation records table which is inside Doctor profile in front end. 
+
+Also need to do the Diarization by google speech to text (detect two speakers through their voices... ) need to use Google Cloud Speech-to-Text v1 or v2 API Diarization. 
+After diarization it should be group words by speakerTag. 
+
+Then Store in MongoDB. In the front end inside the consultation record table of both patient and doctor there is column called patient 
+and doctor conversation. Inside that column, this grouped words (from mongoDB) spoken by doctor and patient should be appear as separate paragraph
+ that's all ,the paragraph don't need to be named like doctor's speech and patient's speech, Just separate paragraphs. 

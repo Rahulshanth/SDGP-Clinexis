@@ -1,4 +1,8 @@
-import { Tabs } from 'expo-router';
+
+                                                        // COMMENTED BY RAHUL ON 6TH MARCH (we don't need this)
+
+
+/*import { Tabs } from 'expo-router';
 import React from 'react';
 
 import { HapticTab } from '@/components/haptic-tab';
@@ -57,4 +61,4 @@ export default function TabLayout() {
     </Tabs>
   );
 }
-//Added by Nadithi
+//Added by Nadithi */

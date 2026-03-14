@@ -6,17 +6,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // validation pipe …
-<<<<<<< HEAD
   //app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }));
-=======
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-    }),
-  );
->>>>>>> 5a377ac37d0f3a6fb0ca674263d8dfaf11a175f9
 
   // enable CORS
   app.enableCors({
@@ -36,4 +26,4 @@ async function bootstrap() {
 
   await app.listen(process.env.PORT ?? 3000);
 }
-bootstrap();
+void bootstrap();
