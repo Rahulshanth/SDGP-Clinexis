@@ -6,11 +6,10 @@ import { InjectModel } from '@nestjs/mongoose';
 
 // Import mongoose Model type
 import { Model } from 'mongoose';
-
-// Import PharmacyProfile schema and document type
-import { PharmacyProfile, PharmacyProfileDocument } from './schemas/pharmacy-profile.schema';
-
-// Import DTOs used for validation
+import {
+  PharmacyProfile,
+  PharmacyProfileDocument,
+} from './schemas/pharmacy-profile.schema';
 import { CreatePharmacyDto } from './dto/create-pharmacy.dto';
 import { UpdatePharmacyDto } from './dto/update-pharmacy.dto';
 
@@ -49,12 +48,9 @@ export class PharmacyProfileService {
 
   // Update pharmacy profile
   async update(id: string, updateDto: UpdatePharmacyDto) {
-
-    const updated = await this.pharmacyModel.findByIdAndUpdate(
-      id,
-      updateDto,
-      { new: true }, // return updated document
-    );
+    const updated = await this.pharmacyModel.findByIdAndUpdate(id, updateDto, {
+      new: true,
+    });
 
     // If pharmacy not found
     if (!updated) {

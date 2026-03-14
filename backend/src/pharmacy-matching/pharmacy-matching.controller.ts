@@ -7,9 +7,9 @@ import { PharmacyMatchingService } from './pharmacy-matching.service';
 // Base route for pharmacy matching APIs
 @Controller('api/pharmacy-matching')
 export class PharmacyMatchingController {
-
-  // Inject the matching service
-  constructor(private readonly pharmacyMatchingService: PharmacyMatchingService) {}
+  constructor(
+    private readonly pharmacyMatchingService: PharmacyMatchingService,
+  ) {}
 
   // GET /api/pharmacy-matching/search?medicine=Paracetamol
   // Search pharmacies that contain a specific medicine
@@ -43,5 +43,4 @@ export class PharmacyMatchingController {
 
     return this.pharmacyMatchingService.matchPharmacies(body.medicines);
   }
-
 }
