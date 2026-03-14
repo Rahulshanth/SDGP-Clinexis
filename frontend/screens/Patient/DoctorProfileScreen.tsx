@@ -126,7 +126,7 @@ export default function DoctorProfileScreen() {
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>Schedule</Text>
-              <Text style={styles.sectionSub}>September 2023</Text>
+              <Text style={styles.sectionSub}>April 2026</Text>
             </View>
 
             <ScrollView

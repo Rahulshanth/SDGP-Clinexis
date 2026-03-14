@@ -101,7 +101,7 @@ export default function BookAppointmentScreen() {
               </TouchableOpacity>
             </View>
           </View>
-          <Text style={styles.monthLabel}>October 2023</Text>
+          <Text style={styles.monthLabel}>April 2026</Text>
 
           <View style={styles.calendar}>
             <View style={styles.weekRow}>
@@ -215,7 +215,7 @@ export default function BookAppointmentScreen() {
             <Text style={styles.totalAmount}>${fee}.00</Text>
           </View>
           <View style={{ alignItems: "flex-end" }}>
-            <Text style={styles.totalLabel}>Oct {selectedDate}, 2023</Text>
+            <Text style={styles.totalLabel}>April {selectedDate}, 2026</Text>
             <Text style={styles.totalTime}>{selectedTime}</Text>
           </View>
         </View>
@@ -229,7 +229,7 @@ export default function BookAppointmentScreen() {
           onPress={() =>
             navigation.navigate("AppointmentConfirm", {
               doctor,
-              date: `Oct ${selectedDate}, 2023`,
+              date: `April ${selectedDate}, 2026`,
               time: selectedTime,
               consultType,
               fee: `${fee}`,

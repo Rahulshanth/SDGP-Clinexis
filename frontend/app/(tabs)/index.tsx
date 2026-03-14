@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+/*import { View, Text } from "react-native";
 
 export default function HomeScreen() {
   return (
@@ -9,6 +9,7 @@ export default function HomeScreen() {
     </View>
   );
 }
+*/
 
 // COMMENTED BY RAHUL ON 6TH MARCH  (JUST TO TEST THE APPLICATION FOR NOW)
 // Once we connect our real navigation/ folder, this file also gets deleted.
@@ -128,7 +129,7 @@ export default function HomeScreen() {
 // TEST 2 ***********************
 
 // app/(tabs)/index.tsx — Temporarily modified by Vidu for testing
-/*
+
 import { NavigationIndependentTree } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import FindDoctorScreen from "../../screens/Patient/FindDoctorScreen";
@@ -155,9 +156,7 @@ export default function HomeScreen() {
           name="AppointmentConfirm"
           component={AppointmentConfirmScreen}
         />
-        
       </Stack.Navigator>
     </NavigationIndependentTree>
   );
 }
-*/
