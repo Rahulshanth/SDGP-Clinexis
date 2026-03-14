@@ -1,20 +1,17 @@
-import { View, Text } from 'react-native';
+import { View, Text } from "react-native";
 
 export default function HomeScreen() {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text style={{ fontSize: 24, fontWeight: 'bold' }}>
-        Clinexis App Running -  🚀RIVITHI AND NADITHI WILL DO THE FRONTEND
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Text style={{ fontSize: 24, fontWeight: "bold" }}>
+        Clinexis App Running - 🚀RIVITHI AND NADITHI WILL DO THE FRONTEND
       </Text>
     </View>
   );
 }
 
-
-
-                                // COMMENTED BY RAHUL ON 6TH MARCH  (JUST TO TEST THE APPLICATION FOR NOW)
-                                // Once we connect our real navigation/ folder, this file also gets deleted.
-
+// COMMENTED BY RAHUL ON 6TH MARCH  (JUST TO TEST THE APPLICATION FOR NOW)
+// Once we connect our real navigation/ folder, this file also gets deleted.
 
 /*import { Image } from 'expo-image';
 import { Platform, StyleSheet } from 'react-native';
@@ -115,3 +112,52 @@ const styles = StyleSheet.create({
   },
 });*/
 
+//TEST1 ***********************
+
+// app/(tabs)/index.tsx — Temporarily modified by Vidu for testing
+/*import RemindersScreen from "../../screens/Reminders/RemindersScreen";
+
+export default function HomeScreen() {
+  return <RemindersScreen />;
+}
+  */
+
+// COMMENTED BY RAHUL ON 6TH MARCH  (JUST TO TEST THE APPLICATION FOR NOW)
+// Once we connect our real navigation/ folder, this file also gets deleted.
+
+// TEST 2 ***********************
+
+// app/(tabs)/index.tsx — Temporarily modified by Vidu for testing
+/*
+import { NavigationIndependentTree } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import FindDoctorScreen from "../../screens/Patient/FindDoctorScreen";
+import DoctorProfileScreen from "../../screens/Patient/DoctorProfileScreen";
+import BookAppointmentScreen from "../../screens/Patient/BookAppointmentScreen";
+import AppointmentConfirmScreen from "../../screens/Patient/AppointmentConfirmScreen";
+import MyAppointmentsScreen from "../../screens/Patient/MyAppointmentsScreen";
+import { PatientStackParamList } from "../../navigation/PatientNavigator";
+
+const Stack = createNativeStackNavigator<PatientStackParamList>();
+
+export default function HomeScreen() {
+  return (
+    <NavigationIndependentTree>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="MyAppointments" component={MyAppointmentsScreen} />
+        <Stack.Screen name="FindDoctor" component={FindDoctorScreen} />
+        <Stack.Screen name="DoctorProfile" component={DoctorProfileScreen} />
+        <Stack.Screen
+          name="BookAppointment"
+          component={BookAppointmentScreen}
+        />
+        <Stack.Screen
+          name="AppointmentConfirm"
+          component={AppointmentConfirmScreen}
+        />
+        
+      </Stack.Navigator>
+    </NavigationIndependentTree>
+  );
+}
+*/
