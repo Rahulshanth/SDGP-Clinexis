@@ -37,4 +37,5 @@ export class PharmacyController {
   getAllPharmacies() {
     return this.pharmacyService.getAllPharmacies();
   }
+
 }
