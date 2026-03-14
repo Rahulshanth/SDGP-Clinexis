@@ -129,25 +129,43 @@ export default function HomeScreen() {
 // TEST 2 ***********************
 
 // app/(tabs)/index.tsx — Temporarily modified by Vidu for testing
-
 import { NavigationIndependentTree } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import PatientHomeScreen from "../../screens/Patient/PatientHomeScreen";
 import FindDoctorScreen from "../../screens/Patient/FindDoctorScreen";
-import DoctorProfileScreen from "../../screens/Patient/DoctorProfileScreen";
+import DoctorProfileScreen_Patient from "../../screens/Patient/DoctorProfileScreen";
 import BookAppointmentScreen from "../../screens/Patient/BookAppointmentScreen";
 import AppointmentConfirmScreen from "../../screens/Patient/AppointmentConfirmScreen";
 import MyAppointmentsScreen from "../../screens/Patient/MyAppointmentsScreen";
-import { PatientStackParamList } from "../../navigation/PatientNavigator";
+import DoctorAppointmentsScreen from "../../screens/Doctor/DoctorAppointmentsScreen";
+import DoctorProfileScreen from "../../screens/Doctor/DoctorEditProfileScreen";
 
-const Stack = createNativeStackNavigator<PatientStackParamList>();
+const Stack = createNativeStackNavigator();
 
 export default function HomeScreen() {
   return (
     <NavigationIndependentTree>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="MyAppointments" component={MyAppointmentsScreen} />
+        {/* ✅ FIRST SCREEN = what opens on your phone */}
+        {/* Move any screen to the top to test it */}
+
+        {/* DOCTOR SCREENS */}
+        <Stack.Screen
+          name="DoctorAppointments"
+          component={DoctorAppointmentsScreen}
+        />
+        <Stack.Screen
+          name="DoctorProfileDoctor"
+          component={DoctorProfileScreen}
+        />
+
+        {/* PATIENT SCREENS */}
+        <Stack.Screen name="PatientHome" component={PatientHomeScreen} />
         <Stack.Screen name="FindDoctor" component={FindDoctorScreen} />
-        <Stack.Screen name="DoctorProfile" component={DoctorProfileScreen} />
+        <Stack.Screen
+          name="DoctorProfile"
+          component={DoctorProfileScreen_Patient}
+        />
         <Stack.Screen
           name="BookAppointment"
           component={BookAppointmentScreen}
@@ -156,6 +174,7 @@ export default function HomeScreen() {
           name="AppointmentConfirm"
           component={AppointmentConfirmScreen}
         />
+        <Stack.Screen name="MyAppointments" component={MyAppointmentsScreen} />
       </Stack.Navigator>
     </NavigationIndependentTree>
   );
