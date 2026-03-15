@@ -5,15 +5,26 @@ import {
   UseInterceptors,
   Body,
   BadRequestException,
+  UseGuards,
+  Param,
+  Req,
+  ForbiddenException,
+  Get,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ConsultationsService } from './consultations.service';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { UserRole } from '../users/enums/user-role.enum';
 
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('consultations')
 export class ConsultationsController {
   constructor(private readonly consultationsService: ConsultationsService) {}
 
-  @Post('audio')
+  @Roles(UserRole.DOCTOR, UserRole.PATIENT)
+  @Post('upload-audio')
   @UseInterceptors(FileInterceptor('file'))
   async uploadAudio(
     @UploadedFile() file: Express.Multer.File,
@@ -39,7 +50,67 @@ export class ConsultationsController {
 
     return { paragraphs };
   }
+
+  @Roles(UserRole.DOCTOR, UserRole.PATIENT)
+  @Get(':id')
+  async getConsultationById(@Param('id') id: string, @Req() req: any) {
+    // eslint-disable-next-line prettier/prettier
+     
+    const user = req.user as { role: string; userId: string };
+
+    const consultation = await this.consultationsService.findById(id);
+
+    if (!consultation) {
+      throw new ForbiddenException('Consultation not found');
+    }
+
+    // Doctor can only see their own
+    if (
+      user.role === 'doctor' &&
+      consultation.doctorId.toString() !== user.userId
+    ) {
+      throw new ForbiddenException('Access denied');
+    }
+
+    // Patient can only see their own
+    if (
+      user.role === 'patient' &&
+      consultation.patientId.toString() !== user.userId
+    ) {
+      throw new ForbiddenException('Access denied');
+    }
+
+    if (user.role === 'pharmacy') {
+      throw new ForbiddenException('Access denied');
+    }
+
+    return {
+      conversationParagraphs: consultation.conversationParagraphs,
+    };
+  }
+
+  @Roles(UserRole.DOCTOR, UserRole.PATIENT)
+  @Get()
+  async getAllConsultations(@Req() req: any) {
+    const user = req.user as { role: string; userId: string };
+
+    let consultations: any[];
+
+    if (user.role === 'doctor') {
+      consultations = await this.consultationsService.findByDoctorId(
+        user.userId,
+      );
+    } else if (user.role === 'patient') {
+      consultations = await this.consultationsService.findByPatientId(
+        user.userId,
+      );
+    } else {
+      throw new ForbiddenException('Access denied');
+    }
+
+    return consultations;
+  }
 }
 
 //Finish by Rahul on 25 th Feb
-// git checkout feature/voice-to-text
+//git checkout feature/voice-to-text

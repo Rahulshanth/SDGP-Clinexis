@@ -87,17 +87,18 @@ export class ConsultationsService {
   private groupBySpeaker(words: any[]): string[] {
     const paragraphs: string[] = [];
 
-    let currentSpeaker = words[0].speakerTag;
+    let currentSpeaker = words[0].speakerTag as number;
     let currentSentence = '';
 
     for (const wordInfo of words) {
-      if (wordInfo.speakerTag !== currentSpeaker) {
+      if ((wordInfo.speakerTag as number) !== currentSpeaker) {
         paragraphs.push(currentSentence.trim());
         currentSentence = '';
-        currentSpeaker = wordInfo.speakerTag;
+
+        currentSpeaker = wordInfo.speakerTag as number;
       }
 
-      currentSentence += wordInfo.word + ' ';
+      currentSentence += (wordInfo.word as string) + ' ';
     }
 
     if (currentSentence.trim()) {
@@ -105,6 +106,22 @@ export class ConsultationsService {
     }
 
     return paragraphs;
+  }
+
+  async findById(id: string): Promise<Consultation | null> {
+    return this.consultationModel.findById(id).exec();
+  }
+
+  async findByDoctorId(doctorId: string): Promise<Consultation[]> {
+    return this.consultationModel
+      .find({ doctorId: new Types.ObjectId(doctorId) })
+      .exec();
+  }
+
+  async findByPatientId(patientId: string): Promise<Consultation[]> {
+    return this.consultationModel
+      .find({ patientId: new Types.ObjectId(patientId) })
+      .exec();
   }
 }
 

@@ -12,8 +12,9 @@ export class SummarizationController {
     @Body() body: SummarizeDto,
   ) {
     return this.summarizationService.summarize(
-      consultationId,
       body.consultationText,
+      consultationId,
     );
   }
 }
+//edit by rivithi

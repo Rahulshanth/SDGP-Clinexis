@@ -160,7 +160,7 @@ export default function HomeScreen() {
 
 
 
-// ================= STYLES =================
+//STYLES 
 
 const styles = StyleSheet.create({
 
