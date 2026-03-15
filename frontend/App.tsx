@@ -9,12 +9,21 @@ import { View, Text } from "react-native";
 
 export default function App() {
   return (
-    <Provider store={store}>
-      <View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
-        <Text>Clinexis App Running 🚀</Text>
-      </View>  
-      <RootNavigator />
-    </Provider>
+    <NavigationContainer>
+      <AuthNavigator />
+    </NavigationContainer>
   );
-}*/   
+}*/
+
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import AuthNavigator from "./navigation/AuthNavigator";
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <AuthNavigator />
+    </NavigationContainer>
+  );
+}
                                            //Don't DELETE OR MAKE CHANGES IN THIS

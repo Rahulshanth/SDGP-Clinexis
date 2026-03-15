@@ -13,7 +13,23 @@ export class ConsultationsService {
     @InjectModel(Consultation.name)
     private consultationModel: Model<Consultation>,
   ) {
-    this.speechClient = new SpeechClient();
+    // Render/Production: decode from base64
+    if (process.env.GOOGLE_SERVICE_ACCOUNT_BASE64) {
+      //console.log('✅ Google credentials found! Loading from Base64... -RAHUL-');
+
+      const credentials = JSON.parse(
+        Buffer.from(
+          process.env.GOOGLE_SERVICE_ACCOUNT_BASE64,
+          'base64',
+        ).toString('utf8'),
+      );
+
+      this.speechClient = new SpeechClient({ credentials });
+    } else {
+      //console.log('❌ Google credentials NOT found in .env!');
+      // Local: use JSON file path from GOOGLE_APPLICATION_CREDENTIALS
+      this.speechClient = new SpeechClient();
+    }
   }
 
   async processAndSaveAudio(
@@ -33,8 +49,9 @@ export class ConsultationsService {
           encoding:
             protos.google.cloud.speech.v1.RecognitionConfig.AudioEncoding
               .LINEAR16,
-          sampleRateHertz: 16000,
-          languageCode: 'en-US',
+          sampleRateHertz: 48000, // Did this according to postman
+
+          languageCode: 'en-IN', // Enhanced the voice type
           enableWordTimeOffsets: true,
           diarizationConfig: {
             enableSpeakerDiarization: true,
