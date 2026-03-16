@@ -1,7 +1,7 @@
 import api from "./api";
-import { Consultation } from "../types/consultation.types";
+import { Consultation, ConsultationUploadResponse } from "../types/consultation.types";
 
-export const uploadAudio = async (formData: FormData) => {
+export const uploadAudio = async (formData: FormData): Promise<ConsultationUploadResponse> => {
   const response = await api.post("/consultations/upload-audio", formData, {
     headers: {
       "Content-Type": "multipart/form-data",
@@ -11,7 +11,7 @@ export const uploadAudio = async (formData: FormData) => {
   return response.data;
 };
 
-export const getConsultationById = async (id: string) => {
+export const getConsultationById = async (id: string): Promise<Consultation> => {
   const response = await api.get(`/consultations/${id}`);
   return response.data;
 };

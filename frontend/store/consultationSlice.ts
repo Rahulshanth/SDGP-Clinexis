@@ -1,105 +1,144 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { uploadAudio, getConsultations, getConsultationById } from "../services/consultationApi";
-import { Consultation } from "../types/consultation.types";
+// store/consultationSlice.ts
+
+import { createSlice, createAsyncThunk }  from "@reduxjs/toolkit";
+import {uploadAudio, getConsultations,getConsultationById,} from "../services/consultationApi";
+import { LoadingState } from "../types/common.types";
+import {Consultation, ConsultationUploadResponse,} from "../types/consultation.types";
 
 interface ConsultationState {
-  consultations: Consultation[];       // list of all consultations
-  paragraphs: string[];                // paragraphs of one opened consultation
-  loading: boolean;
+  consultations: Consultation[];           // list shown on home screen
+  activeConsultationParagraphs: string[];  // paragraphs of ONE opened consultation
+  lastUpload: ConsultationUploadResponse | null; // result of last audio upload
+  status: LoadingState;                    // 'idle' | 'loading' | 'succeeded' | 'failed'
   error: string | null;
 }
 
 const initialState: ConsultationState = {
   consultations: [],
-  paragraphs: [],
-  loading: false,
+  activeConsultationParagraphs: [],
+  lastUpload: null,
+  status: "idle",
   error: null,
 };
 
-// Thunk 1: Upload audio
-export const uploadConsultationAudio = createAsyncThunk(
+
+export const uploadConsultationAudio = createAsyncThunk<
+  ConsultationUploadResponse,   
+  FormData,                     
+  { rejectValue: string }       
+>(
   "consultation/uploadAudio",
   async (formData: FormData, { rejectWithValue }) => {
     try {
-      return await uploadAudio(formData);
-    } catch (error) {
-      return rejectWithValue("Failed to upload audio");
+      return await uploadAudio(formData);  
+    } catch (error: any) {
+      return rejectWithValue(
+        error?.response?.data?.message ?? "Failed to upload audio"
+      );
     }
   }
 );
 
-// Thunk 2: Fetch all consultations
-export const fetchConsultations = createAsyncThunk(
+export const fetchConsultations = createAsyncThunk<
+  Consultation[],
+  void,
+  { rejectValue: string }
+>(
   "consultation/fetchAll",
   async (_, { rejectWithValue }) => {
     try {
       return await getConsultations();
-    } catch (error) {
-      return rejectWithValue("Failed to fetch consultations");
+    } catch (error: any) {
+      return rejectWithValue(
+        error?.response?.data?.message ?? "Failed to fetch consultations"
+      );
     }
   }
 );
 
-// Thunk 3: Fetch single consultation by ID (ChatGPT's addition)
-export const fetchConsultationById = createAsyncThunk(
+
+export const fetchConsultationById = createAsyncThunk<
+  string[],       // we only store paragraphs in state
+  string,         // the consultation ID you pass in
+  { rejectValue: string }
+>(
   "consultation/fetchById",
   async (id: string, { rejectWithValue }) => {
     try {
-      const data = await getConsultationById(id);
-      return data.conversationParagraphs;
-    } catch (error) {
-      return rejectWithValue("Failed to fetch consultation");
+      const consultation = await getConsultationById(id); // ✅ already returns Consultation
+      return consultation.conversationParagraphs; 
+    } catch (error: any) {
+      return rejectWithValue(
+        error?.response?.data?.message ?? "Failed to fetch consultation"
+      );
     }
   }
 );
+
 
 const consultationSlice = createSlice({
   name: "consultation",
   initialState,
-  reducers: {},
+
+  reducers: {
+    clearActiveConsultation(state) {
+      state.activeConsultationParagraphs = [];
+      state.status = "idle";
+      state.error = null;
+    },
+
+    resetConsultationState() {
+      return initialState;
+    },
+  },
+
   extraReducers: (builder) => {
     builder
-      // Upload audio
+      // ── Upload audio ──────────────────────────────────────
       .addCase(uploadConsultationAudio.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.status = "loading";
+        state.error  = null;
       })
-      .addCase(uploadConsultationAudio.fulfilled, (state) => {
-        state.loading = false;
+      .addCase(uploadConsultationAudio.fulfilled, (state, action) => {
+        state.status     = "succeeded";
+        state.lastUpload = action.payload; // { consultationId, paragraphs }
       })
       .addCase(uploadConsultationAudio.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
+        state.status = "failed";
+        state.error  = action.payload ?? "Upload failed";
       })
 
-      // Fetch all consultations
+      // ── Fetch all consultations ───────────────────────────
       .addCase(fetchConsultations.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.status = "loading";
+        state.error  = null;
       })
       .addCase(fetchConsultations.fulfilled, (state, action) => {
-        state.loading = false;
+        state.status        = "succeeded";
         state.consultations = action.payload;
       })
       .addCase(fetchConsultations.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
+        state.status = "failed";
+        state.error  = action.payload ?? "Fetch failed";
       })
 
-      // Fetch single consultation by ID
+      // ── Fetch single consultation ─────────────────────────
       .addCase(fetchConsultationById.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.status = "loading";
+        state.error  = null;
       })
       .addCase(fetchConsultationById.fulfilled, (state, action) => {
-        state.loading = false;
-        state.paragraphs = action.payload;
+        state.status                     = "succeeded";
+        state.activeConsultationParagraphs = action.payload;
       })
       .addCase(fetchConsultationById.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
+        state.status = "failed";
+        state.error  = action.payload ?? "Fetch failed";
       });
   },
 });
+
+export const { clearActiveConsultation, resetConsultationState } =
+  consultationSlice.actions;
 
 export default consultationSlice.reducer;

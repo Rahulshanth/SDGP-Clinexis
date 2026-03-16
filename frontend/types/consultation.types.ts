@@ -1,14 +1,23 @@
-export interface TranscriptParagraph {
-  speakerTag: number;
-  text: string;
-} // Rahul
 
-export interface Consultation {
-  _id: string;
-  doctorId: string;
-  patientId: string;
+import { BaseDocument, ID } from './common.types';
+
+export interface TranscriptParagraph {
+  speakerTag: number;  // 1 or 2
+  text: string;
+}
+
+export interface Consultation extends BaseDocument {
+  doctorId: ID;
+  patientId: ID;
   fullTranscript: string;
-  transcript: TranscriptParagraph[];
-  conversationParagraphs: string[];
-  createdAt: string;
-} // Rahul
+  conversationParagraphs: string[];  // raw paragraphs from backend
+}
+
+export interface ConsultationDisplay extends Consultation {
+  transcript: TranscriptParagraph[];  // built on frontend for UI
+}
+
+export interface ConsultationUploadResponse {
+  consultationId: ID;
+  paragraphs: string[];
+}
