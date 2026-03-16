@@ -16,14 +16,14 @@ export class ConsultationsService {
     // Render/Production: decode from base64
     if (process.env.GOOGLE_SERVICE_ACCOUNT_BASE64) {
       //console.log('✅ Google credentials found! Loading from Base64... -RAHUL-');
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
       const credentials = JSON.parse(
         Buffer.from(
           process.env.GOOGLE_SERVICE_ACCOUNT_BASE64,
           'base64',
         ).toString('utf8'),
       );
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
       this.speechClient = new SpeechClient({ credentials });
     } else {
       //console.log('❌ Google credentials NOT found in .env!');
@@ -104,20 +104,17 @@ export class ConsultationsService {
   private groupBySpeaker(words: any[]): string[] {
     const paragraphs: string[] = [];
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     let currentSpeaker = words[0].speakerTag as number;
     let currentSentence = '';
 
     for (const wordInfo of words) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if ((wordInfo.speakerTag as number) !== currentSpeaker) {
         paragraphs.push(currentSentence.trim());
         currentSentence = '';
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         currentSpeaker = wordInfo.speakerTag as number;
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       currentSentence += (wordInfo.word as string) + ' ';
     }
 

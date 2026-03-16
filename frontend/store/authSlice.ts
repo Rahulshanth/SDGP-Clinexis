@@ -18,8 +18,8 @@ const initialState: AuthState = {
 };
 
 // Thunk — SignIn
-export const SigninUser = createAsyncThunk(
-  'auth/Signin',
+export const SignInUser = createAsyncThunk(
+  'auth/SignIn',
   async (credentials: { email: string; password: string }, { rejectWithValue }) => {
     try {
       const response = await fetch('http://10.0.2.2:3000/auth/SignIn', {
@@ -87,16 +87,16 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(SigninUser.pending, (state) => {
+      .addCase(SignInUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(SigninUser.fulfilled, (state, action) => {
+      .addCase(SignInUser.fulfilled, (state, action) => {
         state.loading = false;
         state.token = action.payload;
         state.isAuthenticated = true;
       })
-      .addCase(SigninUser.rejected, (state, action) => {
+      .addCase(SignInUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })

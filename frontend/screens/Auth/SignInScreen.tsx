@@ -124,6 +124,7 @@ export default function SignInScreen({ navigation }: Props) {
           {loading ? (
             <ActivityIndicator color="#1D4ED8" />
           ) : (
+            
             <Text style={styles.primaryButtonText}>Sign In</Text>
           )}
         </TouchableOpacity>

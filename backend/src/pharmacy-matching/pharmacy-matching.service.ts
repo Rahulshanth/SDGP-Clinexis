@@ -12,29 +12,25 @@ import {
 
 @Injectable()
 export class PharmacyMatchingService {
-
   // Inject PharmacyProfile model
   constructor(
     @InjectModel(PharmacyProfile.name)
     private pharmacyProfileModel: Model<PharmacyProfileDocument>,
   ) {}
 
-
-
   // Search pharmacies by medicine
   async searchPharmacies(medicine: string, location?: string) {
-
     const pharmacies = await this.pharmacyProfileModel.find().exec();
 
-    let results = pharmacies.filter(pharmacy =>
-      pharmacy.services?.some(service =>
+    let results = pharmacies.filter((pharmacy) =>
+      pharmacy.services?.some((service) =>
         service.toLowerCase().includes(medicine.toLowerCase()),
       ),
     );
 
     // Optional location filter
     if (location) {
-      results = results.filter(pharmacy =>
+      results = results.filter((pharmacy) =>
         pharmacy.address?.toLowerCase().includes(location.toLowerCase()),
       );
     }
@@ -46,15 +42,12 @@ export class PharmacyMatchingService {
     };
   }
 
-
-
   // Find nearest pharmacies
   async findNearest(lat: number, lng: number, radius: number = 5) {
-
     const pharmacies = await this.pharmacyProfileModel.find().exec();
 
     const results = pharmacies
-      .map(pharmacy => ({
+      .map((pharmacy) => ({
         pharmacyName: pharmacy.name,
         address: pharmacy.address,
         phone: pharmacy.phone,
@@ -69,7 +62,7 @@ export class PharmacyMatchingService {
           pharmacy.longitude,
         ),
       }))
-      .filter(p => p.distance <= radius)
+      .filter((p) => p.distance <= radius)
       .sort((a, b) => a.distance - b.distance);
 
     return {
@@ -79,27 +72,23 @@ export class PharmacyMatchingService {
     };
   }
 
-
-
   // Match pharmacies with multiple medicines
   async matchPharmacies(medicines: string[]) {
-
     const profiles = await this.pharmacyProfileModel.find().exec();
 
-    const results = profiles.map(profile => {
-
+    const results = profiles.map((profile) => {
       const pharmacyMedicines = profile.services || [];
 
       // Medicines available
-      const matchedMedicines = medicines.filter(med =>
-        pharmacyMedicines.some(service =>
+      const matchedMedicines = medicines.filter((med) =>
+        pharmacyMedicines.some((service) =>
           service.toLowerCase().includes(med.toLowerCase()),
         ),
       );
 
       // Medicines missing
       const missingMedicines = medicines.filter(
-        med => !matchedMedicines.includes(med),
+        (med) => !matchedMedicines.includes(med),
       );
 
       return {
@@ -129,8 +118,6 @@ export class PharmacyMatchingService {
     };
   }
 
-
-
   // Distance calculation (Haversine formula)
   private calculateDistance(
     lat1: number,
@@ -138,7 +125,6 @@ export class PharmacyMatchingService {
     lat2: number,
     lng2: number,
   ): number {
-
     const R = 6371;
 
     const dLat = (lat2 - lat1) * (Math.PI / 180);
@@ -147,9 +133,9 @@ export class PharmacyMatchingService {
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(lat1 * (Math.PI / 180)) *
-      Math.cos(lat2 * (Math.PI / 180)) *
-      Math.sin(dLng / 2) *
-      Math.sin(dLng / 2);
+        Math.cos(lat2 * (Math.PI / 180)) *
+        Math.sin(dLng / 2) *
+        Math.sin(dLng / 2);
 
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 

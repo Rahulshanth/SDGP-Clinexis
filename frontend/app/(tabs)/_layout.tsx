@@ -1,5 +1,4 @@
-
-                                                        // COMMENTED BY RAHUL ON 6TH MARCH (we don't need this)
+// COMMENTED BY RAHUL ON 6TH MARCH (we don't need this)
 
 
 /*import { Tabs } from 'expo-router';

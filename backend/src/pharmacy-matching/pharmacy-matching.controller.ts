@@ -24,10 +24,7 @@ export class PharmacyMatchingController {
   // GET /api/pharmacy-matching/nearest?lat=6.92&lng=80.78
   // Find pharmacies near a given location
   @Get('nearest')
-  findNearestPharmacies(
-    @Query('lat') lat: number,
-    @Query('lng') lng: number,
-  ) {
+  findNearestPharmacies(@Query('lat') lat: number, @Query('lng') lng: number) {
     return this.pharmacyMatchingService.findNearest(lat, lng);
   }
 
@@ -35,7 +32,6 @@ export class PharmacyMatchingController {
   // Match pharmacies based on multiple medicines
   @Post('match')
   matchPharmacy(@Body() body: any) {
-
     // Example request body:
     // {
     //   "medicines": ["Paracetamol", "Ibuprofen"]
