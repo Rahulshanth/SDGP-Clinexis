@@ -1,22 +1,41 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import PatientHome from "../screens/Patient/PatientHome";
-import Reminders from "../screens/Reminders/RemindersScreen";
-import Pharmacy from "../screens/Pharmacy/PharmacyScreen";
-import Summary from "../screens/Summary/SummaryScreen";
+import PatientHomeScreen from "../screens/Patient/PatientHomeScreen";
+import PatientRemindersScreen from "../screens/Patient/PatientReminderScreen";
+import PatientPharmacyScreen from "../screens/Patient/PatientPharmacyScreen";
+import PatientSummaryScreen from "../screens/Patient/PatientSummaryScreen";
+import PatientProfileScreen from "../screens/Patient/ PatientProfileScreen";
+import PatientAppointmentScreen from "../screens/Patient/PatientAppointmentsScreen";
 
-const Tab = createBottomTabNavigator();
-
-const PatientNavigator = () => {
-  return (
-    <Tab.Navigator>
-      <Tab.Screen name="Home" component={PatientHome} />
-      <Tab.Screen name="Reminders" component={Reminders} />
-      <Tab.Screen name="Pharmacy" component={Pharmacy} />
-      <Tab.Screen name="Summary" component={Summary} />
-    </Tab.Navigator>
-  );
+export type PatientTabParamList = {
+  Home: undefined;
+  Reminders: undefined;
+  Pharmacy: undefined;
+  Summary: undefined;
+  Appointments: undefined;
+  Profile: undefined;
 };
 
-export default PatientNavigator;
+const Tab = createBottomTabNavigator<PatientTabParamList>();
+
+export default function PatientNavigator() {
+  return (
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: true,
+        tabBarActiveTintColor: "#2563eb",
+        tabBarInactiveTintColor: "#6b7280",
+      }}
+    >
+      <Tab.Screen name="Home" component={PatientHomeScreen} />
+      <Tab.Screen name="Reminders" component={PatientRemindersScreen} />
+      <Tab.Screen name="Pharmacy" component={PatientPharmacyScreen} />
+      <Tab.Screen name="Summary" component={PatientSummaryScreen} />
+      <Tab.Screen name="Appointments" component={PatientAppointmentScreen} />
+      <Tab.Screen name="Profile" component={PatientProfileScreen} />
+    </Tab.Navigator>
+  );
+}
+
+//Added by Nadithi
