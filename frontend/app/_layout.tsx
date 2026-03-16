@@ -1,4 +1,4 @@
-import { Stack } from 'expo-router';
+/*import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Provider } from 'react-redux';
 import { store } from '../store';
@@ -14,7 +14,7 @@ export default function RootLayout() {
       <StatusBar style="auto" />
     </Provider>
   );
-}
+}*/
 // Once our navigation/ folder is built, we can replace the <Stack> part with our RootNavigator(navigation/index.tsx)
 
 
@@ -53,3 +53,4 @@ export default function RootLayout() {
     </Provider>
   );
 }*/
+

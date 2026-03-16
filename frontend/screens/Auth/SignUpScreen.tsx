@@ -11,11 +11,11 @@ import {
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AuthStackParamList } from "../../navigation/AuthNavigator";
-import { registerUser } from "../../services/authService";
+import { registerUser } from "../../services/authApi";
 
 type Props = NativeStackScreenProps<AuthStackParamList, "SignUp">;
 
-export default function SignOutScreen({ navigation }: Props) {
+export default function SignUpScreen({ navigation }: Props) {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -35,27 +35,37 @@ export default function SignOutScreen({ navigation }: Props) {
       return;
     }
 
+    if (password.length < 6) {
+      Alert.alert("Validation", "Password must be at least 6 characters");
+      return;
+    }
+
     try {
       setLoading(true);
 
       const result = await registerUser({
-        fullName: fullName.trim(),
         email: email.trim(),
         password,
-        role: "PATIENT",
+        role: "patient",
+        profile: {
+          fullName: fullName.trim(),
+        },
       });
 
       console.log("Register success:", result);
       Alert.alert("Success", "User registered successfully");
-
       navigation.navigate("SignIn");
     } catch (error: any) {
-      console.log("Register error:", error?.response?.data || error.message);
-
-      Alert.alert(
-        "Registration Failed",
-        error?.response?.data?.message || "Something went wrong"
+      console.log(
+        "Register error:",
+        error?.response?.data || error?.message || error
       );
+
+      const message = Array.isArray(error?.response?.data?.message)
+        ? error.response.data.message.join("\n")
+        : error?.response?.data?.message || "Something went wrong";
+
+      Alert.alert("Registration Failed", message);
     } finally {
       setLoading(false);
     }
@@ -125,12 +135,12 @@ export default function SignOutScreen({ navigation }: Props) {
         />
 
         <TouchableOpacity
-          onPress={() =>
-            setConfirmSecureTextEntry(!confirmSecureTextEntry)
-          }
+          onPress={() => setConfirmSecureTextEntry(!confirmSecureTextEntry)}
         >
           <Text style={styles.smallLink}>
-            {confirmSecureTextEntry ? "Show confirm password" : "Hide confirm password"}
+            {confirmSecureTextEntry
+              ? "Show confirm password"
+              : "Hide confirm password"}
           </Text>
         </TouchableOpacity>
 
@@ -259,3 +269,5 @@ const styles = StyleSheet.create({
     textDecorationLine: "underline",
   },
 });
+
+//edited by rivithi

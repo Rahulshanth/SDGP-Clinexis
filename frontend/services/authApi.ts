@@ -1,24 +1,29 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "./api";
 
-export type LoginPayload = {
+export type SignInPayload = {
   email: string;
   password: string;
 };
 
 export type RegisterPayload = {
-  fullName: string;
   email: string;
   password: string;
   role: string;
+  profile: {
+    fullName: string;
+  };
 };
 
-export type LoginResponse = {
+export type SignInResponse = {
+  user: any;
   accessToken: string;
 };
 
-export const loginUser = async (payload: LoginPayload): Promise<LoginResponse> => {
-  const response = await api.post("/auth/login", payload);
+export const signInUser = async (
+  payload: SignInPayload
+): Promise<SignInResponse> => {
+  const response = await api.post("/auth/SignIn", payload);
 
   if (response.data?.accessToken) {
     await AsyncStorage.setItem("accessToken", response.data.accessToken);

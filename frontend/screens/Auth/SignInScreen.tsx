@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AuthStackParamList } from "../../navigation/AuthNavigator";
-import { loginUser } from "../../services/authService";
+import { signInUser } from "../../services/authApi";
 
 type Props = NativeStackScreenProps<AuthStackParamList, "SignIn">;
 
@@ -21,7 +21,7 @@ export default function SignInScreen({ navigation }: Props) {
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
+  const handleSignIn = async () => {
     if (!email.trim() || !password.trim()) {
       Alert.alert("Validation", "Please enter email and password");
       return;
@@ -30,21 +30,32 @@ export default function SignInScreen({ navigation }: Props) {
     try {
       setLoading(true);
 
-      const result = await loginUser({
+      const result = await signInUser({
         email: email.trim(),
         password,
       });
 
-      console.log("Login success:", result);
-      Alert.alert("Success", "Login successful");
+      console.log("SignIn success:", result);
 
-      // Replace this with your dashboard/home screen
-      // navigation.replace("Home");
+      Alert.alert("Success", "SignIn successful");
+
+      // role based navigation
+      const role = result?.user?.role;
+
+      if (role === "patient") {
+        navigation.getParent()?.replace("Patient");
+      } else if (role === "doctor") {
+        navigation.getParent()?.replace("Doctor");
+      } else if (role === "pharmacy") {
+        navigation.getParent()?.replace("Pharmacy");
+      } else {
+        navigation.getParent()?.replace("Patient");
+      }
     } catch (error: any) {
-      console.log("Login error:", error?.response?.data || error.message);
+      console.log("SignIn error:", error?.response?.data || error.message);
 
       Alert.alert(
-        "Login Failed",
+        "SignIn Failed",
         error?.response?.data?.message || "Something went wrong"
       );
     } finally {
@@ -56,10 +67,12 @@ export default function SignInScreen({ navigation }: Props) {
     <SafeAreaView style={styles.container}>
       <View style={styles.card}>
         <Text style={styles.title}>Sign In</Text>
+
         <Text style={styles.subtitle}>
           Welcome back, please enter your details
         </Text>
 
+        {/* Tabs */}
         <View style={styles.tabContainer}>
           <TouchableOpacity style={styles.activeTab}>
             <Text style={styles.activeTabText}>Sign In</Text>
@@ -73,6 +86,7 @@ export default function SignInScreen({ navigation }: Props) {
           </TouchableOpacity>
         </View>
 
+        {/* Email */}
         <TextInput
           style={styles.input}
           placeholder="Email"
@@ -83,6 +97,7 @@ export default function SignInScreen({ navigation }: Props) {
           onChangeText={setEmail}
         />
 
+        {/* Password */}
         <TextInput
           style={styles.input}
           placeholder="Password"
@@ -92,15 +107,18 @@ export default function SignInScreen({ navigation }: Props) {
           onChangeText={setPassword}
         />
 
-        <TouchableOpacity onPress={() => setSecureTextEntry(!secureTextEntry)}>
+        <TouchableOpacity
+          onPress={() => setSecureTextEntry(!secureTextEntry)}
+        >
           <Text style={styles.smallLink}>
             {secureTextEntry ? "Show password" : "Hide password"}
           </Text>
         </TouchableOpacity>
 
+        {/* Sign In Button */}
         <TouchableOpacity
           style={styles.primaryButton}
-          onPress={handleLogin}
+          onPress={handleSignIn}
           disabled={loading}
         >
           {loading ? (
@@ -110,12 +128,14 @@ export default function SignInScreen({ navigation }: Props) {
           )}
         </TouchableOpacity>
 
+        {/* Forgot password */}
         <TouchableOpacity
           onPress={() => navigation.navigate("ForgotPasswordEmail")}
         >
           <Text style={styles.forgotText}>Forgot password?</Text>
         </TouchableOpacity>
 
+        {/* Bottom text */}
         <Text style={styles.bottomText}>
           Don&apos;t have an account?{" "}
           <Text
@@ -141,6 +161,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 16,
   },
+
   card: {
     width: "100%",
     maxWidth: 360,
@@ -153,12 +174,14 @@ const styles = StyleSheet.create({
     paddingVertical: 34,
     alignItems: "center",
   },
+
   title: {
     fontSize: 34,
     fontWeight: "800",
     color: "#FFFFFF",
     marginTop: 30,
   },
+
   subtitle: {
     fontSize: 12,
     color: "#EAF6FF",
@@ -166,10 +189,12 @@ const styles = StyleSheet.create({
     marginBottom: 18,
     textAlign: "center",
   },
+
   tabContainer: {
     flexDirection: "row",
     marginBottom: 20,
   },
+
   activeTab: {
     backgroundColor: "#FFFFFF",
     paddingVertical: 8,
@@ -177,20 +202,24 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     marginRight: 8,
   },
+
   inactiveTab: {
     backgroundColor: "#DFF1FF",
     paddingVertical: 8,
     paddingHorizontal: 18,
     borderRadius: 16,
   },
+
   activeTabText: {
     color: BLUE,
     fontWeight: "700",
   },
+
   inactiveTabText: {
     color: BLUE,
     fontWeight: "700",
   },
+
   input: {
     width: "100%",
     backgroundColor: LIGHT_BLUE,
@@ -200,12 +229,14 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     color: "#111827",
   },
+
   smallLink: {
     width: "100%",
     color: "#FFFFFF",
     fontSize: 12,
     marginBottom: 16,
   },
+
   primaryButton: {
     width: "100%",
     backgroundColor: "#FFFFFF",
@@ -214,23 +245,29 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 14,
   },
+
   primaryButtonText: {
     color: BLUE,
     fontSize: 15,
     fontWeight: "800",
   },
+
   forgotText: {
     color: "#FFFFFF",
     fontSize: 13,
     textDecorationLine: "underline",
     marginBottom: 14,
   },
+
   bottomText: {
     color: "#FFFFFF",
     fontSize: 12,
   },
+
   bottomLink: {
     fontWeight: "800",
     textDecorationLine: "underline",
   },
 });
+
+//Added by Rivithi &  Editted by Nadithi
