@@ -122,20 +122,23 @@ export class SummarizationService {
   }
 
   async summarize(consultationId: string) {
-    const consultation = await this.consultationModel.findById(consultationId);
+  const consultation = await this.consultationModel.findById(consultationId);
 
-    if (!consultation) {
-      throw new NotFoundException('Consultation not found');
-    }
+  if (!consultation) {
+    throw new NotFoundException('Consultation not found');
+  }
 
-    const text = consultation.fullTranscript;
+  const text = consultation.fullTranscript;
 
-    if (!text || text.trim() === '') {
-      throw new BadRequestException('Consultation transcript cannot be empty');
-    }
+  if (!text || text.trim() === '') {
+    throw new BadRequestException('Consultation transcript cannot be empty');
+  }
 
-    const response = await this.ai.models.generateContent({
-      model: 'gemini-1.5-flash',
+  let response: any;
+
+  try {
+    response = await this.ai.models.generateContent({
+      model: 'gemini-2.5-flash',
       contents: `
 Return ONLY valid JSON. No explanation, no markdown.
 
@@ -151,42 +154,49 @@ Consultation Text:
 ${text}
       `,
     });
-
-    const rawText = response.text;
-
-    if (!rawText) {
-      throw new InternalServerErrorException('Empty response from AI');
-    }
-
-    const cleaned = rawText
-      .replace(/```json/g, '')
-      .replace(/```/g, '')
-      .trim();
-
-    let parsed: {
-      patientCondition?: string;
-      keySymptoms?: string[];
-      diagnosis?: string;
-      treatmentPlan?: string;
-      medications?: string[];
-    };
-
-    try {
-      parsed = JSON.parse(cleaned);
-    } catch {
-      throw new InternalServerErrorException('AI did not return valid JSON');
-    }
-
-    const savedSummary = await this.summarizationModel.create({
-      consultationId,
-      selectedText: text,
-      patientCondition: parsed.patientCondition ?? '',
-      keySymptoms: parsed.keySymptoms ?? [],
-      diagnosis: parsed.diagnosis ?? '',
-      treatmentPlan: parsed.treatmentPlan ?? '',
-      medications: parsed.medications ?? [],
-    });
-
-    return savedSummary;
+  } catch (error: any) {
+    console.error('Gemini API Error:', error);
+    throw new InternalServerErrorException(
+      error?.message || 'Gemini request failed',
+    );
   }
+
+  const rawText = response.text;
+
+  if (!rawText) {
+    throw new InternalServerErrorException('Empty response from AI');
+  }
+
+  const cleaned = rawText
+    .replace(/```json/g, '')
+    .replace(/```/g, '')
+    .trim();
+
+  let parsed: {
+    patientCondition?: string;
+    keySymptoms?: string[];
+    diagnosis?: string;
+    treatmentPlan?: string;
+    medications?: string[];
+  };
+
+  try {
+    parsed = JSON.parse(cleaned);
+  } catch {
+    console.error('Invalid AI JSON:', cleaned);
+    throw new InternalServerErrorException('AI did not return valid JSON');
+  }
+
+  const savedSummary = await this.summarizationModel.create({
+    consultationId,
+    selectedText: text,
+    patientCondition: parsed.patientCondition ?? '',
+    keySymptoms: parsed.keySymptoms ?? [],
+    diagnosis: parsed.diagnosis ?? '',
+    treatmentPlan: parsed.treatmentPlan ?? '',
+    medications: parsed.medications ?? [],
+  });
+
+  return savedSummary;
+}
 }
