@@ -5,20 +5,23 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from "react-native";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { AuthStackParamList } from "../../navigation/AuthNavigator";
 
-type Props = NativeStackScreenProps<
+// define navigation type
+type NavigationProp = NativeStackNavigationProp<
   AuthStackParamList,
   "ChooseProfile"
 >;
 
-export default function ChooseProfileScreen({ navigation }: Props) {
+export default function ChooseProfileScreen() {
+  const navigation = useNavigation<NavigationProp>();
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Choose Your Profile</Text>
 
-      {/* Patient */}
       <TouchableOpacity
         style={styles.card}
         onPress={() =>
@@ -26,12 +29,9 @@ export default function ChooseProfileScreen({ navigation }: Props) {
         }
       >
         <Text style={styles.cardTitle}>Patient</Text>
-        <Text style={styles.cardText}>
-          Access your medical records
-        </Text>
+        <Text style={styles.cardText}>Access your medical records</Text>
       </TouchableOpacity>
 
-      {/* Doctor */}
       <TouchableOpacity
         style={styles.card}
         onPress={() =>
@@ -39,12 +39,9 @@ export default function ChooseProfileScreen({ navigation }: Props) {
         }
       >
         <Text style={styles.cardTitle}>Doctor</Text>
-        <Text style={styles.cardText}>
-          Manage consultations
-        </Text>
+        <Text style={styles.cardText}>Manage consultations</Text>
       </TouchableOpacity>
 
-      {/* Pharmacy */}
       <TouchableOpacity
         style={styles.card}
         onPress={() =>
@@ -52,9 +49,7 @@ export default function ChooseProfileScreen({ navigation }: Props) {
         }
       >
         <Text style={styles.cardTitle}>Pharmacy</Text>
-        <Text style={styles.cardText}>
-          Manage prescriptions
-        </Text>
+        <Text style={styles.cardText}>Manage prescriptions</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
