@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  View,
   Text,
   StyleSheet,
   TouchableOpacity,
@@ -9,35 +8,53 @@ import {
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AuthStackParamList } from "../../navigation/AuthNavigator";
 
-type Props = NativeStackScreenProps<AuthStackParamList, "ChooseProfile">;
+type Props = NativeStackScreenProps<
+  AuthStackParamList,
+  "ChooseProfile"
+>;
 
 export default function ChooseProfileScreen({ navigation }: Props) {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Choose Your Profile</Text>
 
+      {/* Patient */}
       <TouchableOpacity
         style={styles.card}
-        onPress={() => navigation.navigate("SignIn")}
+        onPress={() =>
+          navigation.navigate("SignIn", { role: "patient" })
+        }
       >
         <Text style={styles.cardTitle}>Patient</Text>
-        <Text style={styles.cardText}>Access your medical records</Text>
+        <Text style={styles.cardText}>
+          Access your medical records
+        </Text>
       </TouchableOpacity>
 
+      {/* Doctor */}
       <TouchableOpacity
         style={styles.card}
-        onPress={() => navigation.navigate("SignIn")}
+        onPress={() =>
+          navigation.navigate("SignIn", { role: "doctor" })
+        }
       >
         <Text style={styles.cardTitle}>Doctor</Text>
-        <Text style={styles.cardText}>Manage consultations</Text>
+        <Text style={styles.cardText}>
+          Manage consultations
+        </Text>
       </TouchableOpacity>
 
+      {/* Pharmacy */}
       <TouchableOpacity
         style={styles.card}
-        onPress={() => navigation.navigate("SignIn")}
+        onPress={() =>
+          navigation.navigate("SignIn", { role: "pharmacy" })
+        }
       >
         <Text style={styles.cardTitle}>Pharmacy</Text>
-        <Text style={styles.cardText}>Manage prescriptions</Text>
+        <Text style={styles.cardText}>
+          Manage prescriptions
+        </Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
