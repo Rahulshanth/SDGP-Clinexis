@@ -18,7 +18,7 @@ export default function SplashScreen({ navigation }: Props) {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#1D9BF0" />
       <Image
-        source={require("../../assets/images/welcome_page.png")}
+        source={require("../../assets/images/ClinexisLogo.png")}
         style={{ width: 200, height: 200 }}
         resizeMode="contain"
       />

@@ -17,7 +17,7 @@ export default function Welcome({ navigation }: Props) {
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
         <Image
-          source={require("../../assets/images/ClinexisLogo.png")}
+          source={require("../../assets/images/welcome_page.png")}
           style={styles.logo}
           resizeMode="contain"
         />
