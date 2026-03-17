@@ -1,4 +1,3 @@
-
 // Once our navigation/ folder is built, we can replace the <Stack> part with our RootNavigator(navigation/index.tsx)
 
 

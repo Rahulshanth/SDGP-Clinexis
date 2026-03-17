@@ -25,6 +25,11 @@ export default function ResetPasswordScreen({ navigation }: Props) {
       return;
     }
 
+    if (password.length < 6) {
+      Alert.alert("Validation", "Password must be at least 6 characters");
+      return;
+    }
+
     if (password !== confirmPassword) {
       Alert.alert("Validation", "Passwords do not match");
       return;
@@ -32,10 +37,10 @@ export default function ResetPasswordScreen({ navigation }: Props) {
 
     Alert.alert(
       "Backend Pending",
-      "Reset password backend is not created yet. Returning to sign in screen."
+      "Reset password backend is not created yet. Returning to profile selection screen."
     );
 
-    navigation.navigate("SignIn");
+    navigation.navigate("ChooseProfile");
   };
 
   return (
@@ -81,12 +86,12 @@ export default function ResetPasswordScreen({ navigation }: Props) {
         />
 
         <TouchableOpacity
-          onPress={() =>
-            setConfirmSecureTextEntry(!confirmSecureTextEntry)
-          }
+          onPress={() => setConfirmSecureTextEntry(!confirmSecureTextEntry)}
         >
           <Text style={styles.smallLink}>
-            {confirmSecureTextEntry ? "Show confirm password" : "Hide confirm password"}
+            {confirmSecureTextEntry
+              ? "Show confirm password"
+              : "Hide confirm password"}
           </Text>
         </TouchableOpacity>
 
@@ -94,7 +99,7 @@ export default function ResetPasswordScreen({ navigation }: Props) {
           <Text style={styles.primaryButtonText}>Verify</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => navigation.navigate("SignIn")}>
+        <TouchableOpacity onPress={() => navigation.navigate("ChooseProfile")}>
           <Text style={styles.cancelText}>Back to main menu</Text>
         </TouchableOpacity>
       </View>
