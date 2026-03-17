@@ -2,11 +2,11 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import PatientHomeScreen from "../screens/Patient/PatientHomeScreen";
-import PatientRemindersScreen from "../screens/Patient/PatientReminderScreen";
+/*import PatientRemindersScreen from "../screens/Patient/PatientReminderScreen";
 import PatientPharmacyScreen from "../screens/Patient/PatientPharmacyScreen";
 import PatientSummaryScreen from "../screens/Patient/PatientSummaryScreen";
 import PatientProfileScreen from "../screens/Patient/ PatientProfileScreen";
-import PatientAppointmentScreen from "../screens/Patient/PatientAppointmentsScreen";
+import PatientAppointmentScreen from "../screens/Patient/PatientAppointmentsScreen";*/
 
 export type PatientTabParamList = {
   Home: undefined;
@@ -29,11 +29,6 @@ export default function PatientNavigator() {
       }}
     >
       <Tab.Screen name="Home" component={PatientHomeScreen} />
-      <Tab.Screen name="Reminders" component={PatientRemindersScreen} />
-      <Tab.Screen name="Pharmacy" component={PatientPharmacyScreen} />
-      <Tab.Screen name="Summary" component={PatientSummaryScreen} />
-      <Tab.Screen name="Appointments" component={PatientAppointmentScreen} />
-      <Tab.Screen name="Profile" component={PatientProfileScreen} />
     </Tab.Navigator>
   );
 }
