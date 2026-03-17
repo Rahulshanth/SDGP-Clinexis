@@ -15,7 +15,9 @@ import { signInUser } from "../../services/authApi";
 
 type Props = NativeStackScreenProps<AuthStackParamList, "SignIn">;
 
-export default function SignInScreen({ navigation }: Props) {
+export default function SignInScreen({ navigation, route }: Props) {
+  const selectedRole = route.params.role;
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [secureTextEntry, setSecureTextEntry] = useState(true);
@@ -39,18 +41,18 @@ export default function SignInScreen({ navigation }: Props) {
 
       Alert.alert("Success", "SignIn successful");
 
-      // role based navigation
-      const role = result?.user?.role;
+const role: "patient" | "doctor" | "pharmacy" =
+  result?.user?.role ?? selectedRole ?? "patient";
 
-      if (role === "patient") {
-        navigation.getParent()?.replace("Patient");
-      } else if (role === "doctor") {
-        navigation.getParent()?.replace("Doctor");
-      } else if (role === "pharmacy") {
-        navigation.getParent()?.replace("Pharmacy");
-      } else {
-        navigation.getParent()?.replace("Patient");
-      }
+const parentNavigation = navigation.getParent() as any;
+
+if (role === "patient") {
+  parentNavigation?.replace("Patient");
+} else if (role === "doctor") {
+  parentNavigation?.replace("Doctor");
+} else {
+  parentNavigation?.replace("Pharmacy");
+}
     } catch (error: any) {
       console.log("SignIn error:", error?.response?.data || error.message);
 
@@ -72,7 +74,10 @@ export default function SignInScreen({ navigation }: Props) {
           Welcome back, please enter your details
         </Text>
 
-        {/* Tabs */}
+        <Text style={styles.profileText}>
+          Selected profile: {selectedRole}
+        </Text>
+
         <View style={styles.tabContainer}>
           <TouchableOpacity style={styles.activeTab}>
             <Text style={styles.activeTabText}>Sign In</Text>
@@ -80,13 +85,12 @@ export default function SignInScreen({ navigation }: Props) {
 
           <TouchableOpacity
             style={styles.inactiveTab}
-            onPress={() => navigation.navigate("SignUp")}
+            onPress={() => navigation.navigate("SignUp", { role: selectedRole })}
           >
             <Text style={styles.inactiveTabText}>Sign Up</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Email */}
         <TextInput
           style={styles.input}
           placeholder="Email"
@@ -97,7 +101,6 @@ export default function SignInScreen({ navigation }: Props) {
           onChangeText={setEmail}
         />
 
-        {/* Password */}
         <TextInput
           style={styles.input}
           placeholder="Password"
@@ -107,15 +110,12 @@ export default function SignInScreen({ navigation }: Props) {
           onChangeText={setPassword}
         />
 
-        <TouchableOpacity
-          onPress={() => setSecureTextEntry(!secureTextEntry)}
-        >
+        <TouchableOpacity onPress={() => setSecureTextEntry(!secureTextEntry)}>
           <Text style={styles.smallLink}>
             {secureTextEntry ? "Show password" : "Hide password"}
           </Text>
         </TouchableOpacity>
 
-        {/* Sign In Button */}
         <TouchableOpacity
           style={styles.primaryButton}
           onPress={handleSignIn}
@@ -124,24 +124,21 @@ export default function SignInScreen({ navigation }: Props) {
           {loading ? (
             <ActivityIndicator color="#1D4ED8" />
           ) : (
-            
             <Text style={styles.primaryButtonText}>Sign In</Text>
           )}
         </TouchableOpacity>
 
-        {/* Forgot password */}
         <TouchableOpacity
           onPress={() => navigation.navigate("ForgotPasswordEmail")}
         >
           <Text style={styles.forgotText}>Forgot password?</Text>
         </TouchableOpacity>
 
-        {/* Bottom text */}
         <Text style={styles.bottomText}>
           Don&apos;t have an account?{" "}
           <Text
             style={styles.bottomLink}
-            onPress={() => navigation.navigate("SignUp")}
+            onPress={() => navigation.navigate("SignUp", { role: selectedRole })}
           >
             Sign Up
           </Text>
@@ -187,8 +184,15 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#EAF6FF",
     marginTop: 8,
-    marginBottom: 18,
+    marginBottom: 8,
     textAlign: "center",
+  },
+
+  profileText: {
+    fontSize: 13,
+    color: "#FFFFFF",
+    marginBottom: 18,
+    textTransform: "capitalize",
   },
 
   tabContainer: {
@@ -270,5 +274,3 @@ const styles = StyleSheet.create({
     textDecorationLine: "underline",
   },
 });
-
-//Added by Rivithi &  Editted by Nadithi

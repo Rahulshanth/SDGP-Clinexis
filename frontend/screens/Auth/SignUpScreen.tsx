@@ -11,11 +11,13 @@ import {
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AuthStackParamList } from "../../navigation/AuthNavigator";
-import { registerUser } from "../../services/authApi";
+import { registerUser } from "@/store/authSlice";
 
 type Props = NativeStackScreenProps<AuthStackParamList, "SignUp">;
 
-export default function SignUpScreen({ navigation }: Props) {
+export default function SignUpScreen({ navigation, route }: Props) {
+  const { role } = route.params;
+
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -46,15 +48,17 @@ export default function SignUpScreen({ navigation }: Props) {
       const result = await registerUser({
         email: email.trim(),
         password,
-        role: "patient",
+        role,
         profile: {
-          fullName: fullName.trim(),
+          name: fullName.trim(), // ✅ FIXED (must be 'name')
         },
       });
 
       console.log("Register success:", result);
       Alert.alert("Success", "User registered successfully");
-      navigation.navigate("SignIn");
+
+      navigation.navigate("SignIn", { role });
+
     } catch (error: any) {
       console.log(
         "Register error:",
@@ -76,13 +80,13 @@ export default function SignUpScreen({ navigation }: Props) {
       <View style={styles.card}>
         <Text style={styles.title}>Sign Up</Text>
         <Text style={styles.subtitle}>
-          Welcome back, please enter your details
+          Welcome, please enter your details
         </Text>
 
         <View style={styles.tabContainer}>
           <TouchableOpacity
             style={styles.inactiveTab}
-            onPress={() => navigation.navigate("SignIn")}
+            onPress={() => navigation.navigate("SignIn", { role })}
           >
             <Text style={styles.inactiveTabText}>Sign In</Text>
           </TouchableOpacity>
@@ -160,7 +164,7 @@ export default function SignUpScreen({ navigation }: Props) {
           Already have an account?{" "}
           <Text
             style={styles.bottomLink}
-            onPress={() => navigation.navigate("SignIn")}
+            onPress={() => navigation.navigate("SignIn", { role })}
           >
             Sign In
           </Text>
@@ -269,5 +273,3 @@ const styles = StyleSheet.create({
     textDecorationLine: "underline",
   },
 });
-
-//edited by rivithi
