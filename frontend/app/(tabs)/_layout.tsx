@@ -1,5 +1,4 @@
-
-                                                        // COMMENTED BY RAHUL ON 6TH MARCH (we don't need this)
+// COMMENTED BY RAHUL ON 6TH MARCH (we don't need this)
 
 
 /*import { Tabs } from 'expo-router';
@@ -8,11 +7,14 @@ import React from 'react';
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+
+import { useColorScheme } from "react-native";
 import Ionicons from '@expo/vector-icons/build/Ionicons';
+
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+
 
   return (
     <Tabs
@@ -57,4 +59,6 @@ export default function TabLayout() {
       />
     </Tabs>
   );
-}*/
+}
+//Added by Nadithi */
+
