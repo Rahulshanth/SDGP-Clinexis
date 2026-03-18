@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import {
   Alert,
-  Image,
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
@@ -40,10 +39,9 @@ export default function SignUpScreen({ navigation, route }: Props) {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const [secureTextEntry, setSecureTextEntry] = useState(true);
-  const [confirmSecureTextEntry, setConfirmSecureTextEntry] = useState(true);
+  const [confirmSecureTextEntry] = useState(true);
 
   const [loading, setLoading] = useState(false);
-  const [focused, setFocused] = useState<string | null>(null);
 
   // animations
   const slideAnim = useRef(new Animated.Value(120)).current;
@@ -139,10 +137,10 @@ export default function SignUpScreen({ navigation, route }: Props) {
               ]}
             >
 
-              <Image
+              {/* <Image
                 source={require("../../assets/images/ClinexisLogo.png")}
                 style={styles.logo}
-              />
+              />*/}
 
               <Text style={styles.title}>Sign Up</Text>
 
@@ -262,21 +260,24 @@ const styles = StyleSheet.create({
     backgroundColor: PANEL_BLUE,
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
-    padding: 24,
+    paddingBottom: 60,
+    paddingHorizontal: 24,
+    paddingTop: 60,
   },
 
-  logo: {
+  /*logo: {
     width: 70,
     height: 70,
     alignSelf: "center",
     marginBottom: 10,
-  },
+  },*/
 
   title: {
     fontSize: 28,
     fontWeight: "800",
     textAlign: "center",
     color: BLUE,
+    marginBottom: 10,
   },
 
   subtitle: {

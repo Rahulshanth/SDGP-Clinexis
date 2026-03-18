@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import {
   Alert,
-  Image,
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
@@ -62,7 +61,7 @@ export default function SignInScreen({ navigation, route }: Props) {
         useNativeDriver: true,
       }),
     ]).start();
-  }, []);
+  }, [opacityAnim, slideAnim]);
 
   const animateLabel = (anim: Animated.Value, toValue: number) => {
     Animated.timing(anim, {
