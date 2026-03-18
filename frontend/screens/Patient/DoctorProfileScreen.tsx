@@ -1,3 +1,5 @@
+//edited by vidu
+/*
 import React, { useState } from "react";
 import {
   View,
@@ -71,7 +73,8 @@ export default function DoctorProfileScreen() {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Hero */}
+        // Hero 
+
         <View style={styles.hero}>
           <View style={styles.avatarWrapper}>
             <Image source={{ uri: doctor.image }} style={styles.avatar} />
@@ -102,7 +105,7 @@ export default function DoctorProfileScreen() {
         </View>
 
         <View style={styles.body}>
-          {/* Hospital */}
+          // Hospital 
           <View style={styles.infoCard}>
             <Text style={styles.infoIcon}>🏥</Text>
             <View style={{ flex: 1 }}>
@@ -112,7 +115,8 @@ export default function DoctorProfileScreen() {
             <Text style={styles.mapIcon}>🗺</Text>
           </View>
 
-          {/* Fee */}
+          // Fee 
+
           <View style={styles.infoCard}>
             <Text style={styles.infoIcon}>💳</Text>
             <Text style={styles.infoTitle}>Consultation Fee</Text>
@@ -122,7 +126,8 @@ export default function DoctorProfileScreen() {
             </View>
           </View>
 
-          {/* Schedule */}
+          // Schedule 
+
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>Schedule</Text>
@@ -186,7 +191,8 @@ export default function DoctorProfileScreen() {
             </View>
           </View>
 
-          {/* Reviews */}
+          // Reviews 
+
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>Reviews</Text>
@@ -215,7 +221,7 @@ export default function DoctorProfileScreen() {
         </View>
       </ScrollView>
 
-      {/* Book Button */}
+      // Book Button 
       <View style={styles.footer}>
         <TouchableOpacity
           style={[styles.bookBtn, !selectedSlot && styles.bookBtnDisabled]}
@@ -406,3 +412,4 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
 });
+*/

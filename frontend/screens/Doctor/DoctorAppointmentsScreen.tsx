@@ -1,3 +1,5 @@
+//edited by vidu
+/*
 import React, { useState } from "react";
 import {
   View,
@@ -195,7 +197,8 @@ export default function DoctorAppointmentsScreen() {
 
   return (
     <SafeAreaView style={styles.safe}>
-      {/* Header */}
+      // Header 
+
       <View style={styles.header}>
         <View>
           <Text style={styles.headerTitle}>Appointments</Text>
@@ -217,7 +220,8 @@ export default function DoctorAppointmentsScreen() {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Month + Calendar */}
+        // Month + Calendar 
+
         <View style={styles.calendarSection}>
           <View style={styles.monthRow}>
             <Text style={styles.monthText}>September 2025</Text>
@@ -269,7 +273,8 @@ export default function DoctorAppointmentsScreen() {
           </ScrollView>
         </View>
 
-        {/* Tabs */}
+        // Tabs 
+
         <View style={styles.tabRow}>
           {(["Upcoming", "Completed", "Cancelled"] as const).map((t) => (
             <TouchableOpacity
@@ -289,7 +294,8 @@ export default function DoctorAppointmentsScreen() {
           ))}
         </View>
 
-        {/* Appointments List */}
+        // Appointments List 
+
         <View style={styles.listContainer}>
           {tab === "Upcoming" ? (
             <>
@@ -532,3 +538,4 @@ const styles = StyleSheet.create({
   emptyState: { alignItems: "center", paddingVertical: 40 },
   emptyText: { fontSize: 15, color: "#94A3B8" },
 });
+*/

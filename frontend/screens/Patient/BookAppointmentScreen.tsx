@@ -1,3 +1,5 @@
+//edited by vidu
+/*
 import React, { useState } from "react";
 import {
   View,
@@ -35,13 +37,10 @@ export default function BookAppointmentScreen() {
   const route = useRoute<Route>();
   const { doctor } = route.params;
 
-  const [consultType, setConsultType] = useState<"Online" | "In-Person">(
-    "Online",
-  );
   const [selectedDate, setSelectedDate] = useState(5);
   const [selectedTime, setSelectedTime] = useState("09:30 AM");
 
-  const fee = consultType === "Online" ? 85 : 75;
+  const fee = 75; // Fixed fee for in-person only
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -56,39 +55,20 @@ export default function BookAppointmentScreen() {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false} style={styles.scroll}>
-        {/* Consultation Type */}
+        // Consultation Type — In Person Only 
         <View style={styles.section}>
           <View style={styles.sectionHeaderRow}>
             <Text style={styles.sectionTitle}>Consultation Type</Text>
             <Text style={styles.feeTag}>${fee}.00 • 30 min</Text>
           </View>
-          <View style={styles.typeToggle}>
-            {(["Online", "In-Person"] as const).map((t) => (
-              <TouchableOpacity
-                key={t}
-                style={[
-                  styles.typeBtn,
-                  consultType === t && styles.typeBtnActive,
-                ]}
-                onPress={() => setConsultType(t)}
-              >
-                <Text style={styles.typeIcon}>
-                  {t === "Online" ? "💻" : "🏥"}
-                </Text>
-                <Text
-                  style={[
-                    styles.typeBtnText,
-                    consultType === t && styles.typeBtnTextActive,
-                  ]}
-                >
-                  {t}
-                </Text>
-              </TouchableOpacity>
-            ))}
+          <View style={styles.inPersonBadge}>
+            <Text style={styles.inPersonIcon}>🏥</Text>
+            <Text style={styles.inPersonText}>In-Person Only</Text>
           </View>
         </View>
 
-        {/* Calendar */}
+        //Calendar 
+
         <View style={styles.section}>
           <View style={styles.sectionHeaderRow}>
             <Text style={styles.sectionTitle}>Select Date</Text>
@@ -141,7 +121,8 @@ export default function BookAppointmentScreen() {
           </View>
         </View>
 
-        {/* Time Slots */}
+        // Time Slots 
+
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Available Time</Text>
           <Text style={styles.slotGroupLabel}>MORNING SLOTS</Text>
@@ -190,34 +171,25 @@ export default function BookAppointmentScreen() {
           </View>
         </View>
 
-        {/* Payment */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeaderRow}>
-            <Text style={styles.sectionTitle}>Payment Method</Text>
-            <TouchableOpacity>
-              <Text style={styles.editLink}>Edit</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.paymentCard}>
-            <Text style={styles.cardIcon}>💳</Text>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.cardNumber}>Visa •••• 4242</Text>
-              <Text style={styles.cardExpiry}>Expires 12/26</Text>
-            </View>
-            <View style={styles.selectedDot} />
-          </View>
-        </View>
-
-        {/* Total */}
+        // Total 
         <View style={styles.totalRow}>
           <View>
-            <Text style={styles.totalLabel}>Total Price</Text>
+            <Text style={styles.totalLabel}>Consultation Fee</Text>
             <Text style={styles.totalAmount}>${fee}.00</Text>
           </View>
           <View style={{ alignItems: "flex-end" }}>
             <Text style={styles.totalLabel}>April {selectedDate}, 2026</Text>
             <Text style={styles.totalTime}>{selectedTime}</Text>
           </View>
+        </View>
+
+        // Note 
+        <View style={styles.noteBox}>
+          <Text style={styles.noteIcon}>ℹ️</Text>
+          <Text style={styles.noteText}>
+            Payment is made in person at the clinic on the day of your
+            appointment.
+          </Text>
         </View>
 
         <View style={{ height: 110 }} />
@@ -231,7 +203,7 @@ export default function BookAppointmentScreen() {
               doctor,
               date: `April ${selectedDate}, 2026`,
               time: selectedTime,
-              consultType,
+              consultType: "In-Person",
               fee: `${fee}`,
             })
           }
@@ -265,25 +237,18 @@ const styles = StyleSheet.create({
   },
   sectionTitle: { fontSize: 17, fontWeight: "700", color: "#0F172A" },
   feeTag: { fontSize: 13, color: "#1E3A8A", fontWeight: "600" },
-  typeToggle: {
-    flexDirection: "row",
-    backgroundColor: "#F1F5F9",
-    borderRadius: 12,
-    padding: 4,
-  },
-  typeBtn: {
-    flex: 1,
+  inPersonBadge: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 10,
-    borderRadius: 10,
-    gap: 6,
+    backgroundColor: "#EFF6FF",
+    borderRadius: 12,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: "#BFDBFE",
+    gap: 10,
   },
-  typeBtnActive: { backgroundColor: "#fff" },
-  typeIcon: { fontSize: 16 },
-  typeBtnText: { fontSize: 14, fontWeight: "600", color: "#94A3B8" },
-  typeBtnTextActive: { color: "#1E3A8A" },
+  inPersonIcon: { fontSize: 20 },
+  inPersonText: { fontSize: 15, fontWeight: "700", color: "#1E3A8A" },
   monthNav: { flexDirection: "row", gap: 8 },
   navArrow: { fontSize: 20, color: "#475569", paddingHorizontal: 4 },
   monthLabel: {
@@ -332,28 +297,6 @@ const styles = StyleSheet.create({
   slotChipActive: { backgroundColor: "#1E3A8A", borderColor: "#1E3A8A" },
   slotText: { fontSize: 13, color: "#475569", fontWeight: "500" },
   slotTextActive: { color: "#fff" },
-  editLink: { fontSize: 13, color: "#1E3A8A", fontWeight: "600" },
-  paymentCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 14,
-    borderWidth: 1,
-    borderColor: "#E5E7EB",
-    gap: 12,
-  },
-  cardIcon: { fontSize: 22 },
-  cardNumber: { fontSize: 14, fontWeight: "600", color: "#1E293B" },
-  cardExpiry: { fontSize: 12, color: "#94A3B8", marginTop: 2 },
-  selectedDot: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: "#1E3A8A",
-    borderWidth: 2,
-    borderColor: "#1E3A8A",
-  },
   totalRow: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -368,6 +311,19 @@ const styles = StyleSheet.create({
   totalLabel: { fontSize: 12, color: "#94A3B8", marginBottom: 4 },
   totalAmount: { fontSize: 26, fontWeight: "800", color: "#1E293B" },
   totalTime: { fontSize: 14, fontWeight: "600", color: "#1E3A8A" },
+  noteBox: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    backgroundColor: "#F0FDF4",
+    borderRadius: 12,
+    padding: 14,
+    marginTop: 12,
+    borderWidth: 1,
+    borderColor: "#BBF7D0",
+    gap: 8,
+  },
+  noteIcon: { fontSize: 16 },
+  noteText: { flex: 1, fontSize: 13, color: "#15803D", lineHeight: 18 },
   footer: {
     backgroundColor: "#fff",
     paddingHorizontal: 16,
@@ -384,3 +340,4 @@ const styles = StyleSheet.create({
   },
   confirmBtnText: { color: "#fff", fontWeight: "700", fontSize: 16 },
 });
+*/

@@ -1,3 +1,5 @@
+//edited by vidu
+/*
 import React, { useState } from "react";
 import {
   View,
@@ -205,7 +207,8 @@ export default function MyAppointmentsScreen() {
         <Text style={styles.headerTitle}>My Appointments</Text>
       </View>
 
-      {/* Tabs */}
+      // Tabs 
+
       <View style={styles.tabRow}>
         {(["Upcoming", "Past"] as const).map((t) => (
           <TouchableOpacity
@@ -386,3 +389,5 @@ const styles = StyleSheet.create({
   },
   bookNewBtnText: { fontSize: 15, fontWeight: "700", color: "#1E3A8A" },
 });
+
+*/

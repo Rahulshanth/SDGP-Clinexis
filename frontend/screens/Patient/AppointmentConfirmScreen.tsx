@@ -1,3 +1,5 @@
+//edited by vidu
+/*
 import React, { useEffect, useRef } from "react";
 import {
   View,
@@ -51,7 +53,8 @@ export default function AppointmentConfirmScreen() {
       </TouchableOpacity>
 
       <ScrollViewShim>
-        {/* Success circle */}
+        // Success circle 
+
         <Animated.View
           style={[styles.successCircle, { transform: [{ scale: scaleAnim }] }]}
         >
@@ -65,7 +68,8 @@ export default function AppointmentConfirmScreen() {
             your inbox.
           </Text>
 
-          {/* Confirmation card */}
+          //Confirmation card 
+
           <View style={styles.confirmCard}>
             <View style={styles.mapPlaceholder}>
               <Text style={styles.mapText}>📍 Map Preview</Text>
@@ -257,3 +261,4 @@ const styles = StyleSheet.create({
   rescheduleLink: { fontSize: 13, color: "#94A3B8", textAlign: "center" },
   rescheduleLinkBlue: { color: "#1E3A8A", fontWeight: "600" },
 });
+*/

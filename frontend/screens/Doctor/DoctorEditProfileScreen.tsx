@@ -1,3 +1,5 @@
+//edited by vidu
+/*
 import React, { useState } from "react";
 import {
   View,
@@ -9,18 +11,29 @@ import {
   Switch,
   Alert,
   Image,
+  TextInput,
 } from "react-native";
 
 export default function DoctorProfileScreen() {
   const [twoFactor, setTwoFactor] = useState(true);
-  const [name] = useState("Dr. Sarah Bennett");
-  const [specialty] = useState("Cardiologist");
-  const [hospital] = useState("St. Mary's Medical Center");
-  const [clinicNumber] = useState("+94 11 234 5678");
-  const [workingHours] = useState("Mon-Fri, 09:00 - 17:00");
+  const [isEditing, setIsEditing] = useState(false);
+
+  // Editable fields
+  const [name, setName] = useState("Dr. Sarah Bennett");
+  const [specialty, setSpecialty] = useState("Cardiologist");
+  const [hospital, setHospital] = useState("St. Mary's Medical Center");
+  const [clinicNumber, setClinicNumber] = useState("+94 11 234 5678");
+  const [workingHours, setWorkingHours] = useState("Mon-Fri, 09:00 - 17:00");
 
   const handleSave = () => {
+    setIsEditing(false);
     Alert.alert("Profile Saved", "Your profile has been updated successfully.");
+    // TODO: connect to backend API to save
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    // TODO: reset to original values from DB
   };
 
   const handleLogout = () => {
@@ -34,21 +47,82 @@ export default function DoctorProfileScreen() {
     ]);
   };
 
+  const EditableField = ({
+    icon,
+    label,
+    value,
+    onChangeText,
+    keyboardType = "default",
+  }: {
+    icon: string;
+    label: string;
+    value: string;
+    onChangeText: (text: string) => void;
+    keyboardType?: any;
+  }) => (
+    <View style={styles.infoCard}>
+      <View style={styles.infoRow}>
+        <Text style={styles.infoIcon}>{icon}</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.infoFieldLabel}>{label}</Text>
+          {isEditing ? (
+            <TextInput
+              style={styles.editInput}
+              value={value}
+              onChangeText={onChangeText}
+              keyboardType={keyboardType}
+              placeholderTextColor="#94A3B8"
+            />
+          ) : (
+            <Text style={styles.infoFieldValue}>{value}</Text>
+          )}
+        </View>
+        {isEditing && <Text style={styles.editIndicator}>✏️</Text>}
+      </View>
+    </View>
+  );
+
   return (
     <SafeAreaView style={styles.safe}>
-      {/* Header */}
+      // Header 
+
       <View style={styles.header}>
         <TouchableOpacity style={styles.backBtn}>
           <Text style={styles.backArrow}>‹</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Profile</Text>
-        <TouchableOpacity onPress={handleSave}>
-          <Text style={styles.saveText}>Save</Text>
-        </TouchableOpacity>
+        {isEditing ? (
+          <View style={styles.headerActions}>
+            <TouchableOpacity onPress={handleCancel} style={styles.cancelBtn}>
+              <Text style={styles.cancelText}>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleSave} style={styles.saveBtn}>
+              <Text style={styles.saveText}>Save</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <TouchableOpacity
+            onPress={() => setIsEditing(true)}
+            style={styles.editBtn}
+          >
+            <Text style={styles.editBtnText}>Edit</Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Avatar */}
+        // Edit mode banner 
+
+        {isEditing && (
+          <View style={styles.editBanner}>
+            <Text style={styles.editBannerText}>
+              ✏️ You are in edit mode — tap Save when done
+            </Text>
+          </View>
+        )}
+
+        // Avatar 
+
         <View style={styles.avatarSection}>
           <View style={styles.avatarWrapper}>
             <Image
@@ -57,57 +131,68 @@ export default function DoctorProfileScreen() {
               }}
               style={styles.avatar}
             />
-            <TouchableOpacity style={styles.cameraBtn}>
-              <Text style={styles.cameraIcon}>📷</Text>
-            </TouchableOpacity>
+            {isEditing && (
+              <TouchableOpacity style={styles.cameraBtn}>
+                <Text style={styles.cameraIcon}>📷</Text>
+              </TouchableOpacity>
+            )}
           </View>
-          <Text style={styles.doctorName}>{name}</Text>
+          {isEditing ? (
+            <TextInput
+              style={styles.nameInput}
+              value={name}
+              onChangeText={setName}
+              textAlign="center"
+            />
+          ) : (
+            <Text style={styles.doctorName}>{name}</Text>
+          )}
           <View style={styles.specialtyBadge}>
             <Text style={styles.specialtyText}>{specialty}</Text>
           </View>
         </View>
 
         <View style={styles.body}>
-          {/* Professional Info */}
+          // Professional Info 
           <Text style={styles.sectionLabel}>PROFESSIONAL INFO</Text>
 
-          <View style={styles.infoCard}>
-            <View style={styles.infoRow}>
-              <Text style={styles.infoIcon}>🏥</Text>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.infoFieldLabel}>Hospital Affiliation</Text>
-                <Text style={styles.infoFieldValue}>{hospital}</Text>
-              </View>
-            </View>
-          </View>
+          <EditableField
+            icon="🏥"
+            label="Hospital Affiliation"
+            value={hospital}
+            onChangeText={setHospital}
+          />
 
-          <View style={styles.infoCard}>
-            <View style={styles.infoRow}>
-              <Text style={styles.infoIcon}>🕐</Text>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.infoFieldLabel}>Working Hours</Text>
-                <Text style={styles.infoFieldValue}>{workingHours}</Text>
-              </View>
-            </View>
-          </View>
+          <EditableField
+            icon="🕐"
+            label="Working Hours"
+            value={workingHours}
+            onChangeText={setWorkingHours}
+          />
 
-          <View style={styles.infoCard}>
-            <View style={styles.infoRow}>
-              <Text style={styles.infoIcon}>📞</Text>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.infoFieldLabel}>Clinic Number</Text>
-                <Text style={styles.infoFieldValue}>{clinicNumber}</Text>
-              </View>
-            </View>
-          </View>
+          <EditableField
+            icon="📞"
+            label="Clinic Number"
+            value={clinicNumber}
+            onChangeText={setClinicNumber}
+            keyboardType="phone-pad"
+          />
 
-          {/* Security & Notifications */}
+          <EditableField
+            icon="🩺"
+            label="Specialization"
+            value={specialty}
+            onChangeText={setSpecialty}
+          />
+
+          // Security & Notifications 
           <Text style={[styles.sectionLabel, { marginTop: 24 }]}>
             SECURITY & NOTIFICATIONS
           </Text>
 
           <View style={styles.settingsCard}>
-            {/* Change Password */}
+            // Change Password 
+
             <TouchableOpacity
               style={styles.settingsRow}
               onPress={() =>
@@ -133,7 +218,8 @@ export default function DoctorProfileScreen() {
 
             <View style={styles.divider} />
 
-            {/* Two Factor */}
+            // Two Factor 
+
             <View style={styles.settingsRow}>
               <View style={styles.settingsLeft}>
                 <View
@@ -156,7 +242,8 @@ export default function DoctorProfileScreen() {
 
             <View style={styles.divider} />
 
-            {/* Notification Settings */}
+            // Notification Settings 
+
             <TouchableOpacity
               style={styles.settingsRow}
               onPress={() =>
@@ -181,7 +268,8 @@ export default function DoctorProfileScreen() {
             </TouchableOpacity>
           </View>
 
-          {/* Logout */}
+          // Logout 
+
           <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
             <Text style={styles.logoutIcon}>↪</Text>
             <Text style={styles.logoutText}>Log Out</Text>
@@ -210,7 +298,43 @@ const styles = StyleSheet.create({
   backBtn: { padding: 4 },
   backArrow: { fontSize: 24, color: "#1E293B" },
   headerTitle: { fontSize: 18, fontWeight: "600", color: "#0F172A" },
-  saveText: { fontSize: 15, fontWeight: "700", color: "#1E3A8A" },
+  headerActions: { flexDirection: "row", gap: 8 },
+  cancelBtn: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+  },
+  cancelText: { fontSize: 14, fontWeight: "600", color: "#64748B" },
+  saveBtn: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+    backgroundColor: "#1E3A8A",
+  },
+  saveText: { fontSize: 14, fontWeight: "700", color: "#fff" },
+  editBtn: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+    backgroundColor: "#EFF6FF",
+    borderWidth: 1,
+    borderColor: "#BFDBFE",
+  },
+  editBtnText: { fontSize: 14, fontWeight: "600", color: "#1E3A8A" },
+  editBanner: {
+    backgroundColor: "#EFF6FF",
+    padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#BFDBFE",
+  },
+  editBannerText: {
+    fontSize: 13,
+    color: "#1E3A8A",
+    textAlign: "center",
+    fontWeight: "500",
+  },
   avatarSection: {
     backgroundColor: "#fff",
     alignItems: "center",
@@ -246,6 +370,17 @@ const styles = StyleSheet.create({
     color: "#0F172A",
     marginBottom: 8,
   },
+  nameInput: {
+    fontSize: 20,
+    fontWeight: "800",
+    color: "#0F172A",
+    marginBottom: 8,
+    borderBottomWidth: 1.5,
+    borderBottomColor: "#1E3A8A",
+    paddingBottom: 4,
+    minWidth: 200,
+    textAlign: "center",
+  },
   specialtyBadge: {
     backgroundColor: "#EFF6FF",
     borderRadius: 20,
@@ -273,6 +408,16 @@ const styles = StyleSheet.create({
   infoIcon: { fontSize: 18 },
   infoFieldLabel: { fontSize: 11, color: "#94A3B8", marginBottom: 4 },
   infoFieldValue: { fontSize: 15, fontWeight: "600", color: "#1E293B" },
+  editInput: {
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#1E293B",
+    borderBottomWidth: 1.5,
+    borderBottomColor: "#1E3A8A",
+    paddingBottom: 4,
+    paddingTop: 2,
+  },
+  editIndicator: { fontSize: 14 },
   settingsCard: {
     backgroundColor: "#fff",
     borderRadius: 14,
@@ -319,3 +464,5 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 });
+
+*/

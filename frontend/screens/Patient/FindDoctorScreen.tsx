@@ -1,3 +1,5 @@
+//edited by vidu
+/*
 import React, { useState } from "react";
 import {
   View,
@@ -102,7 +104,8 @@ export default function FindDoctorScreen() {
       </View>
 
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-        {/* Search */}
+        // Search 
+
         <View style={styles.searchBox}>
           <Text style={styles.searchIcon}>🔍</Text>
           <TextInput
@@ -114,7 +117,7 @@ export default function FindDoctorScreen() {
           />
         </View>
 
-        {/* Filter chips */}
+        // Filter chips 
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -165,7 +168,8 @@ export default function FindDoctorScreen() {
           </TouchableOpacity>
         </ScrollView>
 
-        {/* Doctor Cards */}
+        // Doctor Cards 
+
         {visible.map((doc) => (
           <View key={doc.id} style={styles.card}>
             <View style={styles.cardTop}>
@@ -324,3 +328,5 @@ const styles = StyleSheet.create({
   },
   loadMoreText: { fontSize: 15, color: "#475569", fontWeight: "600" },
 });
+
+*/
