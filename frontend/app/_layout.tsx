@@ -48,8 +48,14 @@ export default function RootLayout() {
 } */
 
 import React from "react";
-import { Stack } from "expo-router";
+import { Provider } from "react-redux";
+import { store } from "../store";
+import AppNavigator from "../navigation";
 
 export default function RootLayout() {
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return (
+    <Provider store={store}>
+      <AppNavigator />
+    </Provider>
+  );
 }

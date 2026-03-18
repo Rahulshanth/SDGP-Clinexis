@@ -1,26 +1,37 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import AuthNavigator from "./AuthNavigator";
 import PatientNavigator from "./PatientNavigator";
 
-export type RootStackParamList = {
-  Auth: undefined;
-  Patient: undefined;
-  Doctor: undefined;
-  Pharmacy: undefined;
-};
+export default function RootNavigator() {
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+  useEffect(() => {
+    checkLogin();
+  }, []);
 
-export default function AppNavigator() {
+  const checkLogin = async () => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+
+      if (token) {
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+      }
+    } catch (error) {
+      setIsLoggedIn(false);
+    }
+  };
+
+  // Loading state
+  if (isLoggedIn === null) return null;
+
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Auth" component={AuthNavigator} />
-        {/* <Stack.Screen name="Patient" component={PatientTabs} /> */}
-      </Stack.Navigator>
+      {isLoggedIn ? <PatientNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   );
 }

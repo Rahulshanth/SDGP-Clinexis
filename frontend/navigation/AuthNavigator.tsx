@@ -74,12 +74,15 @@ import ForgotPasswordEmailScreen from "../screens/Auth/ForgotPasswordEmailScreen
 import ForgotPasswordOtpScreen from "../screens/Auth/ForgotPasswordOtpScreen";
 import ResetPasswordScreen from "../screens/Auth/ResetPasswordScreen";
 
+// Proper type definition
 export type AuthStackParamList = {
   Splash: undefined;
   Welcome: undefined;
   ChooseProfile: undefined;
-  SignIn: { role: "patient" | "doctor" | "pharmacy" } | undefined;
-  SignUp: { role: "patient" | "doctor" | "pharmacy" } | undefined;
+
+  SignIn: { role: string };
+  SignUp: { role: string };
+
   ForgotPasswordEmail: undefined;
   ForgotPasswordOtp: { email: string };
   ResetPassword: { email: string; code: string };
@@ -99,8 +102,10 @@ export default function AuthNavigator() {
       <Stack.Screen name="Splash" component={SplashScreen} />
       <Stack.Screen name="Welcome" component={WelcomeScreen} />
       <Stack.Screen name="ChooseProfile" component={ChooseProfileScreen} />
+
       <Stack.Screen name="SignIn" component={SignInScreen} />
       <Stack.Screen name="SignUp" component={SignUpScreen} />
+
       <Stack.Screen
         name="ForgotPasswordEmail"
         component={ForgotPasswordEmailScreen}
