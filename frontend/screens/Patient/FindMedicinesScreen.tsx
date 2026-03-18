@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { Ionicons, MaterialIcons, Feather } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 
 const { width } = Dimensions.get('window');
 
@@ -20,8 +20,9 @@ interface Pharmacy {
   id: string;
   name: string;
   rating: number;
-  distance: number; // in km
+  distance: number;
   address: string;
+  phone?: string;
   matchedMedicines: string[];
   missingMedicines: string[];
   price?: number;
@@ -78,9 +79,45 @@ const MOCK_PHARMACIES: Pharmacy[] = [
 export default function FindMedicinesScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const params = useLocalSearchParams();
+  
   const [inputText, setInputText] = useState('');
-  const [searchedMedicines, setSearchedMedicines] = useState<string[]>(['Panadol', 'Aspirin', 'Insulin']);
+  const [searchedMedicines, setSearchedMedicines] = useState<string[]>([]);
+  const [pharmacyResults, setPharmacyResults] = useState<Pharmacy[]>([]);
   const [activeFilter, setActiveFilter] = useState<string>('Best Match');
+  const [isFromPrescription, setIsFromPrescription] = useState(false);
+
+  useEffect(() => {
+    if (params.medicines) {
+      try {
+        const meds = JSON.parse(params.medicines as string);
+        setSearchedMedicines(meds);
+        setIsFromPrescription(true);
+      } catch (e) {
+        console.error('Failed to parse medicines', e);
+      }
+    }
+    
+    if (params.results) {
+      try {
+        const results = JSON.parse(params.results as string);
+        const mapped = results.map((r: any) => ({
+          id: r.pharmacyId,
+          name: r.pharmacyName,
+          rating: 4.5,
+          distance: 1.0,
+          address: r.address || '',
+          phone: r.phone,
+          matchedMedicines: r.matchedMedicines || [],
+          missingMedicines: r.missingMedicines || [],
+          isAvailable: r.matchCount > 0,
+        }));
+        setPharmacyResults(mapped);
+      } catch (e) {
+        console.error('Failed to parse results', e);
+      }
+    }
+  }, [params.medicines, params.results]);
 
   const filters = ['Best Match', 'Nearest', 'Lowest Price'];
 
@@ -163,7 +200,8 @@ export default function FindMedicinesScreen() {
   };
 
   const getFilteredPharmacies = () => {
-    let sorted = [...MOCK_PHARMACIES];
+    const data = isFromPrescription && pharmacyResults.length > 0 ? pharmacyResults : MOCK_PHARMACIES;
+    let sorted = [...data];
     
     if (activeFilter === 'Best Match') {
       sorted.sort((a, b) => b.matchedMedicines.length - a.matchedMedicines.length);
@@ -183,7 +221,9 @@ export default function FindMedicinesScreen() {
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
           <Ionicons name="chevron-back" size={24} color="#1e293b" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Pharmacy Matching</Text>
+        <Text style={styles.headerTitle}>
+          {isFromPrescription ? 'Prescription Results' : 'Pharmacy Matching'}
+        </Text>
         <TouchableOpacity style={styles.infoButton}>
           <Ionicons name="information-circle-outline" size={24} color="#3b82f6" />
         </TouchableOpacity>
@@ -191,7 +231,9 @@ export default function FindMedicinesScreen() {
 
       {/* Multi-Medicine Search Section */}
       <View style={styles.searchSection}>
-        <Text style={styles.searchLabel}>What medicines do you need?</Text>
+        <Text style={styles.searchLabel}>
+          {isFromPrescription ? 'Medicines from Prescription' : 'What medicines do you need?'}
+        </Text>
         <View style={styles.searchBar}>
           <Ionicons name="search" size={20} color="#94a3b8" />
           <TextInput
@@ -245,9 +287,16 @@ export default function FindMedicinesScreen() {
         keyExtractor={item => item.id}
         contentContainerStyle={styles.listContainer}
         showsVerticalScrollIndicator={false}
-        ListHeaderComponent={() => (
-          <Text style={styles.resultsHeader}>Matching Pharmacies ({MOCK_PHARMACIES.length})</Text>
-        )}
+        ListHeaderComponent={() => {
+          const count = isFromPrescription && pharmacyResults.length > 0 
+            ? pharmacyResults.length 
+            : MOCK_PHARMACIES.length;
+          return (
+            <Text style={styles.resultsHeader}>
+              {isFromPrescription ? 'Pharmacies with your medicines' : `Matching Pharmacies (${count})`}
+            </Text>
+          );
+        }}
       />
 
       {/* Map FAB */}
