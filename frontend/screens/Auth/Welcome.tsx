@@ -82,7 +82,6 @@ export default function Welcome({ navigation }: Props) {
   );
 }
 
-//Styles
 const styles = StyleSheet.create({
   background: {
     flex: 1,
