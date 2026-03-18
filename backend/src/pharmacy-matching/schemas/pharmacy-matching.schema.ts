@@ -26,7 +26,10 @@ export class PharmacyMatching {
   @Prop()
   matchScore: number;
 
-  @Prop({ enum: ['available', 'out_of_stock', 'discontinued'], default: 'available' })
+  @Prop({
+    enum: ['available', 'out_of_stock', 'discontinued'],
+    default: 'available',
+  })
   status: string;
 
   @Prop()
@@ -45,4 +48,5 @@ export class PharmacyMatching {
   isActive: boolean;
 }
 
-export const PharmacyMatchingSchema = SchemaFactory.createForClass(PharmacyMatching);
+export const PharmacyMatchingSchema =
+  SchemaFactory.createForClass(PharmacyMatching);

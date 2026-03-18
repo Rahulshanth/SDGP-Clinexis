@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
-import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { fetchConsultationById } from "../../../store/consultationSlice";
 
@@ -9,16 +10,15 @@ interface Props {
 
 const ConsultationCard: React.FC<Props> = ({ consultationId }) => {
   const dispatch = useAppDispatch();
-  const { paragraphs, loading, error } = useAppSelector(
+  const { activeConsultationParagraphs, status, error } = useAppSelector(
     (state) => state.consultation
   );
 
   useEffect(() => {
     dispatch(fetchConsultationById(consultationId));
-  }, [consultationId]); // ✅ re-fetches if ID changes
+  }, [consultationId, dispatch]);
 
-  // Loading state
-  if (loading) {
+  if (status === "loading") {
     return (
       <View style={styles.centered}>
         <ActivityIndicator size="large" color="#2563eb" />
@@ -26,7 +26,6 @@ const ConsultationCard: React.FC<Props> = ({ consultationId }) => {
     );
   }
 
-  // Error state
   if (error) {
     return (
       <View style={styles.centered}>
@@ -35,11 +34,10 @@ const ConsultationCard: React.FC<Props> = ({ consultationId }) => {
     );
   }
 
-  // Paragraphs display
   return (
     <View style={styles.container}>
-      {paragraphs.map((paragraph, index) => (
-        <View key={index} style={styles.block}>
+      {activeConsultationParagraphs.map((paragraph, index) => (
+        <View key={`${consultationId}-${index}`} style={styles.block}>
           <Text style={styles.speakerLabel}>Speaker {index + 1}</Text>
           <Text style={styles.text}>{paragraph}</Text>
         </View>
