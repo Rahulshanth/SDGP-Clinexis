@@ -9,13 +9,17 @@ import {
   FlatList,
   Alert,
   ActivityIndicator,
+  Dimensions,
+  Platform,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons, Feather } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { fetchConsultations } from '../../store/consultationSlice';
 import { matchPharmaciesWithMedicines, PharmacyMatch } from '../../services/pharmacyMatchingApi';
+
+const { width } = Dimensions.get('window');
 
 export default function SharePrescriptionScreen() {
   const insets = useSafeAreaInsets();
@@ -26,14 +30,13 @@ export default function SharePrescriptionScreen() {
   const [medicines, setMedicines] = useState<string[]>([]);
   const [newMedicine, setNewMedicine] = useState('');
   const [isSearching, setIsSearching] = useState(false);
-  const [searchResults, setSearchResults] = useState<PharmacyMatch[]>([]);
 
   useEffect(() => {
     dispatch(fetchConsultations());
   }, []);
 
   const addMedicine = () => {
-    if (newMedicine.trim()) {
+    if (newMedicine.trim() && !medicines.includes(newMedicine.trim())) {
       setMedicines([...medicines, newMedicine.trim()]);
       setNewMedicine('');
     }
@@ -52,7 +55,6 @@ export default function SharePrescriptionScreen() {
     setIsSearching(true);
     try {
       const response = await matchPharmaciesWithMedicines(medicines);
-      setSearchResults(response.data);
       router.push({
         pathname: '/FindMedicines',
         params: { 
@@ -68,72 +70,128 @@ export default function SharePrescriptionScreen() {
     }
   };
 
-  const renderConsultation = ({ item }: any) => (
-    <TouchableOpacity style={styles.consultationCard}>
-      <View style={styles.consultationIcon}>
-        <Ionicons name="document-text" size={24} color="#2563eb" />
+  const renderConsultationCard = (item: any) => (
+    <View key={item._id} style={styles.consultationCard}>
+      <View style={styles.consultationHeader}>
+        <View style={styles.doctorInfo}>
+          <View style={styles.doctorAvatar}>
+            <Ionicons name="person" size={20} color="#3b82f6" />
+          </View>
+          <View>
+            <Text style={styles.doctorName}>Dr. Samantha Perera</Text>
+            <Text style={styles.specialtyText}>General Physician</Text>
+          </View>
+        </View>
+        <View style={styles.statusBadge}>
+          <Text style={styles.statusText}>Complete</Text>
+        </View>
       </View>
-      <View style={styles.consultationInfo}>
-        <Text style={styles.consultationTitle}>Consultation #{item._id.slice(-6)}</Text>
-        <Text style={styles.consultationDate}>
-          {new Date(item.createdAt).toLocaleDateString()}
-        </Text>
+      
+      <View style={styles.consultationDetails}>
+        <View style={styles.detailItem}>
+          <Feather name="calendar" size={14} color="#64748b" />
+          <Text style={styles.detailText}>{new Date(item.createdAt).toLocaleDateString()}</Text>
+        </View>
+        <View style={styles.detailItem}>
+          <Feather name="hash" size={14} color="#64748b" />
+          <Text style={styles.detailText}>ID: #{item._id.slice(-6)}</Text>
+        </View>
       </View>
+
       <TouchableOpacity 
         style={styles.useButton}
         onPress={() => {
-          const extractedMedicines = extractMedicinesFromConsultation(item);
-          setMedicines([...medicines, ...extractedMedicines]);
+          const mockMeds = ['Paracetamol', 'Amoxicillin']; // Simplified for demo
+          setMedicines([...new Set([...medicines, ...mockMeds])]);
         }}
       >
-        <Text style={styles.useButtonText}>Use</Text>
+        <Text style={styles.useButtonText}>Use These Medicines</Text>
+        <Ionicons name="add" size={16} color="#ffffff" />
       </TouchableOpacity>
-    </TouchableOpacity>
+    </View>
   );
 
-  const extractMedicinesFromConsultation = (consultation: any): string[] => {
-    const mockMedicines = ['Paracetamol', 'Amoxicillin', 'Vitamin C'];
-    return mockMedicines;
-  };
-
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
+    <View style={[styles.container, { paddingTop: Math.max(insets.top, 20) }]}>
+      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Ionicons name="chevron-back" size={24} color="#222" />
+          <Ionicons name="chevron-back" size={24} color="#1e293b" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Share Prescription</Text>
-        <View style={{ width: 40 }} />
+        <TouchableOpacity style={styles.historyButton}>
+          <Ionicons name="time-outline" size={24} color="#3b82f6" />
+        </TouchableOpacity>
       </View>
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>📝 Add Medicines</Text>
-          <Text style={styles.sectionSubtitle}>
-            Enter medicines from your prescription
-          </Text>
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 150 }}>
+        
+        {/* Step Guide */}
+        <View style={styles.guideSection}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.guideScroll}>
+            <View style={[styles.guideCard, { backgroundColor: '#eff6ff' }]}>
+              <View style={styles.guideIcon}>
+                <Ionicons name="camera" size={20} color="#3b82f6" />
+              </View>
+              <Text style={styles.guideText}>1. Upload Photo or Add Medicines</Text>
+            </View>
+            <View style={[styles.guideCard, { backgroundColor: '#f0fdf4' }]}>
+              <View style={styles.guideIcon}>
+                <Ionicons name="search" size={20} color="#10b981" />
+              </View>
+              <Text style={styles.guideText}>2. We match with Pharmacies</Text>
+            </View>
+            <View style={[styles.guideCard, { backgroundColor: '#fef3c7' }]}>
+              <View style={styles.guideIcon}>
+                <Ionicons name="cart" size={20} color="#f59e0b" />
+              </View>
+              <Text style={styles.guideText}>3. Order and Get Delivered</Text>
+            </View>
+          </ScrollView>
+        </View>
 
-          <View style={styles.inputContainer}>
+        {/* Prescription Upload Section */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Prescription Photo</Text>
+          <TouchableOpacity style={styles.uploadCard}>
+            <View style={styles.uploadIconContainer}>
+              <Ionicons name="cloud-upload-outline" size={32} color="#3b82f6" />
+            </View>
+            <Text style={styles.uploadTitle}>Upload or Take Photo</Text>
+            <Text style={styles.uploadSubtitle}>Supports JPG, PNG or PDF (Max 5MB)</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.divider}>
+          <View style={styles.line} />
+          <Text style={styles.dividerText}>OR ADD MANUALLY</Text>
+          <View style={styles.line} />
+        </View>
+
+        {/* Manual Medicine Entry */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Add Medicines</Text>
+          <View style={styles.inputWrapper}>
+            <Ionicons name="medkit-outline" size={20} color="#94a3b8" style={styles.inputIcon} />
             <TextInput
               style={styles.input}
-              placeholder="Enter medicine name..."
-              placeholderTextColor="#94a3b8"
+              placeholder="e.g. Panadol 500mg"
               value={newMedicine}
               onChangeText={setNewMedicine}
               onSubmitEditing={addMedicine}
             />
-            <TouchableOpacity style={styles.addButton} onPress={addMedicine}>
+            <TouchableOpacity onPress={addMedicine} style={styles.addMedicineBtn}>
               <Ionicons name="add" size={24} color="#ffffff" />
             </TouchableOpacity>
           </View>
 
           {medicines.length > 0 && (
-            <View style={styles.medicinesContainer}>
+            <View style={styles.chipsContainer}>
               {medicines.map((med, index) => (
-                <View key={index} style={styles.medicineChip}>
-                  <Text style={styles.medicineChipText}>💊 {med}</Text>
+                <View key={index} style={styles.chip}>
+                  <Text style={styles.chipText}>{med}</Text>
                   <TouchableOpacity onPress={() => removeMedicine(index)}>
-                    <Ionicons name="close-circle" size={20} color="#ef4444" />
+                    <Ionicons name="close-circle" size={18} color="#3b82f6" />
                   </TouchableOpacity>
                 </View>
               ))}
@@ -141,70 +199,50 @@ export default function SharePrescriptionScreen() {
           )}
         </View>
 
+        {/* Recent Consultations */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Recent Consultations</Text>
+            <TouchableOpacity>
+              <Text style={styles.seeAllLink}>See All</Text>
+            </TouchableOpacity>
+          </View>
+          
+          {consultations.length > 0 ? (
+            consultations.slice(0, 3).map(renderConsultationCard)
+          ) : (
+            <View style={styles.emptyState}>
+              <Ionicons name="document-text-outline" size={48} color="#cbd5e1" />
+              <Text style={styles.emptyText}>No recent consultations found</Text>
+            </View>
+          )}
+        </View>
+
+      </ScrollView>
+
+      {/* Bottom Bar */}
+      <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 20) }]}>
+        <View style={styles.summaryRow}>
+          <View style={styles.countBadge}>
+            <Text style={styles.countText}>{medicines.length}</Text>
+          </View>
+          <Text style={styles.summaryText}>Medicines listed for matching</Text>
+        </View>
         <TouchableOpacity 
-          style={[styles.searchButton, medicines.length === 0 && styles.searchButtonDisabled]}
+          style={[styles.mainButton, medicines.length === 0 && styles.disabledButton]}
           onPress={searchPharmacies}
           disabled={medicines.length === 0 || isSearching}
         >
           {isSearching ? (
-            <ActivityIndicator color="#ffffff" />
+            <ActivityIndicator color="#ffffff" size="small" />
           ) : (
             <>
-              <Ionicons name="search" size={20} color="#ffffff" />
-              <Text style={styles.searchButtonText}>Find Pharmacies</Text>
+              <Text style={styles.buttonText}>Find Matching Pharmacies</Text>
+              <Ionicons name="sparkles" size={18} color="#ffffff" />
             </>
           )}
         </TouchableOpacity>
-
-        <View style={styles.divider}>
-          <View style={styles.dividerLine} />
-          <Text style={styles.dividerText}>OR</Text>
-          <View style={styles.dividerLine} />
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>📋 Recent Consultations</Text>
-          <Text style={styles.sectionSubtitle}>
-            Use medicines from your past consultations
-          </Text>
-
-          {consultations.length > 0 ? (
-            <FlatList
-              data={consultations.slice(0, 5)}
-              keyExtractor={(item) => item._id}
-              renderItem={renderConsultation}
-              scrollEnabled={false}
-            />
-          ) : (
-            <View style={styles.emptyConsultations}>
-              <Ionicons name="document-text-outline" size={48} color="#cbd5e1" />
-              <Text style={styles.emptyText}>No consultations yet</Text>
-            </View>
-          )}
-        </View>
-      </ScrollView>
-
-      {medicines.length > 0 && (
-        <View style={[styles.bottomBar, { paddingBottom: insets.bottom + 10 }]}>
-          <View style={styles.medicineCount}>
-            <Text style={styles.medicineCountText}>{medicines.length} medicine{medicines.length !== 1 ? 's' : ''} selected</Text>
-          </View>
-          <TouchableOpacity 
-            style={styles.floatingSearchButton}
-            onPress={searchPharmacies}
-            disabled={isSearching}
-          >
-            {isSearching ? (
-              <ActivityIndicator color="#ffffff" />
-            ) : (
-              <>
-                <Ionicons name="search" size={20} color="#ffffff" />
-                <Text style={styles.floatingSearchText}>Search Pharmacies</Text>
-              </>
-            )}
-          </TouchableOpacity>
-        </View>
-      )}
+      </View>
     </View>
   );
 }
@@ -212,208 +250,350 @@ export default function SharePrescriptionScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#f8fafc',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f1f1f1',
+    paddingHorizontal: 20,
+    marginBottom: 20,
   },
   backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#f5f5f5',
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    backgroundColor: '#ffffff',
     justifyContent: 'center',
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 5,
+    elevation: 2,
   },
   headerTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#222',
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#0f172a',
+  },
+  historyButton: {
+    padding: 8,
   },
   content: {
     flex: 1,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
+  },
+  guideSection: {
+    marginBottom: 24,
+  },
+  guideScroll: {
+    gap: 12,
+  },
+  guideCard: {
+    width: 200,
+    padding: 16,
+    borderRadius: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  guideIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#ffffff',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  guideText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#1e293b',
+    flex: 1,
   },
   section: {
-    marginTop: 24,
+    marginBottom: 24,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: '700',
-    color: '#222',
-    marginBottom: 4,
+    fontWeight: '800',
+    color: '#0f172a',
+    marginBottom: 12,
   },
-  sectionSubtitle: {
+  seeAllLink: {
     fontSize: 14,
-    color: '#64748b',
-    marginBottom: 16,
+    fontWeight: '700',
+    color: '#3b82f6',
   },
-  inputContainer: {
-    flexDirection: 'row',
-    gap: 10,
-  },
-  input: {
-    flex: 1,
-    height: 48,
-    backgroundColor: '#f5f5f5',
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    fontSize: 16,
-    color: '#222',
-  },
-  addButton: {
-    width: 48,
-    height: 48,
-    backgroundColor: '#2563eb',
-    borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  medicinesContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-    marginTop: 16,
-  },
-  medicineChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    backgroundColor: '#eff6ff',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+  uploadCard: {
+    height: 140,
+    backgroundColor: '#ffffff',
     borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#bfdbfe',
-  },
-  medicineChipText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#1e40af',
-  },
-  searchButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#e2e8f0',
+    borderStyle: 'dashed',
     justifyContent: 'center',
-    gap: 8,
-    backgroundColor: '#2ECC71',
-    marginTop: 24,
-    paddingVertical: 14,
-    borderRadius: 12,
+    alignItems: 'center',
+    padding: 20,
   },
-  searchButtonDisabled: {
-    backgroundColor: '#cbd5e1',
+  uploadIconContainer: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#eff6ff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12,
   },
-  searchButtonText: {
+  uploadTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#ffffff',
+    color: '#1e293b',
+  },
+  uploadSubtitle: {
+    fontSize: 12,
+    color: '#64748b',
+    marginTop: 4,
   },
   divider: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 24,
+    marginBottom: 24,
+    gap: 10,
   },
-  dividerLine: {
+  line: {
     flex: 1,
     height: 1,
     backgroundColor: '#e2e8f0',
   },
   dividerText: {
-    paddingHorizontal: 16,
-    fontSize: 12,
-    fontWeight: '600',
+    fontSize: 11,
+    fontWeight: '800',
     color: '#94a3b8',
+    letterSpacing: 1,
   },
-  consultationCard: {
+  inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f8fafc',
-    padding: 12,
-    borderRadius: 12,
-    marginBottom: 8,
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    height: 56,
+    paddingLeft: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    elevation: 3,
   },
-  consultationIcon: {
+  inputIcon: {
+    marginRight: 10,
+  },
+  input: {
+    flex: 1,
+    fontSize: 16,
+    color: '#1e293b',
+    fontWeight: '500',
+  },
+  addMedicineBtn: {
     width: 44,
     height: 44,
-    backgroundColor: '#eff6ff',
     borderRadius: 12,
+    backgroundColor: '#3b82f6',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 6,
+  },
+  chipsContainer: {
+    marginTop: 16,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+  },
+  chip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#eff6ff',
+    paddingLeft: 14,
+    paddingRight: 8,
+    paddingVertical: 8,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#dbeafe',
+    gap: 6,
+  },
+  chipText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#1d4ed8',
+  },
+  consultationCard: {
+    backgroundColor: '#ffffff',
+    borderRadius: 20,
+    padding: 16,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.03,
+    shadowRadius: 10,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#f1f5f9',
+  },
+  consultationHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 12,
+  },
+  doctorInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  doctorAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: '#eff6ff',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  consultationInfo: {
-    flex: 1,
-    marginLeft: 12,
+  doctorName: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: '#1e293b',
   },
-  consultationTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#222',
-  },
-  consultationDate: {
+  specialtyText: {
     fontSize: 12,
     color: '#64748b',
-    marginTop: 2,
+    fontWeight: '500',
   },
-  useButton: {
-    backgroundColor: '#2563eb',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+  statusBadge: {
+    backgroundColor: '#f0fdf4',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
     borderRadius: 8,
   },
-  useButtonText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#ffffff',
+  statusText: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#16a34a',
   },
-  emptyConsultations: {
+  consultationDetails: {
+    flexDirection: 'row',
+    gap: 16,
+    marginBottom: 16,
+  },
+  detailItem: {
+    flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 32,
+    gap: 6,
+  },
+  detailText: {
+    fontSize: 12,
+    color: '#64748b',
+    fontWeight: '600',
+  },
+  useButton: {
+    backgroundColor: '#0f172a',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 44,
+    borderRadius: 12,
+    gap: 8,
+  },
+  useButtonText: {
+    color: '#ffffff',
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  emptyState: {
+    alignItems: 'center',
+    paddingVertical: 30,
+    backgroundColor: '#ffffff',
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#f1f5f9',
   },
   emptyText: {
     fontSize: 14,
     color: '#94a3b8',
-    marginTop: 8,
+    marginTop: 10,
+    fontWeight: '600',
   },
-  bottomBar: {
-    paddingHorizontal: 16,
-    paddingTop: 12,
+  footer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
     backgroundColor: '#ffffff',
-    borderTopWidth: 1,
-    borderTopColor: '#f1f1f1',
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -10 },
+    shadowOpacity: 0.1,
+    shadowRadius: 20,
+    elevation: 10,
   },
-  medicineCount: {
+  summaryRow: {
+    flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    gap: 10,
+    marginBottom: 16,
+    justifyContent: 'center',
   },
-  medicineCountText: {
+  countBadge: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#eff6ff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#3b82f6',
+  },
+  countText: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#3b82f6',
+  },
+  summaryText: {
     fontSize: 14,
     fontWeight: '600',
     color: '#64748b',
   },
-  floatingSearchButton: {
+  mainButton: {
+    height: 60,
+    backgroundColor: '#2563eb',
+    borderRadius: 20,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
-    backgroundColor: '#2ECC71',
-    paddingVertical: 14,
-    borderRadius: 24,
-    shadowColor: '#2ECC71',
-    shadowOffset: { width: 0, height: 4 },
+    gap: 12,
+    shadowColor: '#2563eb',
+    shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 4,
+    shadowRadius: 12,
+    elevation: 6,
   },
-  floatingSearchText: {
-    fontSize: 16,
-    fontWeight: '700',
+  disabledButton: {
+    backgroundColor: '#cbd5e1',
+    shadowOpacity: 0,
+    elevation: 0,
+  },
+  buttonText: {
     color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '800',
   },
 });
