@@ -18,21 +18,24 @@ type Props = {
 };
 
 export default function SplashScreen({ navigation }: Props) {
+  // Shared values for Reanimated (Scale starts slightly smaller, opacity starts at 0)
   const scale = useSharedValue(0.9);
   const opacity = useSharedValue(0);
 
   useEffect(() => {
-    // animation
+    // Trigger entry animations immediately on mount
     scale.value = withTiming(1, { duration: 800 });
     opacity.value = withTiming(1, { duration: 800 });
 
+    // Hold the splash screen for 2.2 seconds, then transition to Welcome screen
     const timer = setTimeout(() => {
-      navigation.replace("Welcome");
+      navigation.replace("Welcome"); // 'replace' prevents the user from going back to the splash
     }, 2200);
 
+    // Clean up the timer if the component unmounts early
     return () => clearTimeout(timer);
   }, [navigation, opacity, scale]);
-
+  // Define the animated styles to be applied to the View and Text
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
     opacity: opacity.value,
@@ -71,6 +74,7 @@ export default function SplashScreen({ navigation }: Props) {
   );
 }
 
+//Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -112,3 +116,5 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
+
+//Added by Nadithi
