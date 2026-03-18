@@ -9,7 +9,7 @@ export default function NlpMedicineScreen() {
 
   const extractMedicines = async () => {
     try {
-      const res = await axios.post("http://localhost:5001/nlp/extract", {
+      const res = await axios.post("http://10.31.13.194:5001/nlp/extract", {
         text: text
       });
 

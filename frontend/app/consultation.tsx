@@ -9,7 +9,7 @@ import {
   ActivityIndicator
 } from "react-native";
 
-import { useNlp } from "../hooks/useNlp";
+import { useNlp } from "@/hooks/useNlp";
 
 export default function ConsultationScreen() {
 
