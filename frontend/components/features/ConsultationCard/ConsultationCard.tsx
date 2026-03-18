@@ -9,7 +9,7 @@ interface Props {
 
 const ConsultationCard: React.FC<Props> = ({ consultationId }) => {
   const dispatch = useAppDispatch();
-  const { paragraphs, loading, error } = useAppSelector(
+  const { activeConsultationParagraphs, status, error } = useAppSelector(
     (state) => state.consultation
   );
 
@@ -18,7 +18,7 @@ const ConsultationCard: React.FC<Props> = ({ consultationId }) => {
   }, [consultationId]); // ✅ re-fetches if ID changes
 
   // Loading state
-  if (loading) {
+  if (status === 'loading') {
     return (
       <View style={styles.centered}>
         <ActivityIndicator size="large" color="#2563eb" />
@@ -38,7 +38,7 @@ const ConsultationCard: React.FC<Props> = ({ consultationId }) => {
   // Paragraphs display
   return (
     <View style={styles.container}>
-      {paragraphs.map((paragraph, index) => (
+      {activeConsultationParagraphs.map((paragraph: string, index: number) => (
         <View key={index} style={styles.block}>
           <Text style={styles.speakerLabel}>Speaker {index + 1}</Text>
           <Text style={styles.text}>{paragraph}</Text>

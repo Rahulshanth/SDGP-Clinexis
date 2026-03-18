@@ -14,9 +14,9 @@ const LiveTranscript = () => {
   return (
     <View>
       {consultations.map((consult) =>
-        consult.transcript.map((paragraph, index) => (
+        consult.conversationParagraphs.map((paragraph: string, index: number) => (
           <Text key={index} style={{ marginBottom: 10 }}>
-            {paragraph.text}
+            {paragraph}
           </Text>
         ))
       )}
