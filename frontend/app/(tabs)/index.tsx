@@ -1,4 +1,53 @@
-import { View, Text } from 'react-native';
+import { View, Text, TextInput, Button } from 'react-native';
+import { useState } from 'react';
+import { extractMedicines } from '../../services/nlpApi';
+
+export default function HomeScreen() {
+  const [text, setText] = useState('');
+  const [medicines, setMedicines] = useState<string[]>([]);
+
+  const handleExtract = async () => {
+    try {
+      const data = await extractMedicines(text);
+      setMedicines(data.medicines);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  return (
+    <View style={{ padding: 20 }}>
+      <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+        Medicine Extractor
+      </Text>
+
+      <TextInput
+        placeholder="Enter prescription..."
+        value={text}
+        onChangeText={setText}
+        multiline
+        style={{
+          borderWidth: 1,
+          marginTop: 10,
+          padding: 10,
+          height: 120
+        }}
+      />
+
+      <Button title="Extract Medicines" onPress={handleExtract} />
+
+      <Text style={{ marginTop: 20, fontWeight: 'bold' }}>Results:</Text>
+
+      {medicines.map((med, index) => (
+        <Text key={index}>• {med}</Text>
+      ))}
+    </View>
+  );
+}
+
+
+
+/*import { View, Text } from 'react-native';
 
 export default function HomeScreen() {
   return (
@@ -16,7 +65,7 @@ export default function HomeScreen() {
                                 // Once we connect our real navigation/ folder, this file also gets deleted.
 
 
-/*import { Image } from 'expo-image';
+import { Image } from 'expo-image';
 import { Platform, StyleSheet } from 'react-native';
 
 import { HelloWave } from '@/components/hello-wave';
@@ -114,4 +163,3 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
 });*/
-
