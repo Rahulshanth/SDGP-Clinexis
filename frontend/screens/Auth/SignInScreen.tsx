@@ -140,10 +140,10 @@ export default function SignInScreen({ navigation, route }: Props) {
               ]}
             >
 
-              <Image
+              {/*<Image
                 source={require("../../assets/images/ClinexisLogo.png")}
                 style={styles.logo}
-              />
+              />*/}
 
               <Text style={styles.title}>Sign In</Text>
 
@@ -317,32 +317,35 @@ const styles = StyleSheet.create({
     backgroundColor: PANEL_BLUE,
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
-    padding: 24,
+    paddingBottom: 78,
+    paddingHorizontal: 24,
+    paddingTop: 75,
   },
 
-  logo: {
+  /*logo: {
     width: 70,
     height: 70,
     alignSelf: "center",
     marginBottom: 10,
-  },
+  },*/
 
   title: {
-    fontSize: 28,
+    fontSize: 30,
     fontWeight: "800",
     textAlign: "center",
     color: BLUE,
+    marginBottom: 10,
   },
 
   subtitle: {
     textAlign: "center",
     color: "#6B7280",
-    marginBottom: 5,
+    marginBottom: 7,
   },
 
   profileText: {
     textAlign: "center",
-    marginBottom: 18,
+    marginBottom: 20,
     color: "#374151",
   },
 
