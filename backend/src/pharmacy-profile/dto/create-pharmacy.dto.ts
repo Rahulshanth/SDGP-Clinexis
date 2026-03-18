@@ -1,9 +1,14 @@
 // Import validation decorators from class-validator
-import { IsString, IsNotEmpty, IsEmail, IsArray, IsOptional } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsEmail,
+  IsArray,
+  IsOptional,
+} from 'class-validator';
 
 // DTO used when creating a new pharmacy
 export class CreatePharmacyDto {
-
   // Pharmacy name (required string)
   @IsString()
   @IsNotEmpty()
