@@ -23,6 +23,7 @@ import * as Haptics from "expo-haptics";
 import { AuthStackParamList } from "../../navigation/AuthNavigator";
 import { signInUser } from "../../services/authApi";
 
+
 type Props = NativeStackScreenProps<AuthStackParamList, "SignIn">;
 
 const BLUE = "#2EA8FF";
@@ -268,7 +269,9 @@ export default function SignInScreen({ navigation, route }: Props) {
                 </TouchableOpacity>
               </View>
 
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("ForgotPasswordEmail")}
+              >
                 <Text style={styles.forgot}>Forgot password?</Text>
               </TouchableOpacity>
 
