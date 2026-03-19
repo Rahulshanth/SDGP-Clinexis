@@ -53,7 +53,7 @@ export default function SplashScreen({ navigation }: Props) {
           {/* Animated Logo */}
           <Animated.View style={[styles.logoWrapper, animatedStyle]}>
             <Image
-              source={require("../../assets/images/ClinexisLogo.png")}
+              source={require("../../assets/images/Logo.png")}
               style={styles.logo}
               resizeMode="contain"
             />

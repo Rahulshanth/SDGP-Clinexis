@@ -289,3 +289,5 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
 });
+
+//Added by Nadithi

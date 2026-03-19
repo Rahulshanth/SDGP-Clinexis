@@ -15,7 +15,7 @@ const ConsultationCard: React.FC<Props> = ({ consultationId }) => {
 
   useEffect(() => {
     dispatch(fetchConsultationById(consultationId));
-  }, [consultationId, dispatch]); // ✅ re-fetches if ID changes
+  }, [consultationId, dispatch]); // re-fetches if ID changes
 
   // Loading state
   if (status === 'loading') {
