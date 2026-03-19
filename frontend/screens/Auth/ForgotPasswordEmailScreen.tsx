@@ -113,6 +113,16 @@ export default function ForgotPasswordEmailScreen({ navigation }: Props) {
             contentContainerStyle={styles.scrollContent}
             keyboardShouldPersistTaps="handled"
           >
+
+            {/* FLOATING LOGO */}
+            <View style={styles.logoFloating}>
+              <Image
+                source={require("../../assets/images/Logo.png")}
+                style={styles.logo}
+                resizeMode="contain"
+              />
+            </View>
+
             <Animated.View
               style={[
                 styles.card,
@@ -122,11 +132,6 @@ export default function ForgotPasswordEmailScreen({ navigation }: Props) {
                 },
               ]}
             >
-              <Image
-                source={require("../../assets/images/ClinexisLogo.png")}
-                style={styles.logo}
-                resizeMode="contain"
-              />
 
               <Text style={styles.title}>Forgot Password</Text>
 
@@ -143,6 +148,7 @@ export default function ForgotPasswordEmailScreen({ navigation }: Props) {
                 <View style={styles.dot} />
               </View>
 
+              {/* INPUT */}
               <View
                 style={[
                   styles.inputWrapper,
@@ -189,6 +195,7 @@ export default function ForgotPasswordEmailScreen({ navigation }: Props) {
                 />
               </View>
 
+              {/* BUTTON */}
               <Animated.View style={{ transform: [{ scale: buttonScale }] }}>
                 <Pressable
                   onPress={handleSendConfirmation}
@@ -203,6 +210,7 @@ export default function ForgotPasswordEmailScreen({ navigation }: Props) {
                 </Pressable>
               </Animated.View>
 
+              {/* BACK */}
               <TouchableOpacity
                 style={styles.backRow}
                 onPress={() => navigation.navigate("SignIn", { role: "patient" })}
@@ -210,7 +218,9 @@ export default function ForgotPasswordEmailScreen({ navigation }: Props) {
                 <Ionicons name="arrow-back" size={16} color={BLUE} />
                 <Text style={styles.backText}>Back to Sign In</Text>
               </TouchableOpacity>
+
             </Animated.View>
+
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
@@ -249,15 +259,8 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
     paddingHorizontal: 24,
-    paddingTop: 24,
-    paddingBottom: 34,
-  },
-
-  logo: {
-    width: 70,
-    height: 70,
-    alignSelf: "center",
-    marginBottom: 10,
+    paddingTop: 80,
+    paddingBottom: 78,
   },
 
   title: {
@@ -381,4 +384,18 @@ const styles = StyleSheet.create({
     color: BLUE,
     fontWeight: "700",
   },
+
+  logoFloating: {
+  alignItems: "center",
+  position: "absolute",
+  top: 190,
+  width: "100%",
+  zIndex: 10,
+},
+
+logo: {
+  width: 200,
+  height: 200,
+  borderRadius: 60,
+},
 });
