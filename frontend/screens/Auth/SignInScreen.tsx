@@ -131,13 +131,6 @@ export default function SignInScreen({ navigation, route }: Props) {
         >
           <ScrollView contentContainerStyle={styles.scrollContent}>
 
-            {/* FLOATING LOGO */}
-            <View style={styles.logoFloating}>
-              <Image
-                source={require("../../assets/images/Logo.png")}
-                style={styles.logo}
-              />
-            </View>
 
             <Animated.View
               style={[
@@ -148,6 +141,14 @@ export default function SignInScreen({ navigation, route }: Props) {
                 },
               ]}
             >
+
+              {/* FLOATING LOGO */}
+              <View style={styles.logoFloating}>
+                <Image
+                  source={require("../../assets/images/Logo.png")}
+                  style={styles.logo}
+                />
+              </View>
 
               <Text style={styles.title}>Sign In</Text>
 
@@ -443,10 +444,9 @@ const styles = StyleSheet.create({
   },
 
   logoFloating: {
-    alignItems: "center",
     position: "absolute",
-    top: 90, // controls how much it pops out
-    width: "100%",
+    top: -100,
+    alignSelf: "center",
     zIndex: 10,
   },
 

@@ -114,15 +114,6 @@ export default function ForgotPasswordEmailScreen({ navigation }: Props) {
             keyboardShouldPersistTaps="handled"
           >
 
-            {/* FLOATING LOGO */}
-            <View style={styles.logoFloating}>
-              <Image
-                source={require("../../assets/images/Logo.png")}
-                style={styles.logo}
-                resizeMode="contain"
-              />
-            </View>
-
             <Animated.View
               style={[
                 styles.card,
@@ -132,6 +123,14 @@ export default function ForgotPasswordEmailScreen({ navigation }: Props) {
                 },
               ]}
             >
+
+              {/* FLOATING LOGO */}
+              <View style={styles.logoFloating}>
+                <Image
+                  source={require("../../assets/images/Logo.png")}
+                  style={styles.logo}
+                />
+              </View>
 
               <Text style={styles.title}>Forgot Password</Text>
 
@@ -386,16 +385,15 @@ const styles = StyleSheet.create({
   },
 
   logoFloating: {
-  alignItems: "center",
-  position: "absolute",
-  top: 190,
-  width: "100%",
-  zIndex: 10,
-},
+    position: "absolute",
+    top: -100,
+    alignSelf: "center",
+    zIndex: 10,
+  },
 
-logo: {
-  width: 200,
-  height: 200,
-  borderRadius: 60,
-},
+  logo: {
+    width: 200,
+    height: 200,
+    borderRadius: 60,
+  },
 });

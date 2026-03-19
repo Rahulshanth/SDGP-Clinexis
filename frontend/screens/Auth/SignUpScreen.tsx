@@ -129,14 +129,6 @@ export default function SignUpScreen({ navigation, route }: Props) {
           <ScrollView contentContainerStyle={styles.scrollContent}>
 
             {/* FLOATING LOGO */}
-            <View style={styles.logoFloating}>
-              <Image
-                source={require("../../assets/images/Logo.png")}
-                style={styles.logo}
-                resizeMode="contain"
-              />
-            </View>
-
             <Animated.View
               style={[
                 styles.card,
@@ -146,6 +138,14 @@ export default function SignUpScreen({ navigation, route }: Props) {
                 },
               ]}
             >
+
+              {/* FLOATING LOGO */}
+              <View style={styles.logoFloating}>
+                <Image
+                  source={require("../../assets/images/Logo.png")}
+                  style={styles.logo}
+                />
+              </View>
 
               <Text style={styles.title}>Sign Up</Text>
 
@@ -380,19 +380,18 @@ const styles = StyleSheet.create({
   },
 
   logoFloating: {
-  alignItems: "center",
-  position: "absolute",
-  top: 90,
-  width: "100%",
-  zIndex: 10,
-},
+    position: "absolute",
+    top: -100,
+    alignSelf: "center",
+    zIndex: 10,
+  },
 
-logo: {
-  width: 200,
-  height: 200,
-  borderRadius: 60,
-  padding: 12,
-},
+  logo: {
+    width: 200,
+    height: 200,
+    borderRadius: 60,
+    padding: 12,
+  },
 });
 
 //Added by Rivithi & Editted by Nadithi

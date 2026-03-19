@@ -12,6 +12,7 @@ import {
   Text,
   TextInput,
   View,
+  Image,
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { LinearGradient } from "expo-linear-gradient";
@@ -137,7 +138,17 @@ export default function ResetPasswordScreen({ navigation }: Props) {
                 },
               ]}
             >
-              <Text style={styles.title}>Create New Password</Text>
+
+              {/* FLOATING LOGO */}
+              <View style={styles.logoFloating}>
+                <Image
+                  source={require("../../assets/images/Logo.png")}
+                  style={styles.logo}
+                  resizeMode="contain"
+                />
+              </View>
+
+  <Text style={styles.title}>Create New Password</Text>
 
               {/* PASSWORD */}
               <View
@@ -244,6 +255,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     justifyContent: "flex-end",
+    paddingTop: 100, // space for logo
   },
 
   card: {
@@ -251,7 +263,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
     paddingHorizontal: 24,
-    paddingTop: 60,
+    paddingTop: 90, // space for floating logo
     paddingBottom: 40,
   },
 
@@ -351,52 +363,64 @@ input: {
     textDecorationLine: "underline",
   },
 
-checkItem: {
-  fontSize: 12,
-  color: "#9CA3AF",
-  marginBottom: 2,
-},
+  checkItem: {
+    fontSize: 12,
+    color: "#9CA3AF",
+    marginBottom: 2,
+  },
 
-checkDone: {
-  color: "green",
-},
+  checkDone: {
+    color: "green",
+  },
 
-checklist: {
-  marginBottom: 16,
-},
+  checklist: {
+    marginBottom: 16,
+  },
 
-ruleRow: {
-  flexDirection: "row",
-  alignItems: "center",
-  gap: 6,
-  marginBottom: 4,
-},
+  ruleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginBottom: 4,
+  },
 
-match: {
-  borderWidth: 1.5,
-  borderColor: "green",
-},
+  match: {
+    borderWidth: 1.5,
+    borderColor: "green",
+  },
 
-noMatch: {
-  borderWidth: 1.5,
-  borderColor: "red",
-},
+  noMatch: {
+    borderWidth: 1.5,
+    borderColor: "red",
+  },
 
-overlay: {
-  position: "absolute",
-  width: "100%",
-  height: "100%",
-  backgroundColor: "#00000060",
-  justifyContent: "center",
-  alignItems: "center",
-},
+  overlay: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    backgroundColor: "#00000060",
+    justifyContent: "center",
+    alignItems: "center",
+  },
 
-successBox: {
-  backgroundColor: "white",
-  padding: 25,
-  borderRadius: 20,
-  alignItems: "center",
-},
+  successBox: {
+    backgroundColor: "white",
+    padding: 25,
+    borderRadius: 20,
+    alignItems: "center",
+  },
+  logoFloating: {
+    position: "absolute",
+    top: -100,
+    alignSelf: "center",
+    zIndex: 10,
+  },
+
+  logo: {
+    width: 200,
+    height: 200,
+    borderRadius: 60,
+  },
 });
 
 //Added by Rivithi &. Edited by Nadithi
