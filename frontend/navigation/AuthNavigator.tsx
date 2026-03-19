@@ -43,18 +43,9 @@ export default function AuthNavigator() {
       <Stack.Screen name="SignIn" component={SignInScreen} />
       <Stack.Screen name="SignUp" component={SignUpScreen} />
 
-      <Stack.Screen
-        name="ForgotPasswordEmail"
-        component={ForgotPasswordEmailScreen}
-      />
-      <Stack.Screen
-        name="ForgotPasswordOtp"
-        component={ForgotPasswordOtpScreen}
-      />
-      <Stack.Screen
-        name="ResetPassword"
-        component={ResetPasswordScreen}
-      />
+      <Stack.Screen name="ForgotPasswordEmail" component={ForgotPasswordEmailScreen}/>
+      <Stack.Screen name="ForgotPasswordOtp" component={ForgotPasswordOtpScreen} />
+      <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
     </Stack.Navigator>
   );
 }

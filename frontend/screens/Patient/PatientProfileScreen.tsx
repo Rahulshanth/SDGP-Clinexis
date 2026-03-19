@@ -76,4 +76,4 @@ const styles = StyleSheet.create({
 
 export default PatientProfileScreen;
 
-//Edited by Nadithi
+//Added by Nadithi
