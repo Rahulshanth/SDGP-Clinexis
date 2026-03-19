@@ -14,6 +14,7 @@ import {
   Animated,
   Easing,
   Pressable,
+  Image,
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { LinearGradient } from "expo-linear-gradient";
@@ -130,6 +131,14 @@ export default function SignInScreen({ navigation, route }: Props) {
         >
           <ScrollView contentContainerStyle={styles.scrollContent}>
 
+            {/* FLOATING LOGO */}
+            <View style={styles.logoFloating}>
+              <Image
+                source={require("../../assets/images/Logo.png")}
+                style={styles.logo}
+              />
+            </View>
+
             <Animated.View
               style={[
                 styles.card,
@@ -139,11 +148,6 @@ export default function SignInScreen({ navigation, route }: Props) {
                 },
               ]}
             >
-
-              {/*<Image
-                source={require("../../assets/images/ClinexisLogo.png")}
-                style={styles.logo}
-              />*/}
 
               <Text style={styles.title}>Sign In</Text>
 
@@ -313,6 +317,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     justifyContent: "flex-end",
+    paddingTop: 100, // gives space for floating logo
   },
 
   card: {
@@ -321,15 +326,8 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 40,
     paddingBottom: 78,
     paddingHorizontal: 24,
-    paddingTop: 75,
+    paddingTop: 90, // increased space for floating logo
   },
-
-  /*logo: {
-    width: 70,
-    height: 70,
-    alignSelf: "center",
-    marginBottom: 10,
-  },*/
 
   title: {
     fontSize: 30,
@@ -442,6 +440,20 @@ const styles = StyleSheet.create({
     backgroundColor: WHITE,
     padding: 20,
     borderRadius: 16,
+  },
+
+  logoFloating: {
+    alignItems: "center",
+    position: "absolute",
+    top: 90, // controls how much it pops out
+    width: "100%",
+    zIndex: 10,
+  },
+
+  logo: {
+    width: 200,
+    height: 200,
+    borderRadius: 60,
   },
 });
 

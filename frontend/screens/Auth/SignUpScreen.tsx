@@ -14,6 +14,7 @@ import {
   Animated,
   Easing,
   Pressable,
+  Image,
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { LinearGradient } from "expo-linear-gradient";
@@ -127,6 +128,15 @@ export default function SignUpScreen({ navigation, route }: Props) {
         >
           <ScrollView contentContainerStyle={styles.scrollContent}>
 
+            {/* FLOATING LOGO */}
+            <View style={styles.logoFloating}>
+              <Image
+                source={require("../../assets/images/Logo.png")}
+                style={styles.logo}
+                resizeMode="contain"
+              />
+            </View>
+
             <Animated.View
               style={[
                 styles.card,
@@ -136,11 +146,6 @@ export default function SignUpScreen({ navigation, route }: Props) {
                 },
               ]}
             >
-
-              {/* <Image
-                source={require("../../assets/images/ClinexisLogo.png")}
-                style={styles.logo}
-              />*/}
 
               <Text style={styles.title}>Sign Up</Text>
 
@@ -195,7 +200,7 @@ export default function SignUpScreen({ navigation, route }: Props) {
                 </TouchableOpacity>
               </View>
 
-              {/*  STRENGTH BAR */}
+              {/* STRENGTH BAR */}
               <View style={styles.strengthBarContainer}>
                 <View
                   style={[
@@ -254,6 +259,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     justifyContent: "flex-end",
+    paddingTop: 100, // important for logo spacing
   },
 
   card: {
@@ -262,15 +268,8 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 40,
     paddingBottom: 60,
     paddingHorizontal: 24,
-    paddingTop: 60,
+    paddingTop: 90, // space for floating logo
   },
-
-  /*logo: {
-    width: 70,
-    height: 70,
-    alignSelf: "center",
-    marginBottom: 10,
-  },*/
 
   title: {
     fontSize: 28,
@@ -379,6 +378,21 @@ const styles = StyleSheet.create({
   height: 6,
   borderRadius: 10,
   },
+
+  logoFloating: {
+  alignItems: "center",
+  position: "absolute",
+  top: 90,
+  width: "100%",
+  zIndex: 10,
+},
+
+logo: {
+  width: 200,
+  height: 200,
+  borderRadius: 60,
+  padding: 12,
+},
 });
 
 //Added by Rivithi & Editted by Nadithi
