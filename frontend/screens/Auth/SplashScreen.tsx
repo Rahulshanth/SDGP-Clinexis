@@ -5,12 +5,14 @@ import {
   StyleSheet,
   StatusBar,
   SafeAreaView,
+  Text,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
+  Easing,
 } from "react-native-reanimated";
 
 type Props = {
@@ -18,63 +20,71 @@ type Props = {
 };
 
 export default function SplashScreen({ navigation }: Props) {
-  // Shared values for Reanimated (Scale starts slightly smaller, opacity starts at 0)
+  // Animation values
   const scale = useSharedValue(0.9);
   const opacity = useSharedValue(0);
+  const translateY = useSharedValue(30); // start slightly lower
 
   useEffect(() => {
-    // Trigger entry animations immediately on mount
-    scale.value = withTiming(1, { duration: 800 });
-    opacity.value = withTiming(1, { duration: 800 });
+    // Smooth entry animation
+    scale.value = withTiming(1, {
+      duration: 800,
+      easing: Easing.out(Easing.exp),
+    });
 
-    // Hold the splash screen for 2.2 seconds, then transition to Welcome screen
+    opacity.value = withTiming(1, {
+      duration: 800,
+    });
+
+    translateY.value = withTiming(0, {
+      duration: 800,
+      easing: Easing.out(Easing.exp),
+    });
+
+    // Navigate after delay
     const timer = setTimeout(() => {
-      navigation.replace("Welcome"); // 'replace' prevents the user from going back to the splash
+      navigation.replace("Welcome");
     }, 2200);
 
-    // Clean up the timer if the component unmounts early
     return () => clearTimeout(timer);
-  }, [navigation, opacity, scale]);
-  // Define the animated styles to be applied to the View and Text
+  }, [navigation, opacity, scale, translateY]);
+
+  // Combined animation style
   const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
+    transform: [
+      { scale: scale.value },
+      { translateY: translateY.value },
+    ],
     opacity: opacity.value,
   }));
 
   return (
     <LinearGradient
-      colors={["#1E3A8A", "#2EA7FF", "#6EC6FF"]} // dark → light → glow
+      colors={["#1E3A8A", "#2EA7FF", "#6EC6FF"]}
       style={styles.container}
     >
       <StatusBar barStyle="light-content" backgroundColor="#1E3A8A" />
 
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.content}>
-          {/* Animated Logo */}
-          <Animated.View style={[styles.logoWrapper, animatedStyle]}>
+          <Animated.View style={[styles.centerContainer, animatedStyle]}>
             <Image
               source={require("../../assets/images/Logo.png")}
               style={styles.logo}
               resizeMode="contain"
             />
+
+            <Text style={styles.tagline}>
+              SMART HEALTHCARE,{"\n"}SIMPLIFIED
+            </Text>
           </Animated.View>
-
-          {/* App Name */}
-          <Animated.Text style={[styles.title, animatedStyle]}>
-            CLINEXIS
-          </Animated.Text>
-
-          {/* Tagline */}
-          <Animated.Text style={[styles.tagline, animatedStyle]}>
-            SMART HEALTHCARE, SIMPLIFIED
-          </Animated.Text>
         </View>
       </SafeAreaView>
     </LinearGradient>
   );
 }
 
-//Styles
+// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -84,37 +94,30 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingBottom: 40, // breathing room
   },
 
   content: {
+    flex: 1,
+    justifyContent: "center",
     alignItems: "center",
   },
 
-  logoWrapper: {
-    marginBottom: 20,
+  centerContainer: {
+    alignItems: "center",
   },
 
   logo: {
-    width: 180,
-    height: 180,
-    borderRadius: 20, // modern rounded
-  },
-
-  title: {
-    fontSize: 34,
-    fontWeight: "800",
-    color: "#ffffff",
-    letterSpacing: 1.5, // tech feel
-    marginBottom: 10,
+    width: 220,
+    height: 220,
+    marginBottom: 15,
   },
 
   tagline: {
     fontSize: 13,
-    color: "#e0f2ff",
-    letterSpacing: 2,
+    color: "#EAF6FF",
     textAlign: "center",
+    letterSpacing: 2.5,
+    lineHeight: 22,
+    opacity: 0.95,
   },
 });
-
-//Added by Nadithi
