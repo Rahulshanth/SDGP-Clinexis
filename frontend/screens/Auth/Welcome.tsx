@@ -1,90 +1,135 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
   StyleSheet,
-  Image,
+  ImageBackground,
   TouchableOpacity,
   SafeAreaView,
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AuthStackParamList } from "../../navigation/AuthNavigator";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+} from "react-native-reanimated";
 
 type Props = NativeStackScreenProps<AuthStackParamList, "Welcome">;
 
 export default function Welcome({ navigation }: Props) {
+  const opacity = useSharedValue(0);
+  const translateY = useSharedValue(30);
+  const scale = useSharedValue(1);
+
+  useEffect(() => {
+    opacity.value = withTiming(1, { duration: 800 });
+    translateY.value = withTiming(0, { duration: 800 });
+  }, [opacity, translateY]);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      opacity: opacity.value,
+      transform: [{ translateY: translateY.value }],
+    };
+  });
+
+  const buttonAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: scale.value }],
+    };
+  });
+
+  const handlePressIn = () => {
+    scale.value = withTiming(0.95, { duration: 100 });
+  };
+
+  const handlePressOut = () => {
+    scale.value = withTiming(1, { duration: 100 });
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        <Image
-          source={require("../../assets/images/ClinexisLogo.png")}
-          style={styles.logo}
-          resizeMode="contain"
-        />
+    <ImageBackground
+      source={require("../../assets/images/welcome_page.png")}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <View style={styles.overlay}>
+        <SafeAreaView style={styles.container}>
+          <Animated.View style={[styles.content, animatedStyle]}>
+            <Text style={styles.title}>Clinexis</Text>
 
-        <Text style={styles.title}>Clinexis</Text>
+            <Text style={styles.subtitle}>
+              Your modern companion for trusted medical care, clear treatment
+              guidance, and everyday health support.
+            </Text>
 
-        <Text style={styles.subtitle}>
-          Your modern companion for trusted medical care, clear treatment
-          guidance, and everyday health support.
-        </Text>
-
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate("ChooseProfile")}
-        >
-          <Text style={styles.buttonText}>Get Started</Text>
-        </TouchableOpacity>
+            <Animated.View style={buttonAnimatedStyle}>
+              <TouchableOpacity
+                style={styles.button}
+                activeOpacity={0.8}
+                onPressIn={handlePressIn}
+                onPressOut={handlePressOut}
+                onPress={() => navigation.navigate("ChooseProfile")}
+              >
+                <Text style={styles.buttonText}>Get Started</Text>
+              </TouchableOpacity>
+            </Animated.View>
+          </Animated.View>
+        </SafeAreaView>
       </View>
-    </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
+
+  overlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.55)", // slightly stronger
+  },
+
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
-    justifyContent: "center",
-    alignItems: "center",
     paddingHorizontal: 24,
+    justifyContent: "center",
   },
 
   content: {
     alignItems: "center",
   },
 
-  logo: {
-    width: 200,
-    height: 200,
-    marginBottom: 20,
-  },
-
   title: {
-    fontSize: 36,
-    fontWeight: "700",
-    color: "#1E2A3A",
-    marginBottom: 10,
+    fontSize: 44,
+    fontWeight: "bold",
+    color: "#ffffff",
+    marginBottom: 16,
+    textAlign: "center",
   },
 
   subtitle: {
+    fontSize: 16,
+    color: "#dddddd",
     textAlign: "center",
-    fontSize: 14,
-    color: "#6B7280",
     marginBottom: 40,
-    lineHeight: 22,
+    lineHeight: 24,
+    maxWidth: 320,
   },
 
   button: {
-    backgroundColor: "#2EA7FF",
-    paddingVertical: 14,
-    paddingHorizontal: 40,
-    borderRadius: 12,
+    backgroundColor: "#3498db",
+    paddingVertical: 16,
+    paddingHorizontal: 50,
+    borderRadius: 14,
+    elevation: 5,
   },
 
   buttonText: {
-    color: "#FFFFFF",
+    color: "#ffffff",
     fontSize: 16,
     fontWeight: "600",
   },
 });
-//Edited by Nadithi & Rivithi

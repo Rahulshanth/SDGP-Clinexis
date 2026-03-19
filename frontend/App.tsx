@@ -27,6 +27,3 @@ export default function App() {
     </Provider>
   );
 }
-
-
-                                           //Don't DELETE OR MAKE CHANGES IN THIS
