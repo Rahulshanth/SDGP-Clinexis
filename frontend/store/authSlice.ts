@@ -17,18 +17,18 @@ const initialState: AuthState = {
   error: null,
 };
 
-// Thunk — Login
-export const loginUser = createAsyncThunk(
-  'auth/login',
+// Thunk — SignIn
+export const SignInUser = createAsyncThunk(
+  'auth/SignIn',
   async (credentials: { email: string; password: string }, { rejectWithValue }) => {
     try {
-      const response = await fetch('http://10.0.2.2:3000/auth/login', {
+      const response = await fetch('http://10.0.2.2:3000/auth/SignIn', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credentials),
       });
 
-      if (!response.ok) throw new Error('Login failed');
+      if (!response.ok) throw new Error('SignIn failed');
 
       const data = await response.json();
 
@@ -87,16 +87,16 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(loginUser.pending, (state) => {
+      .addCase(SignInUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(loginUser.fulfilled, (state, action) => {
+      .addCase(SignInUser.fulfilled, (state, action) => {
         state.loading = false;
         state.token = action.payload;
         state.isAuthenticated = true;
       })
-      .addCase(loginUser.rejected, (state, action) => {
+      .addCase(SignInUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })

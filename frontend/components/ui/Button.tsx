@@ -7,6 +7,7 @@ import {
   ViewStyle,
   TextStyle,
 } from "react-native";
+import { colors, spacing, fonts, layout } from "../../theme";
 
 interface ButtonProps {
   title: string;
@@ -25,18 +26,21 @@ const Button: React.FC<ButtonProps> = ({
   style,
   textStyle,
 }) => {
+  const isDisabled = disabled || loading;
+
   return (
     <TouchableOpacity
       style={[
         styles.button,
-        disabled && styles.disabled,
+        isDisabled && styles.disabled,
         style,
       ]}
       onPress={onPress}
-      disabled={disabled || loading}
+      disabled={isDisabled}
+      activeOpacity={0.85}
     >
       {loading ? (
-        <ActivityIndicator color="#fff" />
+        <ActivityIndicator color={colors.white} />
       ) : (
         <Text style={[styles.text, textStyle]}>{title}</Text>
       )}
@@ -48,17 +52,17 @@ export default Button;
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: "#2563eb",
-    paddingVertical: 14,
-    borderRadius: 10,
+    backgroundColor: colors.primary,
+    paddingVertical: spacing.md,
+    borderRadius: layout.radius.md,
     alignItems: "center",
   },
   disabled: {
-    backgroundColor: "#94a3b8",
+    backgroundColor: colors.disabled,
   },
   text: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "600",
+    color: colors.white,
+    fontSize: fonts.size.md,
+    fontWeight: fonts.weight.semibold,
   },
 });

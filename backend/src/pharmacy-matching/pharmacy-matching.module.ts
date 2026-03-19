@@ -9,7 +9,10 @@ import { PharmacyMatchingController } from './pharmacy-matching.controller';
 import { PharmacyMatchingService } from './pharmacy-matching.service';
 
 // Import PharmacyProfile schema
-import { PharmacyProfile, PharmacyProfileSchema } from '../pharmacy-profile/schemas/pharmacy-profile.schema';
+import {
+  PharmacyProfile,
+  PharmacyProfileSchema,
+} from '../pharmacy-profile/schemas/pharmacy-profile.schema';
 
 @Module({
   imports: [

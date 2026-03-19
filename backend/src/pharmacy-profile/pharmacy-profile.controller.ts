@@ -1,15 +1,20 @@
-// Import NestJS decorators for creating API routes
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
-
-// Import the service that handles pharmacy profile logic
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Put,
+  Delete,
+} from '@nestjs/common';
 import { PharmacyProfileService } from './pharmacy-profile.service';
 
 // Base route for this controller
 @Controller('api/pharmacy-profile')
 export class PharmacyProfileController {
-
-  // Inject PharmacyProfileService
-  constructor(private readonly pharmacyProfileService: PharmacyProfileService) {}
+  constructor(
+    private readonly pharmacyProfileService: PharmacyProfileService,
+  ) {}
 
   // GET /api/pharmacy-profile
   // Retrieve all pharmacy profiles
@@ -21,7 +26,7 @@ export class PharmacyProfileController {
   // GET /api/pharmacy-profile/:id
   // Retrieve a single pharmacy profile by ID
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: string) {  
     return this.pharmacyProfileService.findOne(id);
   }
 

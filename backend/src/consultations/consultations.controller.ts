@@ -54,7 +54,8 @@ export class ConsultationsController {
   @Roles(UserRole.DOCTOR, UserRole.PATIENT)
   @Get(':id')
   async getConsultationById(@Param('id') id: string, @Req() req: any) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    // eslint-disable-next-line prettier/prettier
+     
     const user = req.user as { role: string; userId: string };
 
     const consultation = await this.consultationsService.findById(id);
@@ -112,10 +113,9 @@ export class ConsultationsController {
       throw new ForbiddenException('Access denied');
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return consultations;
   }
 }
 
 //Finish by Rahul on 25 th Feb
-// git checkout feature/voice-to-text
+//git checkout feature/voice-to-text

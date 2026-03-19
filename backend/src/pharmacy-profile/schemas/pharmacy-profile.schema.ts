@@ -10,7 +10,6 @@ export type PharmacyProfileDocument = PharmacyProfile & Document;
 // Create schema with automatic createdAt and updatedAt timestamps
 @Schema({ timestamps: true })
 export class PharmacyProfile {
-
   // Reference to main Pharmacy collection
   @Prop({ type: Types.ObjectId, ref: 'Pharmacy', required: true })
   pharmacy: Types.ObjectId;

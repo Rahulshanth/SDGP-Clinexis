@@ -17,7 +17,7 @@ export class PharmacyService {
   constructor(
     @InjectModel(Pharmacy.name)
     private pharmacyModel: Model<PharmacyDocument>,
-  ) {}
+  ) { }
 
   // Simple status check for testing the service
   getStatus() {
