@@ -1,4 +1,4 @@
-/*import React, { useEffect } from "react";
+import React, { useEffect } from "react";
 import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { fetchConsultationById } from "../../../store/consultationSlice";
@@ -15,7 +15,7 @@ const ConsultationCard: React.FC<Props> = ({ consultationId }) => {
 
   useEffect(() => {
     dispatch(fetchConsultationById(consultationId));
-  }, [consultationId]); // ✅ re-fetches if ID changes
+  }, [consultationId, dispatch]); // ✅ re-fetches if ID changes
 
   // Loading state
   if (status === 'loading') {
@@ -82,4 +82,4 @@ const styles = StyleSheet.create({
     color: "red",
     fontSize: 14,
   },
-}); */
+});
