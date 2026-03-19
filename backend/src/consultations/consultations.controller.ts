@@ -92,6 +92,10 @@ export class ConsultationsController {
   @Get()
   async getAllConsultations(@Req() req: any) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    //const user = { role: 'doctor', userId: '69b8eaa82a41401d6b03f910' };
+    //const user = { role: 'patient', userId: '69b8ead12a41401d6b03f912' };
+
+
     const user = req.user as { role: string; userId: string };
 
     let consultations: any[];

@@ -1,6 +1,6 @@
 import { View, Text } from 'react-native';
 
-export default function HomeScreen() {
+/*export default function HomeScreen() {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text style={{ fontSize: 24, fontWeight: 'bold' }}>
@@ -8,7 +8,24 @@ export default function HomeScreen() {
       </Text>
     </View>
   );
+}*/
+
+
+import PatientHomeScreen from '../../screens/Patient/PatientHomeScreen';
+import DoctorHomeScreen from '../../screens/Doctor/DoctorHomeScreen';
+
+// 🔧 TEMP: Change to 'doctor' to test doctor view — remove when login is ready
+const TEST_ROLE: 'patient' | 'doctor' = 'patient';
+
+export default function HomeScreen() {
+  if (TEST_ROLE === 'patient') {
+    return <PatientHomeScreen />;
+  }
+  return <DoctorHomeScreen />;
 }
+
+
+
 
 
 

@@ -2,19 +2,23 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Provider } from 'react-redux';
 import { store } from '../store';
-//import RootNavigator from '@/navigation';
 
 export default function RootLayout() {
   return (
     <Provider store={store}>
-    
-      <Stack> 
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> 
+      <Stack screenOptions={{ headerShown: true }}>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       </Stack>
       <StatusBar style="auto" />
     </Provider>
   );
 }
+
+
+
+
+
+
 // Once our navigation/ folder is built, we can replace the <Stack> part with our RootNavigator(navigation/index.tsx)
 
 

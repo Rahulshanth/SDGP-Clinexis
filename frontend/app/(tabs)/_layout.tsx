@@ -1,5 +1,16 @@
+import { Stack } from 'expo-router';
 
-                                                        // COMMENTED BY RAHUL ON 6TH MARCH (we don't need this)
+export default function TabLayout() {
+  return (
+    <Stack screenOptions={{ headerShown: true }} />
+  );
+}
+  
+  
+  
+
+  
+  // COMMENTED BY RAHUL ON 6TH MARCH (we don't need this)
 
 
 /*import { Tabs } from 'expo-router';
