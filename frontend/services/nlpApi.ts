@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://10.31.13.194:5001" // Update with my backend URL,
+  baseURL: "http://localhost:5001",
 });
 
 export const extractMedicines = async (text: string) => {
