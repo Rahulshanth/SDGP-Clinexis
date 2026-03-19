@@ -94,7 +94,7 @@ export default function ResetPasswordScreen({ navigation }: Props) {
       return;
     }
 
-    // 🎉 SUCCESS ANIMATION
+    // SUCCESS ANIMATION
     setSuccess(true);
     Animated.spring(successScale, {
       toValue: 1,
@@ -229,7 +229,7 @@ export default function ResetPasswordScreen({ navigation }: Props) {
         </KeyboardAvoidingView>
       </SafeAreaView>
 
-      {/* 🎉 SUCCESS OVERLAY */}
+      {/* SUCCESS OVERLAY */}
       {success && (
         <View style={styles.overlay}>
           <Animated.View
