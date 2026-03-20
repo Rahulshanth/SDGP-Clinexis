@@ -11,17 +11,14 @@ import { View, Text } from 'react-native';
 }*/
 
 
-import PatientHomeScreen from '../../screens/Patient/PatientHomeScreen';
-import DoctorHomeScreen from '../../screens/Doctor/DoctorHomeScreen';
+//import PatientHomeScreen from '../../screens/Patient/PatientHomeScreen';
+//import DoctorHomeScreen from '../../screens/Doctor/DoctorHomeScreen';
 
 // 🔧 TEMP: Change to 'doctor' to test doctor view — remove when login is ready
-const TEST_ROLE: 'patient' | 'doctor' = 'patient';
+//const TEST_ROLE: 'patient' | 'doctor' = 'patient';
 
 export default function HomeScreen() {
-  if (TEST_ROLE === 'patient') {
-    return <PatientHomeScreen />;
-  }
-  return <DoctorHomeScreen />;
+  return null;
 }
 
 
