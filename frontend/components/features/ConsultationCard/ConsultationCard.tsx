@@ -1,46 +1,23 @@
-import React, { useEffect } from "react";
-import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { fetchConsultationById } from "../../../store/consultationSlice";
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 
 interface Props {
-  consultationId: string;
+  paragraphs: string[];
 }
 
-const ConsultationCard: React.FC<Props> = ({ consultationId }) => {
-  const dispatch = useAppDispatch();
-  const { activeConsultationParagraphs, status, error } = useAppSelector(
-    (state) => state.consultation
-  );
-
-  useEffect(() => {
-    dispatch(fetchConsultationById(consultationId));
-  }, [consultationId, dispatch]); // re-fetches if ID changes
-
-  // Loading state
-  if (status === 'loading') {
+const ConsultationCard: React.FC<Props> = ({ paragraphs }) => {
+  if (!paragraphs || paragraphs.length === 0) {
     return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#2563eb" />
+      <View style={styles.container}>
+        <Text style={styles.emptyText}>No conversation recorded.</Text>
       </View>
     );
   }
 
-  // Error state
-  if (error) {
-    return (
-      <View style={styles.centered}>
-        <Text style={styles.errorText}>{error}</Text>
-      </View>
-    );
-  }
-
-  // Paragraphs display
   return (
     <View style={styles.container}>
-      {activeConsultationParagraphs.map((paragraph: string, index: number) => (
+      {paragraphs.map((paragraph, index) => (
         <View key={index} style={styles.block}>
-          <Text style={styles.speakerLabel}>Speaker {index + 1}</Text>
           <Text style={styles.text}>{paragraph}</Text>
         </View>
       ))}
@@ -51,35 +28,12 @@ const ConsultationCard: React.FC<Props> = ({ consultationId }) => {
 export default ConsultationCard;
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 10,
-  },
-  centered: {
-    padding: 20,
-    alignItems: "center",
-  },
+  container: { padding: 4 },
   block: {
-    marginBottom: 12,
-    padding: 12,
-    backgroundColor: "#f4f4f4",
-    borderRadius: 8,
-    borderLeftWidth: 4,
-    borderLeftColor: "#2563eb",
+    marginBottom: 10, padding: 12,
+    backgroundColor: '#f0f4ff', borderRadius: 8,
+    borderLeftWidth: 4, borderLeftColor: '#2563eb',
   },
-  speakerLabel: {
-    fontSize: 11,
-    fontWeight: "600",
-    color: "#2563eb",
-    marginBottom: 4,
-    textTransform: "uppercase",
-  },
-  text: {
-    fontSize: 14,
-    color: "#1e293b",
-    lineHeight: 20,
-  },
-  errorText: {
-    color: "red",
-    fontSize: 14,
-  },
+  text: { fontSize: 14, color: '#1e293b', lineHeight: 22 },
+  emptyText: { color: '#999', textAlign: 'center', padding: 16 },
 });

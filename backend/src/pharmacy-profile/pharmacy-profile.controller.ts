@@ -26,7 +26,7 @@ export class PharmacyProfileController {
   // GET /api/pharmacy-profile/:id
   // Retrieve a single pharmacy profile by ID
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: string) {  
     return this.pharmacyProfileService.findOne(id);
   }
 
