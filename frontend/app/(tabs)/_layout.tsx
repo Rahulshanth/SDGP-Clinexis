@@ -12,7 +12,6 @@ export default function TabLayout() {
   
   // COMMENTED BY RAHUL ON 6TH MARCH (we don't need this)
 
-
 /*import { Tabs } from 'expo-router';
 import React from 'react';
 
@@ -68,4 +67,16 @@ export default function TabLayout() {
       />
     </Tabs>
   );
-}*/
+}
+//Added by Nadithi */
+
+/*
+// app/(tabs)/_layout.tsx
+import { Stack } from "expo-router";
+import React from "react";
+
+export default function TabLayout() {
+  return <Stack screenOptions={{ headerShown: false }} />;
+}
+*/
+
