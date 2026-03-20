@@ -95,7 +95,7 @@ const PatientHomeScreen = () => {
             {loading && <ActivityIndicator size="large" color={COLORS.primary} />}
             {error && <Text style={styles.errorText}>{error}</Text>}
             {!loading && doctors.length === 0 && (
-              <Text style={styles.emptyText}>No doctors found for "{searchText}"</Text>
+              <Text style={styles.emptyText}> {`No doctors found for "${searchText}"`}</Text>
             )}
             <FlatList
               data={doctors}
