@@ -23,7 +23,7 @@ export type AuthStackParamList = {
   ResetPassword: { email: string; code: string };
 };
  
-// ✅ Accept onLoginSuccess as a prop
+// Accept onLoginSuccess as a prop
 type AuthNavigatorProps = {
   onLoginSuccess: () => void;
 };
@@ -43,9 +43,10 @@ export default function AuthNavigator({ onLoginSuccess }: AuthNavigatorProps) {
       <Stack.Screen name="Welcome" component={WelcomeScreen} />
       <Stack.Screen name="ChooseProfile" component={ChooseProfileScreen} />
  
-      {/* ✅ children prop passes onLoginSuccess to SignInScreen */}
+      {/* children prop passes onLoginSuccess to SignInScreen */}
       <Stack.Screen
         name="SignIn"
+        // eslint-disable-next-line react/no-children-prop
         children={(props) => (
           <SignInScreen {...props} onLoginSuccess={onLoginSuccess} />
         )}
@@ -60,4 +61,4 @@ export default function AuthNavigator({ onLoginSuccess }: AuthNavigatorProps) {
 }
 
 // Added by Rivithi
-//Added by Rivithi
+

@@ -1,18 +1,6 @@
 // Rivithi and Nadithi when you are done with PatientProfileScreen uncomment line 21
 import React, { useEffect, useState } from "react";
 import {
-<<<<<<< HEAD
-  View, Text, TextInput, FlatList,
-  StyleSheet, ActivityIndicator,
-  TouchableOpacity, ScrollView,
-  SafeAreaView, Image,
-} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { fetchDoctorsBySpecialization, clearDoctors } from '../../store/doctorSlice';
-import { PatientStackParamList } from '../../navigation/PatientNavigator';
-=======
   View,
   Text,
   TextInput,
@@ -35,7 +23,6 @@ import {
 import ConsultationCard from "../../components/features/ConsultationCard/ConsultationCard";
 import { PatientStackParamList } from "../../navigation/PatientNavigator";
 //import PatientProfileScreen from "./PatientProfileScreen"; <-- After create the Profile screen consider this
->>>>>>> develop
 
 // ── Vidu added navigation type ────────────────────────────────────────────────
 type Nav = NativeStackNavigationProp<PatientStackParamList>;
@@ -51,10 +38,6 @@ const COLORS = {
 };
 
 const PatientHomeScreen = () => {
-<<<<<<< HEAD
-  const navigation = useNavigation<NativeStackNavigationProp<PatientStackParamList>>();
-=======
->>>>>>> develop
   const dispatch = useAppDispatch();
   const navigation = useNavigation<Nav>();
   const { consultations } = useAppSelector((state) => state.consultation);
@@ -107,21 +90,6 @@ const PatientHomeScreen = () => {
           </Text>
         </View>
 
-<<<<<<< HEAD
-        {/* Action Buttons */}
-        <TouchableOpacity
-          style={styles.primaryButton}
-          onPress={() => navigation.navigate('VoiceRecorder')}
-        >
-          <Text style={styles.primaryButtonText}>🎙️ Start New Recording</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.secondaryButton}
-          onPress={() => navigation.navigate('LiveTranscript')}
-        >
-          <Text style={styles.secondaryButtonText}>📋 View My Consultations</Text>
-=======
         {/* ── From develop — Action buttons ── */}
         <TouchableOpacity style={styles.primaryButton}>
           <Text style={styles.primaryButtonText}>🎙️ Start New Recording</Text>
@@ -131,7 +99,6 @@ const PatientHomeScreen = () => {
           <Text style={styles.secondaryButtonText}>
             📋 View My Consultations
           </Text>
->>>>>>> develop
         </TouchableOpacity>
 
         {/* Search Bar */}
@@ -299,11 +266,6 @@ const styles = StyleSheet.create({
   doctorName: { fontSize: 16, fontWeight: "700", color: COLORS.text },
   doctorSpec: { fontSize: 14, color: COLORS.primary, marginTop: 4 },
   doctorInfo: { fontSize: 13, color: COLORS.subtext, marginTop: 4 },
-<<<<<<< HEAD
-  errorText: { color: 'red', textAlign: 'center', marginTop: 10 },
-  emptyText: { color: COLORS.subtext, textAlign: 'center', marginTop: 20, fontSize: 14 },
-});
-=======
   errorText: { color: "red", textAlign: "center", marginTop: 10 },
   emptyText: {
     color: COLORS.subtext,
@@ -321,4 +283,3 @@ const styles = StyleSheet.create({
 });
 
 export default PatientHomeScreen;
->>>>>>> develop

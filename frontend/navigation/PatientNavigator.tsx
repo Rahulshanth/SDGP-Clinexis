@@ -1,9 +1,5 @@
 import React from "react";
-<<<<<<< HEAD
-import { Ionicons } from "@expo/vector-icons";
-=======
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
->>>>>>> develop
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
@@ -41,8 +37,6 @@ import PatientAppointmentScreen from "../screens/Patient/PatientAppointmentsScre
 import LiveTranscript from "../screens/Consultation/LiveTranscript";
 import VoiceRecorder from "../screens/Consultation/VoiceRecorder";
 
-
->>>>>>> develop
 
 // ─── Stack param list (Vidu's screens) ───────────────────────
 export type PatientStackParamList = {
@@ -88,7 +82,7 @@ export type PatientStackParamList = {
 
 // ─── Tab param list (Nadithi's tabs) ───────────────────────
 // Added by Nadithi
->>>>>>> develop
+
 export type PatientTabParamList = {
   Home: undefined;
   SharePrescription: undefined;
@@ -96,7 +90,6 @@ export type PatientTabParamList = {
   Profile: undefined;
 };
 
-<<<<<<< HEAD
 export type PatientStackParamList = {
   PatientTabs: undefined;
   VoiceRecorder: undefined;
@@ -216,4 +209,3 @@ export default function PatientNavigator() {
     </Tab.Navigator>
   );
 }
->>>>>>> develop

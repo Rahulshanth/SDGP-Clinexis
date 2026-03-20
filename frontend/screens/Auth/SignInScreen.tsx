@@ -1,6 +1,3 @@
-*frontend/screens/Auth/SignInScreen.tsx*
-
-
 import React, { useState, useRef, useEffect } from "react";
 import {
   Alert,
@@ -17,7 +14,6 @@ import {
   Animated,
   Easing,
   Pressable,
-  Image,
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { LinearGradient } from "expo-linear-gradient";
@@ -26,19 +22,19 @@ import * as Haptics from "expo-haptics";
  
 import { AuthStackParamList } from "../../navigation/AuthNavigator";
 import { signInUser } from "../../services/authApi";
- 
-// ✅ Props includes onLoginSuccess
+
+
+//type Props = NativeStackScreenProps<AuthStackParamList, "SignIn">; // commented on 20th march RAHUL
 type Props = NativeStackScreenProps<AuthStackParamList, "SignIn"> & {
   onLoginSuccess: () => void;
 };
- 
+
 const BLUE = "#2EA8FF";
 const DARK_BLUE = "#1E3A8A";
 const PANEL_BLUE = "#EAF6FF";
 const WHITE = "#FFFFFF";
- 
-// ✅ Accept onLoginSuccess from AuthNavigator
-export default function SignInScreen({ navigation, route, onLoginSuccess }: Props) {
+
+export default function SignInScreen({ navigation, route , onLoginSuccess }: Props) {
   const selectedRole = route.params.role;
  
   const [email, setEmail] = useState("");
@@ -109,18 +105,24 @@ export default function SignInScreen({ navigation, route, onLoginSuccess }: Prop
         email: email.trim(),
         password,
       });
- 
-      const role = result?.user?.role ?? selectedRole ?? "patient";
-      console.log("Logged in as:", role);
- 
-      // ✅ This triggers checkLogin in RootNavigator
-      // which reads token + role from AsyncStorage
-      // and renders the correct home screen
+
+      /*const role =
+        result?.user?.role ?? selectedRole ?? "patient";
+        console.log("Logged in as:", role); // useful for debugging
+
+      const parentNavigation = navigation.getParent() as any;*/
+
+      /*if (role === "patient") parentNavigation?.replace("Patient");
+      else if (role === "doctor") parentNavigation?.replace("Doctor");
+      else parentNavigation?.replace("Pharmacy");*/
+      console.log("Login result:", JSON.stringify(result));
       onLoginSuccess();
- 
-    } catch {
-      Alert.alert("Error", "Sign in failed");
-    } finally {
+
+    } catch (error) {
+  // ✅ Change this to see the real error
+  console.log("Sign in error:", JSON.stringify(error));
+  Alert.alert("Error", "Sign in failed");
+} finally {
       setLoading(false);
     }
   };
@@ -135,7 +137,6 @@ export default function SignInScreen({ navigation, route, onLoginSuccess }: Prop
           behavior={Platform.OS === "ios" ? "padding" : undefined}
         >
           <ScrollView contentContainerStyle={styles.scrollContent}>
- 
             <Animated.View
               style={[
                 styles.card,
@@ -145,15 +146,12 @@ export default function SignInScreen({ navigation, route, onLoginSuccess }: Prop
                 },
               ]}
             >
- 
-              {/* FLOATING LOGO */}
-              <View style={styles.logoFloating}>
-                <Image
-                  source={require("../../assets/images/Logo.png")}
-                  style={styles.logo}
-                />
-              </View>
- 
+
+              {/*<Image
+                source={require("../../assets/images/ClinexisLogo.png")}
+                style={styles.logo}
+              />*/}
+
               <Text style={styles.title}>Sign In</Text>
  
               <Text style={styles.subtitle}>
@@ -321,7 +319,6 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     justifyContent: "flex-end",
-    paddingTop: 100,
   },
  
   card: {
@@ -330,9 +327,16 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 40,
     paddingBottom: 78,
     paddingHorizontal: 24,
-    paddingTop: 90,
+    paddingTop: 75,
   },
- 
+
+  /*logo: {
+    width: 70,
+    height: 70,
+    alignSelf: "center",
+    marginBottom: 10,
+  },*/
+
   title: {
     fontSize: 30,
     fontWeight: "800",
@@ -444,19 +448,6 @@ const styles = StyleSheet.create({
     backgroundColor: WHITE,
     padding: 20,
     borderRadius: 16,
-  },
- 
-  logoFloating: {
-    position: "absolute",
-    top: -100,
-    alignSelf: "center",
-    zIndex: 10,
-  },
- 
-  logo: {
-    width: 200,
-    height: 200,
-    borderRadius: 60,
   },
 });
  
