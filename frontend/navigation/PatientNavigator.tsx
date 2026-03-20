@@ -1,10 +1,16 @@
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+<<<<<<< HEAD
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+=======
+import { Ionicons } from "@expo/vector-icons";
+import { View, StyleSheet } from "react-native";
+>>>>>>> dc0336c (Modified the Patient Navigator Interface)
 
 // Patient Screens
 import PatientHomeScreen from "../screens/Patient/PatientHomeScreen";
+<<<<<<< HEAD
 
 import SharePrescriptionScreen from "../screens/Patient/SharePrescriptionScreen";
 import FindMedicinesScreen from "../screens/Patient/FindMedicinesScreen";
@@ -77,6 +83,15 @@ export type PatientTabParamList = {
   SharePrescription: undefined;
   FindMedicines: undefined;
   Profile: undefined;
+=======
+import LiveTranscript from "../screens/Consultation/LiveTranscript";
+import VoiceRecorder from "../screens/Consultation/VoiceRecorder";
+
+export type PatientTabParamList = {
+  Home: undefined;
+  Record: undefined;
+  Transcripts: undefined;
+>>>>>>> dc0336c (Modified the Patient Navigator Interface)
 };
 
 export type PatientStackParamList = {
@@ -92,6 +107,7 @@ export type PatientStackParamList = {
     | undefined;
 };
 
+<<<<<<< HEAD
 const Tab = createBottomTabNavigator<PatientTabParamList>();
 const Stack = createNativeStackNavigator<PatientStackParamList>();
 
@@ -135,10 +151,51 @@ function PatientTabs() {
         options={{ title: "Medicines" }}
       />
       <Tab.Screen name="Profile" component={PatientProfileScreen} options={{ title: "Profile" }} />
+=======
+const COLORS = {
+  primary: "#2EA7FF",
+  inactive: "#8A94A6",
+  background: "#FFFFFF",
+};
+
+export default function PatientNavigator() {
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false, //  important (your screens already have headers)
+
+        tabBarShowLabel: false, // cleaner UI
+
+        tabBarStyle: styles.tabBar,
+
+        tabBarIcon: ({ focused, color }) => {
+          let iconName: any;
+
+          if (route.name === "Home") iconName = "home-outline";
+          else if (route.name === "Record") iconName = "mic-outline";
+          else if (route.name === "Transcripts") iconName = "document-text-outline";
+
+          return (
+            <View style={styles.iconWrapper}>
+              <Ionicons
+                name={iconName}
+                size={22}
+                color={focused ? COLORS.primary : COLORS.inactive}
+              />
+            </View>
+          );
+        },
+      })}
+    >
+      <Tab.Screen name="Home" component={PatientHomeScreen} />
+      <Tab.Screen name="Record" component={VoiceRecorder} />
+      <Tab.Screen name="Transcripts" component={LiveTranscript} />
+>>>>>>> dc0336c (Modified the Patient Navigator Interface)
     </Tab.Navigator>
   );
 }
 
+<<<<<<< HEAD
 export default function PatientNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -149,3 +206,33 @@ export default function PatientNavigator() {
     </Stack.Navigator>
   );
 }
+=======
+const styles = StyleSheet.create({
+  tabBar: {
+    position: "absolute",
+    bottom: 15,
+    left: 20,
+    right: 20,
+    elevation: 10,
+
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    height: 60,
+
+    shadowColor: "#000",
+    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: 5 },
+    shadowRadius: 10,
+
+    borderTopWidth: 0,
+  },
+
+  iconWrapper: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 8,
+  },
+});
+
+//Added by Nadithi
+>>>>>>> dc0336c (Modified the Patient Navigator Interface)
