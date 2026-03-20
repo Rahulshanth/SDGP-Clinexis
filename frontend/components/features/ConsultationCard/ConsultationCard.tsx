@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
-
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { fetchConsultationById } from "../../../store/consultationSlice";
 

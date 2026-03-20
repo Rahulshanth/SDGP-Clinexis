@@ -2,11 +2,15 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import PatientHomeScreen from "../screens/Patient/PatientHomeScreen";
-/*import PatientRemindersScreen from "../screens/Patient/PatientReminderScreen";
-import PatientPharmacyScreen from "../screens/Patient/PatientPharmacyScreen";
-import PatientSummaryScreen from "../screens/Patient/PatientSummaryScreen";
-import PatientProfileScreen from "../screens/Patient/ PatientProfileScreen";
-import PatientAppointmentScreen from "../screens/Patient/PatientAppointmentsScreen";*/
+//import PatientProfileScreen from "../screens/Patient/PatientProfileScreen";
+//import PatientRemindersScreen from "../screens/Patient/PatientRemindersScreen";
+//import PatientPharmacyScreen from "../screens/Patient/PatientPharmacyScreen";
+//import PatientSummaryScreen from "../screens/Patient/PatientSummaryScreen";
+//import PatientAppointmentScreen from "../screens/Patient/PatientAppointmentsScreen";
+import LiveTranscript from "../screens/Consultation/LiveTranscript";
+import VoiceRecorder from "../screens/Consultation/VoiceRecorder";
+
+
 
 export type PatientTabParamList = {
   Home: undefined;

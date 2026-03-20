@@ -1,13 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import AuthNavigator from "./AuthNavigator";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const RootNavigator: React.FC = () => {
+import AuthNavigator from "./AuthNavigator";
+import PatientNavigator from "./PatientNavigator";
+
+export default function RootNavigator() {
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    checkLogin();
+  }, []);
+
+  const checkLogin = async () => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+      setIsLoggedIn(Boolean(token));
+    } catch (error) {
+      setIsLoggedIn(false);
+    }
+  };
+
+  if (isLoggedIn === null) return null;
+
   return (
     <NavigationContainer>
-      <AuthNavigator />
+      {isLoggedIn ? <PatientNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   );
-};
-
-export default RootNavigator;
+}
