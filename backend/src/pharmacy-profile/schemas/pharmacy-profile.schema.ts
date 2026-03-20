@@ -11,8 +11,11 @@ export type PharmacyProfileDocument = PharmacyProfile & Document;
 @Schema({ timestamps: true })
 export class PharmacyProfile {
   // Reference to main Pharmacy collection
-  @Prop({ type: Types.ObjectId, ref: 'Pharmacy', required: true })
-  pharmacy: Types.ObjectId;
+  /*@Prop({ type: Types.ObjectId, ref: 'Pharmacy', required: true })
+  pharmacy: Types.ObjectId;      CHANGED BY RAHUL ACCORDING TO SIGN UP pages   */ 
+
+  @Prop({ type: Types.ObjectId, ref: 'Pharmacy', required: false })
+pharmacy: Types.ObjectId;
 
   // Pharmacy name
   @Prop({ required: true })
