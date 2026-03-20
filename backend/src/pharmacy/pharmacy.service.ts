@@ -12,11 +12,12 @@ import { Pharmacy, PharmacyDocument } from './schemas/pharmacy.schema';
 
 @Injectable()
 export class PharmacyService {
+
   // Inject the Pharmacy MongoDB model
   constructor(
     @InjectModel(Pharmacy.name)
     private pharmacyModel: Model<PharmacyDocument>,
-  ) {}
+  ) { }
 
   // Simple status check for testing the service
   getStatus() {
@@ -40,4 +41,5 @@ export class PharmacyService {
   async getPharmacyById(id: string) {
     return this.pharmacyModel.findById(id);
   }
+
 }

@@ -2,7 +2,7 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import PatientHomeScreen from "../screens/Patient/PatientHomeScreen";
-import PatientProfileScreen from "../screens/Patient/PatientProfileScreen";
+//import PatientProfileScreen from "../screens/Patient/PatientProfileScreen";
 //import PatientRemindersScreen from "../screens/Patient/PatientRemindersScreen";
 //import PatientPharmacyScreen from "../screens/Patient/PatientPharmacyScreen";
 //import PatientSummaryScreen from "../screens/Patient/PatientSummaryScreen";

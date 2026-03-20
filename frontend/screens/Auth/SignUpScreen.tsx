@@ -22,7 +22,8 @@ import { MaterialIcons, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 
 import { AuthStackParamList } from "../../navigation/AuthNavigator";
-import { registerUser } from "@/store/authSlice";
+//import { registerUser } from "@/store/authSlice"; changed for Signup screen By rahul
+import { registerUser , registerPharmacyUser } from "../../services/authApi";
 
 type Props = NativeStackScreenProps<AuthStackParamList, "SignUp">;
 
@@ -38,6 +39,13 @@ export default function SignUpScreen({ navigation, route }: Props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [specialization, setSpecialization] = useState("");
+  const [hospitalName, setHospitalName] = useState("");
+  const [clinicLocation, setClinicLocation] = useState("");
+
+  const [location, setLocation] = useState("");        // pharmacy
+  const [contactNumber, setContactNumber] = useState(""); // pharmacy
 
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [confirmSecureTextEntry] = useState(true);
@@ -99,13 +107,36 @@ export default function SignUpScreen({ navigation, route }: Props) {
 
     try {
       setLoading(true);
-
-      await registerUser({
-        email,
-        password,
-        role,
-        profile: { name: fullName },
-      });
+       
+      if (role === "pharmacy") {
+    await registerPharmacyUser({
+      email,
+      password,
+      role,
+      profile: { name: fullName },
+      pharmacyDetails: {
+        name: fullName,
+        location,
+        contactNumber,
+      },
+    });
+        } else {
+        await registerUser({
+          email,
+          password,
+          role,
+          profile: {
+            name: fullName,
+            ...(role === "doctor" && {
+              phoneNumber,
+              specialization,
+              hospitalName,
+              clinicLocation,
+            }),
+            ...(role === "patient" && { phoneNumber }),
+          },
+        });
+      }
 
       Alert.alert("Success", "Registered successfully");
       navigation.navigate("SignIn", { role });
@@ -200,7 +231,83 @@ export default function SignUpScreen({ navigation, route }: Props) {
                 </TouchableOpacity>
               </View>
 
-              {/* STRENGTH BAR */}
+               {/* PHONE NUMBER — shown for all roles */}
+               {(role === "patient" || role === "doctor") && (
+              <View style={styles.inputWrapper}>
+                <MaterialIcons name="phone" size={18} color="#6B7280" />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Phone Number"
+                  value={phoneNumber}
+                  onChangeText={setPhoneNumber}
+                  keyboardType="phone-pad"
+                />
+              </View>
+              )}
+
+              {/* DOCTOR ONLY FIELDS */}
+              {role === "doctor" && (
+                <>
+                  <View style={styles.inputWrapper}>
+                    <MaterialIcons name="local-hospital" size={18} color="#6B7280" />
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Specialization (e.g. Neurologist)"
+                      value={specialization}
+                      onChangeText={setSpecialization}
+                    />
+                  </View>
+
+                  <View style={styles.inputWrapper}>
+                    <MaterialIcons name="business" size={18} color="#6B7280" />
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Hospital Name"
+                      value={hospitalName}
+                      onChangeText={setHospitalName}
+                    />
+                  </View>
+
+                  <View style={styles.inputWrapper}>
+                    <MaterialIcons name="location-on" size={18} color="#6B7280" />
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Clinic Location"
+                      value={clinicLocation}
+                      onChangeText={setClinicLocation}
+                    />
+                  </View>
+                </>
+              )}
+
+              {/* PHARMACY ONLY FIELDS */}
+              {role === "pharmacy" && (
+                <>
+                  <View style={styles.inputWrapper}>
+                    <MaterialIcons name="location-on" size={18} color="#6B7280" />
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Pharmacy Location (e.g. Colombo)"
+                      value={location}
+                      onChangeText={setLocation}
+                    />
+                  </View>
+
+                  <View style={styles.inputWrapper}>
+                    <MaterialIcons name="phone" size={18} color="#6B7280" />
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Contact Number"
+                      value={contactNumber}
+                      onChangeText={setContactNumber}
+                      keyboardType="phone-pad"
+                    />
+                  </View>
+                </>
+              )}
+
+
+              {/*  STRENGTH BAR */}
               <View style={styles.strengthBarContainer}>
                 <View
                   style={[
