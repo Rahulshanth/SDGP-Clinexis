@@ -15,7 +15,8 @@ export const createRemindersFromConsultation = async (
   return response.data;
 };
 
-// PATIENT: Create manual medicine reminder
+// PATIENT: Create manual reminder (medicine OR appointment)
+// ✅ Backend now uses dto.type — so APPOINTMENT will save as APPOINTMENT
 export const createMedicineReminder = async (
   payload: CreateMedicineReminderPayload,
 ): Promise<Reminder> => {

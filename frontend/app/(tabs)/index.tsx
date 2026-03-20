@@ -1,4 +1,3 @@
-
 // import { View, Text } from 'react-native';
 
 // export default function HomeScreen() {
@@ -11,12 +10,8 @@
 //   );
 // }
 
-
-
 //                                 // COMMENTED BY RAHUL ON 6TH MARCH  (JUST TO TEST THE APPLICATION FOR NOW)
 //                                 // Once we connect our real navigation/ folder, this file also gets deleted.
-
-
 
 // /*import { Image } from 'expo-image';
 // import { Platform, StyleSheet } from 'react-native';
@@ -98,7 +93,6 @@
 //   );
 // }
 
-
 // const styles = StyleSheet.create({
 //   titleContainer: {
 //     flexDirection: 'row',
@@ -130,7 +124,6 @@
 //     </View>
 //   );
 // }*/
-
 
 // import React, { useEffect } from 'react';
 // import { View, Image, StyleSheet, StatusBar } from 'react-native';
@@ -176,3 +169,136 @@
   return null;
 }*/
 
+//TEST1 *********// app/(tabs)/index.tsx — Temporarily modified by Vidu for testing
+/*
+import { NavigationIndependentTree } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import RemindersScreen from "../../screens/Reminders/RemindersScreen";
+import { useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const Stack = createNativeStackNavigator();
+
+export default function HomeScreen() {
+  useEffect(() => {
+    const TEST_TOKEN =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWI4ZWFkMTJhNDE0MDFkNmIwM2Y5MTIiLCJlbWFpbCI6InBhdGllbnQyQGdtYWlsLmNvbSIsInJvbGUiOiJwYXRpZW50IiwiaWF0IjoxNzczOTkxNjkzLCJleHAiOjE3NzQwNzgwOTN9.AfTKM1oBdnHMp4TMzZJKNbuvC3kAxS7frU-MA9T9hbI";
+    // ↑ delete those words and paste your token between the quotes
+    AsyncStorage.setItem("accessToken", TEST_TOKEN);
+    console.log("🔑 Test token injected");
+  }, []);
+
+  return (
+    <NavigationIndependentTree>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Reminders" component={RemindersScreen} />
+      </Stack.Navigator>
+    </NavigationIndependentTree>
+  );
+}
+
+*/
+
+//test 2 — Vidu's doctor profile screen ******************************************************************************
+// app/(tabs)/index.tsx — Temporarily modified by Vidu for testing
+/*
+import { NavigationIndependentTree } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import DoctorEditProfileScreen from "../../screens/Doctor/DoctorEditProfileScreen";
+import { useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const Stack = createNativeStackNavigator();
+
+export default function HomeScreen() {
+  useEffect(() => {
+    // ✅ IMPORTANT — this must be a DOCTOR token, not patient token
+    // Get a fresh one from Postman: POST /auth/SignIn with doctor2@gmail.com
+    const TEST_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWI4ZWFhODJhNDE0MDFkNmIwM2Y5MTAiLCJlbWFpbCI6ImRvY3RvcjJAZ21haWwuY29tIiwicm9sZSI6ImRvY3RvciIsImlhdCI6MTc3Mzk4MjIwMCwiZXhwIjoxNzc0MDY4NjAwfQ.VLFctUqE5fXcY3XCVis8t-oysyd1IlymSud-jXPHssY";
+    AsyncStorage.setItem("accessToken", TEST_TOKEN);
+    console.log("🔑 Doctor test token injected");
+  }, []);
+
+  return (
+    <NavigationIndependentTree>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="DoctorProfile" component={DoctorEditProfileScreen} />
+      </Stack.Navigator>
+    </NavigationIndependentTree>
+  );
+}
+*/
+
+//Test 3 ***************************************************************************************
+// app/(tabs)/index.tsx — test DoctorProfileScreen - modified by Vidu for testing
+/*
+import { NavigationIndependentTree } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import DoctorProfileScreen from "../../screens/Patient/DoctorProfileScreen";
+import { useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const Stack = createNativeStackNavigator();
+
+export default function HomeScreen() {
+  useEffect(() => {
+    // ✅ Patient token — allows GET /users/:id
+    const TEST_TOKEN =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWI4ZWFkMTJhNDE0MDFkNmIwM2Y5MTIiLCJlbWFpbCI6InBhdGllbnQyQGdtYWlsLmNvbSIsInJvbGUiOiJwYXRpZW50IiwiaWF0IjoxNzczOTgxOTY5LCJleHAiOjE3NzQwNjgzNjl9.f94ofZ2MDMvtUWHhwmPhtxz3h3h-LoWfO_swJMahupk";
+    AsyncStorage.setItem("accessToken", TEST_TOKEN);
+    console.log("🔑 Test token injected");
+  }, []);
+
+  return (
+    <NavigationIndependentTree>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen
+          name="DoctorProfile"
+          component={DoctorProfileScreen}
+          initialParams={{
+            doctor: {
+              id: "69b8eaa82a41401d6b03f910", // ← Dr. John's real MongoDB _id
+              name: "",
+              specialty: "",
+              hospital: "",
+              image: "",
+              rating: 0,
+              reviews: 0,
+              earliest: "",
+            },
+          }}
+        />
+      </Stack.Navigator>
+    </NavigationIndependentTree>
+  );
+}
+*/
+
+/*
+// app/(tabs)/index.tsx — Temporarily modified by Vidu for testing
+
+import { NavigationIndependentTree } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import LiveTranscript from "../../screens/Consultation/LiveTranscript";
+import { useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const Stack = createNativeStackNavigator(); // ← this line was missing
+
+export default function HomeScreen() {
+  useEffect(() => {
+    const TEST_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWI4ZWFkMTJhNDE0MDFkNmIwM2Y5MTIiLCJlbWFpbCI6InBhdGllbnQyQGdtYWlsLmNvbSIsInJvbGUiOiJwYXRpZW50IiwiaWF0IjoxNzczOTgxOTY5LCJleHAiOjE3NzQwNjgzNjl9.f94ofZ2MDMvtUWHhwmPhtxz3h3h-LoWfO_swJMahupk";
+    AsyncStorage.setItem("accessToken", TEST_TOKEN);
+    console.log("🔑 Test token injected");
+  }, []);
+
+  return (
+    <NavigationIndependentTree>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="LiveTranscript" component={LiveTranscript} />
+      </Stack.Navigator>
+    </NavigationIndependentTree>
+  );
+}
+  
+*/

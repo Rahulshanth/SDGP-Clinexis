@@ -1,12 +1,6 @@
 // Once our navigation/ folder is built, we can replace the <Stack> part with our RootNavigator(navigation/index.tsx)
 
-
-
-
-                                // BELOW COMMENTED BY RAHUL ON 6TH MARCH  (JUST TO TEST THE APPLICATION FOR NOW)
-
-
-
+// BELOW COMMENTED BY RAHUL ON 6TH MARCH  (JUST TO TEST THE APPLICATION FOR NOW)
 
 /*import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
@@ -36,3 +30,26 @@ export default function RootLayout() {
     </Provider>
   );
 }*/
+
+/*
+// app/_layout.tsx - modified by vidu for testing
+import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { Provider } from "react-redux";
+import { store } from "../store";
+
+export const unstable_settings = {
+  anchor: "(tabs)",
+};
+
+export default function RootLayout() {
+  return (
+    <Provider store={store}>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      </Stack>
+      <StatusBar style="auto" />
+    </Provider>
+  );
+}
+*/

@@ -7,62 +7,84 @@ interface ReminderCardProps {
   onDelete: (id: string) => void;
 }
 
+// ── Fix: Convert UTC time from MongoDB → Sri Lanka local (UTC+5:30) ──────────
+const formatLocalTime = (dateStr: string): string => {
+  const date = new Date(dateStr);
+  const sriLankaOffset = 5.5 * 60 * 60 * 1000;
+  const localDate = new Date(date.getTime() + sriLankaOffset);
+  const hours = localDate.getUTCHours();
+  const minutes = localDate.getUTCMinutes();
+  const ampm = hours >= 12 ? "PM" : "AM";
+  const displayHour = hours % 12 === 0 ? 12 : hours % 12;
+  const displayMin = minutes.toString().padStart(2, "0");
+  return `${displayHour.toString().padStart(2, "0")}:${displayMin} ${ampm}`;
+};
+
+// ── Card theme per type ───────────────────────────────────────────────────────
+const getTheme = (type: ReminderType) => {
+  switch (type) {
+    case ReminderType.MEDICINE:
+      return {
+        barColor: "#1D4ED8", // deep blue
+        badgeBackground: "#DBEAFE",
+        badgeText: "#1D4ED8",
+        cardBackground: "#F0F7FF",
+        icon: "💊",
+        label: "Medicine",
+      };
+    case ReminderType.APPOINTMENT:
+      return {
+        barColor: "#059669", // green
+        badgeBackground: "#D1FAE5",
+        badgeText: "#065F46",
+        cardBackground: "#F0FDF4",
+        icon: "📅",
+        label: "Appointment",
+      };
+    case ReminderType.NOTIFICATION:
+      return {
+        barColor: "#7C3AED", // purple
+        badgeBackground: "#EDE9FE",
+        badgeText: "#5B21B6",
+        cardBackground: "#FAF5FF",
+        icon: "🔔",
+        label: "Notification",
+      };
+    default:
+      return {
+        barColor: "#6B7280",
+        badgeBackground: "#F3F4F6",
+        badgeText: "#374151",
+        cardBackground: "#FFFFFF",
+        icon: "📋",
+        label: "Reminder",
+      };
+  }
+};
+
 const ReminderCard: React.FC<ReminderCardProps> = ({ reminder, onDelete }) => {
-  const formatTime = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-  };
-
-  const getTypeColor = (type: ReminderType) => {
-    switch (type) {
-      case ReminderType.MEDICINE:
-        return "#1D4ED8"; // blue
-      case ReminderType.APPOINTMENT:
-        return "#0369A1"; // darker blue
-      case ReminderType.NOTIFICATION:
-        return "#7C3AED"; // purple
-      default:
-        return "#6B7280";
-    }
-  };
-
-  const getTypeIcon = (type: ReminderType) => {
-    switch (type) {
-      case ReminderType.MEDICINE:
-        return "💊";
-      case ReminderType.APPOINTMENT:
-        return "📅";
-      case ReminderType.NOTIFICATION:
-        return "🔔";
-      default:
-        return "📋";
-    }
-  };
+  const theme = getTheme(reminder.type);
 
   return (
-    <View style={styles.card}>
-      {/* LEFT COLOR BAR */}
-      <View
-        style={[
-          styles.colorBar,
-          { backgroundColor: getTypeColor(reminder.type) },
-        ]}
-      />
+    <View style={[styles.card, { backgroundColor: theme.cardBackground }]}>
+      {/* LEFT COLOR BAR — changes color per type */}
+      <View style={[styles.colorBar, { backgroundColor: theme.barColor }]} />
 
       <View style={styles.content}>
-        {/* TOP ROW */}
+        {/* TOP ROW — icon + title + badge */}
         <View style={styles.topRow}>
           <View style={styles.titleRow}>
-            <Text style={styles.icon}>{getTypeIcon(reminder.type)}</Text>
-            <Text style={styles.title}>{reminder.title}</Text>
+            <Text style={styles.icon}>{theme.icon}</Text>
+            <Text style={styles.title} numberOfLines={1}>
+              {reminder.title}
+            </Text>
           </View>
           <View
-            style={[
-              styles.badge,
-              { backgroundColor: getTypeColor(reminder.type) },
-            ]}
+            style={[styles.badge, { backgroundColor: theme.badgeBackground }]}
           >
-            <Text style={styles.badgeText}>{reminder.type}</Text>
+            <Text style={[styles.badgeText, { color: theme.badgeText }]}>
+              {theme.label}
+            </Text>
           </View>
         </View>
 
@@ -71,10 +93,10 @@ const ReminderCard: React.FC<ReminderCardProps> = ({ reminder, onDelete }) => {
           {reminder.message}
         </Text>
 
-        {/* BOTTOM ROW */}
+        {/* BOTTOM ROW — time + delete */}
         <View style={styles.bottomRow}>
-          <Text style={styles.time}>
-            ⏰ {formatTime(reminder.reminderTime)}
+          <Text style={[styles.time, { color: theme.barColor }]}>
+            ⏰ {formatLocalTime(reminder.reminderTime)}
           </Text>
           <TouchableOpacity
             style={styles.deleteButton}
@@ -90,12 +112,11 @@ const ReminderCard: React.FC<ReminderCardProps> = ({ reminder, onDelete }) => {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#FFFFFF",
     borderRadius: 16,
     marginBottom: 12,
     flexDirection: "row",
-    shadowColor: "#1E3A8A",
-    shadowOpacity: 0.1,
+    shadowColor: "#000",
+    shadowOpacity: 0.08,
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 4 },
     elevation: 4,
@@ -103,7 +124,6 @@ const styles = StyleSheet.create({
   },
   colorBar: {
     width: 6,
-    borderRadius: 16,
   },
   content: {
     flex: 1,
@@ -119,6 +139,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     flex: 1,
+    marginRight: 8,
   },
   icon: {
     fontSize: 18,
@@ -127,19 +148,17 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 15,
     fontWeight: "bold",
-    color: "#1E3A8A",
+    color: "#1E293B",
     flex: 1,
   },
   badge: {
     borderRadius: 20,
-    paddingHorizontal: 8,
+    paddingHorizontal: 10,
     paddingVertical: 3,
-    marginLeft: 8,
   },
   badgeText: {
-    color: "#FFFFFF",
     fontSize: 10,
-    fontWeight: "bold",
+    fontWeight: "700",
   },
   message: {
     fontSize: 13,
@@ -154,7 +173,6 @@ const styles = StyleSheet.create({
   },
   time: {
     fontSize: 13,
-    color: "#3B82F6",
     fontWeight: "600",
   },
   deleteButton: {

@@ -1,6 +1,5 @@
-//edited by vidu
-/*
-import React, { useState } from "react";
+// screens/Doctor/DoctorEditProfileScreen.tsx — updated by Vidu
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -10,30 +9,137 @@ import {
   SafeAreaView,
   Switch,
   Alert,
-  Image,
   TextInput,
+  ActivityIndicator,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { getMyProfile, updateMyProfile } from "../../services/doctorApi";
 
-export default function DoctorProfileScreen() {
+// ── Moved OUTSIDE the main component — fixes keyboard closing bug ─────────────
+const EditableField = ({
+  icon,
+  label,
+  value,
+  onChangeText,
+  isEditing,
+  keyboardType = "default",
+}: {
+  icon: string;
+  label: string;
+  value: string;
+  onChangeText: (text: string) => void;
+  isEditing: boolean;
+  keyboardType?: any;
+}) => (
+  <View style={styles.infoCard}>
+    <View style={styles.infoRow}>
+      <Text style={styles.infoIcon}>{icon}</Text>
+      <View style={{ flex: 1 }}>
+        <Text style={styles.infoFieldLabel}>{label}</Text>
+        {isEditing ? (
+          <TextInput
+            style={styles.editInput}
+            value={value}
+            onChangeText={onChangeText}
+            keyboardType={keyboardType}
+            placeholderTextColor="#94A3B8"
+            autoCorrect={false}
+            blurOnSubmit={false}
+          />
+        ) : (
+          <Text style={styles.infoFieldValue}>{value || "Not set"}</Text>
+        )}
+      </View>
+      {isEditing && <Text style={styles.editIndicator}>✏️</Text>}
+    </View>
+  </View>
+);
+
+// ── Main component ────────────────────────────────────────────────────────────
+export default function DoctorEditProfileScreen() {
+  const insets = useSafeAreaInsets();
   const [twoFactor, setTwoFactor] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
-  // Editable fields
-  const [name, setName] = useState("Dr. Sarah Bennett");
-  const [specialty, setSpecialty] = useState("Cardiologist");
-  const [hospital, setHospital] = useState("St. Mary's Medical Center");
-  const [clinicNumber, setClinicNumber] = useState("+94 11 234 5678");
-  const [workingHours, setWorkingHours] = useState("Mon-Fri, 09:00 - 17:00");
+  const [name, setName] = useState("");
+  const [specialty, setSpecialty] = useState("");
+  const [hospital, setHospital] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [clinicLocation, setClinicLocation] = useState("");
+  const [email, setEmail] = useState("");
 
-  const handleSave = () => {
-    setIsEditing(false);
-    Alert.alert("Profile Saved", "Your profile has been updated successfully.");
-    // TODO: connect to backend API to save
+  const [originalData, setOriginalData] = useState({
+    name: "",
+    specialty: "",
+    hospital: "",
+    phoneNumber: "",
+    clinicLocation: "",
+  });
+
+  useEffect(() => {
+    loadProfile();
+  }, []);
+
+  const loadProfile = async () => {
+    setLoading(true);
+    try {
+      const data = await getMyProfile();
+      const profile = data.profile || {};
+      setName(profile.name || "");
+      setSpecialty(profile.specialization || "");
+      setHospital(profile.hospitalName || "");
+      setPhoneNumber(profile.phoneNumber || "");
+      setClinicLocation(profile.clinicLocation || "");
+      setEmail(data.email || "");
+      setOriginalData({
+        name: profile.name || "",
+        specialty: profile.specialization || "",
+        hospital: profile.hospitalName || "",
+        phoneNumber: profile.phoneNumber || "",
+        clinicLocation: profile.clinicLocation || "",
+      });
+    } catch (err: any) {
+      Alert.alert("Error", "Failed to load profile. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await updateMyProfile({
+        name,
+        specialization: specialty,
+        hospitalName: hospital,
+        phoneNumber,
+        clinicLocation,
+      });
+      setOriginalData({
+        name,
+        specialty,
+        hospital,
+        phoneNumber,
+        clinicLocation,
+      });
+      setIsEditing(false);
+      Alert.alert("✅ Saved", "Your profile has been updated successfully.");
+    } catch (err: any) {
+      Alert.alert("Error", "Failed to save profile. Please try again.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleCancel = () => {
+    setName(originalData.name);
+    setSpecialty(originalData.specialty);
+    setHospital(originalData.hospital);
+    setPhoneNumber(originalData.phoneNumber);
+    setClinicLocation(originalData.clinicLocation);
     setIsEditing(false);
-    // TODO: reset to original values from DB
   };
 
   const handleLogout = () => {
@@ -47,57 +153,37 @@ export default function DoctorProfileScreen() {
     ]);
   };
 
-  const EditableField = ({
-    icon,
-    label,
-    value,
-    onChangeText,
-    keyboardType = "default",
-  }: {
-    icon: string;
-    label: string;
-    value: string;
-    onChangeText: (text: string) => void;
-    keyboardType?: any;
-  }) => (
-    <View style={styles.infoCard}>
-      <View style={styles.infoRow}>
-        <Text style={styles.infoIcon}>{icon}</Text>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.infoFieldLabel}>{label}</Text>
-          {isEditing ? (
-            <TextInput
-              style={styles.editInput}
-              value={value}
-              onChangeText={onChangeText}
-              keyboardType={keyboardType}
-              placeholderTextColor="#94A3B8"
-            />
-          ) : (
-            <Text style={styles.infoFieldValue}>{value}</Text>
-          )}
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.safe}>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#1E3A8A" />
+          <Text style={styles.loadingText}>Loading profile...</Text>
         </View>
-        {isEditing && <Text style={styles.editIndicator}>✏️</Text>}
-      </View>
-    </View>
-  );
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.safe}>
-      // Header 
-
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backBtn}>
-          <Text style={styles.backArrow}>‹</Text>
-        </TouchableOpacity>
+      {/* Header */}
+      <View style={[styles.header, { paddingTop: insets.top + 14 }]}>
         <Text style={styles.headerTitle}>Profile</Text>
         {isEditing ? (
           <View style={styles.headerActions}>
             <TouchableOpacity onPress={handleCancel} style={styles.cancelBtn}>
               <Text style={styles.cancelText}>Cancel</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleSave} style={styles.saveBtn}>
-              <Text style={styles.saveText}>Save</Text>
+            <TouchableOpacity
+              onPress={handleSave}
+              style={styles.saveBtn}
+              disabled={saving}
+            >
+              {saving ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                <Text style={styles.saveText}>Save</Text>
+              )}
             </TouchableOpacity>
           </View>
         ) : (
@@ -110,9 +196,11 @@ export default function DoctorProfileScreen() {
         )}
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false}>
-        // Edit mode banner 
-
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        {/* Edit mode banner */}
         {isEditing && (
           <View style={styles.editBanner}>
             <Text style={styles.editBannerText}>
@@ -121,84 +209,74 @@ export default function DoctorProfileScreen() {
           </View>
         )}
 
-        // Avatar 
-
+        {/* Avatar */}
         <View style={styles.avatarSection}>
-          <View style={styles.avatarWrapper}>
-            <Image
-              source={{
-                uri: "https://randomuser.me/api/portraits/women/44.jpg",
-              }}
-              style={styles.avatar}
-            />
-            {isEditing && (
-              <TouchableOpacity style={styles.cameraBtn}>
-                <Text style={styles.cameraIcon}>📷</Text>
-              </TouchableOpacity>
-            )}
+          <View style={styles.avatarCircle}>
+            <Text style={styles.avatarInitial}>
+              {name ? name.charAt(0).toUpperCase() : "D"}
+            </Text>
           </View>
-          {isEditing ? (
-            <TextInput
-              style={styles.nameInput}
-              value={name}
-              onChangeText={setName}
-              textAlign="center"
-            />
-          ) : (
-            <Text style={styles.doctorName}>{name}</Text>
-          )}
+          <Text style={styles.doctorName}>{name || "Doctor"}</Text>
           <View style={styles.specialtyBadge}>
-            <Text style={styles.specialtyText}>{specialty}</Text>
+            <Text style={styles.specialtyText}>
+              {specialty || "Specialization not set"}
+            </Text>
           </View>
+          <Text style={styles.emailText}>{email}</Text>
         </View>
 
         <View style={styles.body}>
-          // Professional Info 
           <Text style={styles.sectionLabel}>PROFESSIONAL INFO</Text>
 
+          {/* ── Now passing isEditing as a prop ── */}
           <EditableField
-            icon="🏥"
-            label="Hospital Affiliation"
-            value={hospital}
-            onChangeText={setHospital}
+            icon="👤"
+            label="Full Name"
+            value={name}
+            onChangeText={setName}
+            isEditing={isEditing}
           />
-
-          <EditableField
-            icon="🕐"
-            label="Working Hours"
-            value={workingHours}
-            onChangeText={setWorkingHours}
-          />
-
-          <EditableField
-            icon="📞"
-            label="Clinic Number"
-            value={clinicNumber}
-            onChangeText={setClinicNumber}
-            keyboardType="phone-pad"
-          />
-
           <EditableField
             icon="🩺"
             label="Specialization"
             value={specialty}
             onChangeText={setSpecialty}
+            isEditing={isEditing}
+          />
+          <EditableField
+            icon="🏥"
+            label="Hospital"
+            value={hospital}
+            onChangeText={setHospital}
+            isEditing={isEditing}
+          />
+          <EditableField
+            icon="📍"
+            label="Clinic Location"
+            value={clinicLocation}
+            onChangeText={setClinicLocation}
+            isEditing={isEditing}
+          />
+          <EditableField
+            icon="📞"
+            label="Phone Number"
+            value={phoneNumber}
+            onChangeText={setPhoneNumber}
+            isEditing={isEditing}
+            keyboardType="phone-pad"
           />
 
-          // Security & Notifications 
           <Text style={[styles.sectionLabel, { marginTop: 24 }]}>
             SECURITY & NOTIFICATIONS
           </Text>
 
           <View style={styles.settingsCard}>
-            // Change Password 
-
             <TouchableOpacity
               style={styles.settingsRow}
               onPress={() =>
                 Alert.alert(
-                  "Change Password",
-                  "This feature will be available soon.",
+                  "Coming Soon",
+                  "Change password feature coming soon.",
                 )
               }
             >
@@ -217,8 +295,6 @@ export default function DoctorProfileScreen() {
             </TouchableOpacity>
 
             <View style={styles.divider} />
-
-            // Two Factor 
 
             <View style={styles.settingsRow}>
               <View style={styles.settingsLeft}>
@@ -242,15 +318,10 @@ export default function DoctorProfileScreen() {
 
             <View style={styles.divider} />
 
-            // Notification Settings 
-
             <TouchableOpacity
               style={styles.settingsRow}
               onPress={() =>
-                Alert.alert(
-                  "Notifications",
-                  "Notification settings coming soon.",
-                )
+                Alert.alert("Coming Soon", "Notification settings coming soon.")
               }
             >
               <View style={styles.settingsLeft}>
@@ -268,8 +339,6 @@ export default function DoctorProfileScreen() {
             </TouchableOpacity>
           </View>
 
-          // Logout 
-
           <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
             <Text style={styles.logoutIcon}>↪</Text>
             <Text style={styles.logoutText}>Log Out</Text>
@@ -285,18 +354,18 @@ export default function DoctorProfileScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: "#F8FAFC" },
+  loadingContainer: { flex: 1, alignItems: "center", justifyContent: "center" },
+  loadingText: { marginTop: 12, fontSize: 15, color: "#94A3B8" },
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 20,
-    paddingVertical: 14,
+    paddingBottom: 14,
     backgroundColor: "#fff",
     borderBottomWidth: 0.5,
     borderBottomColor: "#E5E7EB",
   },
-  backBtn: { padding: 4 },
-  backArrow: { fontSize: 24, color: "#1E293B" },
   headerTitle: { fontSize: 18, fontWeight: "600", color: "#0F172A" },
   headerActions: { flexDirection: "row", gap: 8 },
   cancelBtn: {
@@ -312,6 +381,8 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 8,
     backgroundColor: "#1E3A8A",
+    minWidth: 60,
+    alignItems: "center",
   },
   saveText: { fontSize: 14, fontWeight: "700", color: "#fff" },
   editBtn: {
@@ -342,52 +413,31 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderBottomColor: "#F1F5F9",
   },
-  avatarWrapper: { position: "relative", marginBottom: 14 },
-  avatar: {
+  avatarCircle: {
     width: 100,
     height: 100,
     borderRadius: 50,
-    borderWidth: 3,
-    borderColor: "#EFF6FF",
-  },
-  cameraBtn: {
-    position: "absolute",
-    bottom: 0,
-    right: 0,
-    width: 30,
-    height: 30,
-    borderRadius: 15,
     backgroundColor: "#1E3A8A",
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 2,
-    borderColor: "#fff",
+    marginBottom: 14,
   },
-  cameraIcon: { fontSize: 14 },
+  avatarInitial: { fontSize: 40, fontWeight: "700", color: "#fff" },
   doctorName: {
     fontSize: 20,
     fontWeight: "800",
     color: "#0F172A",
     marginBottom: 8,
   },
-  nameInput: {
-    fontSize: 20,
-    fontWeight: "800",
-    color: "#0F172A",
-    marginBottom: 8,
-    borderBottomWidth: 1.5,
-    borderBottomColor: "#1E3A8A",
-    paddingBottom: 4,
-    minWidth: 200,
-    textAlign: "center",
-  },
   specialtyBadge: {
     backgroundColor: "#EFF6FF",
     borderRadius: 20,
     paddingHorizontal: 16,
     paddingVertical: 5,
+    marginBottom: 6,
   },
   specialtyText: { fontSize: 13, fontWeight: "600", color: "#1E3A8A" },
+  emailText: { fontSize: 13, color: "#94A3B8", marginTop: 4 },
   body: { paddingHorizontal: 20, paddingTop: 24 },
   sectionLabel: {
     fontSize: 11,
@@ -464,5 +514,3 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 });
-
-*/

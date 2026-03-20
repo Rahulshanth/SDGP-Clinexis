@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
-  FlatList,
   StyleSheet,
   SafeAreaView,
   TouchableOpacity,
@@ -10,53 +9,93 @@ import {
   TextInput,
   Alert,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import ReminderCard from "../../components/features/Reminder/ReminderCard";
 import { ReminderType } from "../../types/reminder.types";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import {
+  fetchReminders,
+  addMedicineReminder,
+  removeReminder,
+} from "../../store/reminder.Slice";
 
-const INITIAL_REMINDERS = [
-  {
-    _id: "1",
-    patientId: "test",
-    type: ReminderType.MEDICINE,
-    title: "Medicine Reminder (Afternoon)",
-    message: "Time to take your medicine. Take aspirin morning and night",
-    reminderTime: new Date().toISOString(),
-    sent: false,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    _id: "2",
-    patientId: "test",
-    type: ReminderType.APPOINTMENT,
-    title: "Appointment Reminder",
-    message: "You have an appointment with Dr. Silva today",
-    reminderTime: new Date().toISOString(),
-    sent: false,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    _id: "3",
-    patientId: "test",
-    type: ReminderType.NOTIFICATION,
-    title: "Appointment Cancelled",
-    message: "Dr. Fernando has cancelled your appointment",
-    reminderTime: new Date().toISOString(),
-    sent: false,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-];
+// ── Time slots per type ────────────────────────────────────────────────────────
+const TIME_SLOTS: Record<string, string[]> = {
+  [ReminderType.MEDICINE]: [
+    "07:00 AM",
+    "08:00 AM",
+    "12:00 PM",
+    "06:00 PM",
+    "09:00 PM",
+  ],
+  [ReminderType.APPOINTMENT]: [
+    "08:00 AM",
+    "09:00 AM",
+    "10:00 AM",
+    "11:00 AM",
+    "01:00 PM",
+    "02:00 PM",
+    "03:00 PM",
+    "04:00 PM",
+    "05:00 PM",
+  ],
+};
+
+// ── 24h → display label (for pre-selecting slot from saved reminderTime) ───────
+const TIME_MAP: Record<string, string> = {
+  "07:00 AM": "07:00",
+  "08:00 AM": "08:00",
+  "09:00 AM": "09:00",
+  "10:00 AM": "10:00",
+  "11:00 AM": "11:00",
+  "12:00 PM": "12:00",
+  "01:00 PM": "13:00",
+  "02:00 PM": "14:00",
+  "03:00 PM": "15:00",
+  "04:00 PM": "16:00",
+  "05:00 PM": "17:00",
+  "06:00 PM": "18:00",
+  "09:00 PM": "21:00",
+};
+
+// ── Fix 1: Convert UTC ISO string → Sri Lanka local time label ─────────────────
+// MongoDB stores UTC. Sri Lanka = UTC+5:30
+// So we add 5h30m offset before extracting hours/minutes
+const isoToLocalTimeLabel = (isoString: string): string => {
+  const date = new Date(isoString);
+
+  // Convert to Sri Lanka time (UTC+5:30)
+  const sriLankaOffset = 5.5 * 60 * 60 * 1000; // 5.5 hours in ms
+  const localDate = new Date(date.getTime() + sriLankaOffset);
+
+  const hours = localDate.getUTCHours(); // use UTC after manual offset
+  const minutes = localDate.getUTCMinutes();
+  const ampm = hours >= 12 ? "PM" : "AM";
+  const displayHour = hours % 12 === 0 ? 12 : hours % 12;
+  const displayMin = minutes.toString().padStart(2, "0");
+  const label = `${displayHour.toString().padStart(2, "0")}:${displayMin} ${ampm}`;
+
+  // Find closest matching slot label
+  const allSlots = [
+    ...TIME_SLOTS[ReminderType.MEDICINE],
+    ...TIME_SLOTS[ReminderType.APPOINTMENT],
+  ];
+  return allSlots.find((s) => s === label) ?? "08:00 AM";
+};
 
 const RemindersScreen = () => {
-  const [reminders, setReminders] = useState(INITIAL_REMINDERS);
+  const insets = useSafeAreaInsets();
+  const dispatch = useAppDispatch();
+  const { reminders, loading, error } = useAppSelector(
+    (state) => state.reminders,
+  );
+
   const [modalVisible, setModalVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  // Form fields
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
   const [selectedType, setSelectedType] = useState<ReminderType>(
@@ -64,62 +103,66 @@ const RemindersScreen = () => {
   );
   const [reminderTime, setReminderTime] = useState("08:00 AM");
 
+  useEffect(() => {
+    dispatch(fetchReminders());
+  }, []);
+
+  const handleTypeChange = (type: ReminderType) => {
+    setSelectedType(type);
+    setReminderTime(TIME_SLOTS[type]?.[0] ?? "08:00 AM");
+  };
+
   const openAddModal = () => {
     setIsEditing(false);
     setEditingId(null);
     setTitle("");
     setMessage("");
     setSelectedType(ReminderType.MEDICINE);
-    setReminderTime("08:00 AM");
+    setReminderTime(TIME_SLOTS[ReminderType.MEDICINE][0]);
     setModalVisible(true);
   };
 
-  const openEditModal = (reminder: (typeof INITIAL_REMINDERS)[0]) => {
+  // ── Fix 2: Pre-select the correct time slot when editing ──────────────────
+  const openEditModal = (reminder: any) => {
     setIsEditing(true);
     setEditingId(reminder._id);
     setTitle(reminder.title);
     setMessage(reminder.message);
     setSelectedType(reminder.type);
-    setReminderTime("08:00 AM"); // ← default time when editing
+    // Convert saved UTC time → Sri Lanka local → match to a slot label
+    const localLabel = isoToLocalTimeLabel(reminder.reminderTime);
+    setReminderTime(localLabel);
     setModalVisible(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!title.trim() || !message.trim()) {
       Alert.alert("Error", "Please fill in all fields");
       return;
     }
 
+    const today = new Date();
+    const [hours, minutes] = (TIME_MAP[reminderTime] || "08:00").split(":");
+    today.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+
     if (isEditing && editingId) {
-      setReminders((prev) =>
-        prev.map((r) =>
-          r._id === editingId
-            ? {
-                ...r,
-                title: title.trim(),
-                message: message.trim(),
-                type: selectedType,
-              }
-            : r,
-        ),
-      );
-      Alert.alert("Success", "Reminder updated successfully!");
+      // TODO: wire up PATCH /reminders/:id when backend is ready
+      // For now, show success and close
+      Alert.alert("Success", "Reminder updated! (backend patch coming soon)");
+      setModalVisible(false);
     } else {
-      const newReminder = {
-        _id: Date.now().toString(),
-        patientId: "test",
-        type: selectedType,
-        title: title.trim(),
-        message: message.trim(),
-        reminderTime: new Date().toISOString(),
-        sent: false,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-      setReminders((prev) => [...prev, newReminder]);
+      await dispatch(
+        addMedicineReminder({
+          type: selectedType,
+          title: title.trim(),
+          message: message.trim(),
+          reminderTime: today.toISOString(),
+        }),
+      );
       Alert.alert("Success", "New reminder added!");
+      setModalVisible(false);
+      dispatch(fetchReminders());
     }
-    setModalVisible(false);
   };
 
   const handleDelete = (id: string) => {
@@ -131,8 +174,10 @@ const RemindersScreen = () => {
         {
           text: "Delete",
           style: "destructive",
-          onPress: () =>
-            setReminders((prev) => prev.filter((r) => r._id !== id)),
+          onPress: async () => {
+            await dispatch(removeReminder(id));
+            dispatch(fetchReminders());
+          },
         },
       ],
     );
@@ -145,10 +190,46 @@ const RemindersScreen = () => {
     (r) => r.type !== ReminderType.MEDICINE,
   );
 
+  // ── Time slot grid ─────────────────────────────────────────────────────────
+  const renderTimeSlots = () => {
+    const slots = TIME_SLOTS[selectedType];
+    if (!slots) return null;
+    return (
+      <View style={styles.formGroup}>
+        <Text style={styles.formLabel}>
+          {selectedType === ReminderType.MEDICINE
+            ? "Medicine Time"
+            : "Appointment Time"}
+        </Text>
+        <View style={styles.timeGrid}>
+          {slots.map((t) => (
+            <TouchableOpacity
+              key={t}
+              style={[
+                styles.timeChip,
+                reminderTime === t && styles.timeChipActive,
+              ]}
+              onPress={() => setReminderTime(t)}
+            >
+              <Text
+                style={[
+                  styles.timeChipText,
+                  reminderTime === t && styles.timeChipTextActive,
+                ]}
+              >
+                {t}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+    );
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       {/* HEADER */}
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
         <View>
           <Text style={styles.headerTitle}>My Reminders</Text>
           <Text style={styles.headerSubtitle}>
@@ -160,52 +241,78 @@ const RemindersScreen = () => {
         </TouchableOpacity>
       </View>
 
-      <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false}>
-        {/* Medicine Reminders */}
-        {medicineReminders.length > 0 && (
-          <View style={styles.sectionBlock}>
-            <Text style={styles.sectionLabel}>💊 MEDICINE REMINDERS</Text>
-            {medicineReminders.map((item) => (
-              <View key={item._id} style={styles.cardWrapper}>
-                <ReminderCard reminder={item} onDelete={handleDelete} />
-                <TouchableOpacity
-                  style={styles.editBtn}
-                  onPress={() => openEditModal(item)}
-                >
-                  <Text style={styles.editBtnText}>✏️ Edit</Text>
-                </TouchableOpacity>
-              </View>
-            ))}
-          </View>
-        )}
+      {/* Loading */}
+      {loading && (
+        <View style={styles.centerState}>
+          <ActivityIndicator size="large" color="#1E3A8A" />
+          <Text style={styles.centerText}>Loading reminders...</Text>
+        </View>
+      )}
 
-        {/* Other Reminders */}
-        {otherReminders.length > 0 && (
-          <View style={styles.sectionBlock}>
-            <Text style={styles.sectionLabel}>🔔 OTHER REMINDERS</Text>
-            {otherReminders.map((item) => (
-              <View key={item._id} style={styles.cardWrapper}>
-                <ReminderCard reminder={item} onDelete={handleDelete} />
-              </View>
-            ))}
-          </View>
-        )}
+      {/* Error */}
+      {error && !loading && (
+        <View style={styles.centerState}>
+          <Text style={styles.errorText}>⚠️ {error}</Text>
+          <TouchableOpacity
+            style={styles.retryBtn}
+            onPress={() => dispatch(fetchReminders())}
+          >
+            <Text style={styles.retryText}>Retry</Text>
+          </TouchableOpacity>
+        </View>
+      )}
 
-        {/* Empty state */}
-        {reminders.length === 0 && (
-          <View style={styles.emptyState}>
-            <Text style={styles.emptyIcon}>🔔</Text>
-            <Text style={styles.emptyText}>No reminders yet</Text>
-            <TouchableOpacity style={styles.emptyAddBtn} onPress={openAddModal}>
-              <Text style={styles.emptyAddBtnText}>
-                + Add your first reminder
-              </Text>
-            </TouchableOpacity>
-          </View>
-        )}
+      {!loading && !error && (
+        <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false}>
+          {/* Medicine Reminders */}
+          {medicineReminders.length > 0 && (
+            <View style={styles.sectionBlock}>
+              <Text style={styles.sectionLabel}>💊 MEDICINE REMINDERS</Text>
+              {medicineReminders.map((item) => (
+                <View key={item._id} style={styles.cardWrapper}>
+                  <ReminderCard reminder={item} onDelete={handleDelete} />
+                  <TouchableOpacity
+                    style={styles.editBtn}
+                    onPress={() => openEditModal(item)}
+                  >
+                    <Text style={styles.editBtnText}>✏️ Edit</Text>
+                  </TouchableOpacity>
+                </View>
+              ))}
+            </View>
+          )}
 
-        <View style={{ height: 32 }} />
-      </ScrollView>
+          {/* Other Reminders */}
+          {otherReminders.length > 0 && (
+            <View style={styles.sectionBlock}>
+              <Text style={styles.sectionLabel}>🔔 OTHER REMINDERS</Text>
+              {otherReminders.map((item) => (
+                <View key={item._id} style={styles.cardWrapper}>
+                  <ReminderCard reminder={item} onDelete={handleDelete} />
+                </View>
+              ))}
+            </View>
+          )}
+
+          {/* Empty state */}
+          {reminders.length === 0 && (
+            <View style={styles.emptyState}>
+              <Text style={styles.emptyIcon}>🔔</Text>
+              <Text style={styles.emptyText}>No reminders yet</Text>
+              <TouchableOpacity
+                style={styles.emptyAddBtn}
+                onPress={openAddModal}
+              >
+                <Text style={styles.emptyAddBtnText}>
+                  + Add your first reminder
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          <View style={{ height: 32 }} />
+        </ScrollView>
+      )}
 
       {/* ADD / EDIT MODAL */}
       <Modal
@@ -216,7 +323,6 @@ const RemindersScreen = () => {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
-            {/* Modal Header */}
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>
                 {isEditing ? "Edit Reminder" : "Add New Reminder"}
@@ -227,7 +333,7 @@ const RemindersScreen = () => {
             </View>
 
             <ScrollView showsVerticalScrollIndicator={false}>
-              {/* Type selector — only for new reminders */}
+              {/* Type selector — ADD mode only */}
               {!isEditing && (
                 <View style={styles.formGroup}>
                   <Text style={styles.formLabel}>Reminder Type</Text>
@@ -245,7 +351,7 @@ const RemindersScreen = () => {
                           styles.typeChip,
                           selectedType === t.type && styles.typeChipActive,
                         ]}
-                        onPress={() => setSelectedType(t.type)}
+                        onPress={() => handleTypeChange(t.type)}
                       >
                         <Text
                           style={[
@@ -269,7 +375,11 @@ const RemindersScreen = () => {
                   style={styles.formInput}
                   value={title}
                   onChangeText={setTitle}
-                  placeholder="e.g. Morning Medicine"
+                  placeholder={
+                    selectedType === ReminderType.MEDICINE
+                      ? "e.g. Morning Medicine"
+                      : "e.g. Appointment with Dr. Silva"
+                  }
                   placeholderTextColor="#94A3B8"
                 />
               </View>
@@ -281,48 +391,21 @@ const RemindersScreen = () => {
                   style={[styles.formInput, styles.formTextArea]}
                   value={message}
                   onChangeText={setMessage}
-                  placeholder="e.g. Take 1 tablet of Paracetamol"
+                  placeholder={
+                    selectedType === ReminderType.MEDICINE
+                      ? "e.g. Take 1 tablet of Paracetamol"
+                      : "e.g. Cardiology checkup at City Hospital"
+                  }
                   placeholderTextColor="#94A3B8"
                   multiline
                   numberOfLines={3}
                 />
               </View>
 
-              {/* ✅ FIXED — Time picker shows for medicine reminders in BOTH add and edit mode */}
-              {selectedType === ReminderType.MEDICINE && (
-                <View style={styles.formGroup}>
-                  <Text style={styles.formLabel}>Reminder Time</Text>
-                  <View style={styles.timeRow}>
-                    {[
-                      "07:00 AM",
-                      "08:00 AM",
-                      "12:00 PM",
-                      "06:00 PM",
-                      "09:00 PM",
-                    ].map((t) => (
-                      <TouchableOpacity
-                        key={t}
-                        style={[
-                          styles.timeChip,
-                          reminderTime === t && styles.timeChipActive,
-                        ]}
-                        onPress={() => setReminderTime(t)}
-                      >
-                        <Text
-                          style={[
-                            styles.timeChipText,
-                            reminderTime === t && styles.timeChipTextActive,
-                          ]}
-                        >
-                          {t}
-                        </Text>
-                      </TouchableOpacity>
-                    ))}
-                  </View>
-                </View>
-              )}
+              {/* ── Fix 2: Time slots shown in BOTH add and edit mode ── */}
+              {renderTimeSlots()}
 
-              {/* Save Button */}
+              {/* Save */}
               <TouchableOpacity style={styles.saveBtn} onPress={handleSave}>
                 <Text style={styles.saveBtnText}>
                   {isEditing ? "Save Changes" : "Add Reminder"}
@@ -343,7 +426,6 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: "#1E3A8A",
     paddingHorizontal: 20,
-    paddingTop: 20,
     paddingBottom: 24,
     borderBottomLeftRadius: 24,
     borderBottomRightRadius: 24,
@@ -361,6 +443,17 @@ const styles = StyleSheet.create({
   },
   addBtnText: { fontSize: 14, fontWeight: "700", color: "#1E3A8A" },
   scroll: { flex: 1 },
+  centerState: { flex: 1, alignItems: "center", justifyContent: "center" },
+  centerText: { fontSize: 15, color: "#94A3B8", marginTop: 12 },
+  errorText: { fontSize: 14, color: "#DC2626", marginBottom: 12 },
+  retryBtn: {
+    backgroundColor: "#1E3A8A",
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 24,
+    marginTop: 12,
+  },
+  retryText: { color: "#fff", fontWeight: "600" },
   sectionBlock: { paddingHorizontal: 16, marginTop: 20 },
   sectionLabel: {
     fontSize: 11,
@@ -443,14 +536,20 @@ const styles = StyleSheet.create({
   typeChipActive: { backgroundColor: "#EFF6FF", borderColor: "#1E3A8A" },
   typeChipText: { fontSize: 13, fontWeight: "600", color: "#64748B" },
   typeChipTextActive: { color: "#1E3A8A" },
-  timeRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
+  timeGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+  },
   timeChip: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingVertical: 9,
+    paddingHorizontal: 13,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: "#E5E7EB",
     backgroundColor: "#fff",
+    minWidth: "30%",
+    alignItems: "center",
   },
   timeChipActive: { backgroundColor: "#1E3A8A", borderColor: "#1E3A8A" },
   timeChipText: { fontSize: 12, fontWeight: "500", color: "#475569" },

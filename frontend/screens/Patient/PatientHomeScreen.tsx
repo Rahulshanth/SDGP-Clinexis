@@ -1,10 +1,5 @@
-
-
-
-                            // Rivithi and Nadithi when you are done with PatientProfileScreen uncomment line 21
-
-
-import React, { useEffect, useState } from 'react';
+// Rivithi and Nadithi when you are done with PatientProfileScreen uncomment line 21
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -13,20 +8,29 @@ import {
   StyleSheet,
   ActivityIndicator,
   TouchableOpacity,
-} from 'react-native';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { fetchConsultations } from '../../store/consultationSlice';
-import { fetchDoctorsBySpecialization, clearDoctors } from '../../store/doctorSlice';
-import ConsultationCard from '../../components/features/ConsultationCard/ConsultationCard';
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { fetchConsultations } from "../../store/consultationSlice";
+import {
+  fetchDoctorsBySpecialization,
+  clearDoctors,
+} from "../../store/doctorSlice";
+import ConsultationCard from "../../components/features/ConsultationCard/ConsultationCard";
+import { PatientStackParamList } from "../../navigation/PatientNavigator";
 //import PatientProfileScreen from "./PatientProfileScreen"; <-- After create the Profile screen consider this
 
+// ── Vidu added navigation type ────────────────────────────────────────────────
+type Nav = NativeStackNavigationProp<PatientStackParamList>;
 
 const PatientHomeScreen = () => {
   const dispatch = useAppDispatch();
+  const navigation = useNavigation<Nav>(); // ← Vidu added
   const { consultations } = useAppSelector((state) => state.consultation);
   const { doctors, loading, error } = useAppSelector((state) => state.doctor);
 
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState("");
   const [isSearching, setIsSearching] = useState(false);
 
   useEffect(() => {
@@ -50,7 +54,6 @@ const PatientHomeScreen = () => {
 
   return (
     <View style={styles.container}>
-
       {/* Search Bar */}
       <TextInput
         style={styles.searchBar}
@@ -69,19 +72,46 @@ const PatientHomeScreen = () => {
           {error && <Text style={styles.errorText}>{error}</Text>}
 
           {!loading && doctors.length === 0 && (
-            <Text style={styles.emptyText}>No doctors found for "{searchText}"</Text>
+            <Text style={styles.emptyText}>
+              No doctors found for "{searchText}"
+            </Text>
           )}
 
+          {/* ── Vidu added TouchableOpacity + navigation to DoctorProfile ── */}
           <FlatList
             data={doctors}
             keyExtractor={(item) => item._id}
             renderItem={({ item }) => (
-              <View style={styles.doctorCard}>
-                <Text style={styles.doctorName}>{item.profile.name}</Text>
-                <Text style={styles.doctorSpec}>{item.profile.specialization}</Text>
-                <Text style={styles.doctorInfo}>{item.profile.hospitalName}</Text>
-                <Text style={styles.doctorInfo}>{item.profile.phoneNumber}</Text>
-              </View>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate("DoctorProfile", {
+                    doctor: {
+                      id: item._id,
+                      name: item.profile.name,
+                      specialty: item.profile.specialization,
+                      hospital: item.profile.hospitalName,
+                      image: "",
+                      rating: 0,
+                      reviews: 0,
+                      earliest: "",
+                    },
+                  })
+                }
+              >
+                <View style={styles.doctorCard}>
+                  <Text style={styles.doctorName}>{item.profile.name}</Text>
+                  <Text style={styles.doctorSpec}>
+                    {item.profile.specialization}
+                  </Text>
+                  <Text style={styles.doctorInfo}>
+                    {item.profile.hospitalName}
+                  </Text>
+                  <Text style={styles.doctorInfo}>
+                    {item.profile.phoneNumber}
+                  </Text>
+                  <Text style={styles.viewProfile}>View Profile →</Text>
+                </View>
+              </TouchableOpacity>
             )}
           />
         </View>
@@ -90,35 +120,54 @@ const PatientHomeScreen = () => {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Your Consultations</Text>
           {consultations.map((consult) => (
-            <ConsultationCard key={consult._id} consultationId={consult._id} />
+            <ConsultationCard
+              key={consult._id}
+              consultationId={consult._id}
+              paragraphs={consult.conversationParagraphs}
+            />
           ))}
         </View>
       )}
-
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: '#f9f9f9' },
+  // ── All original styles — unchanged ───────────────────────────────────────
+  container: { flex: 1, padding: 16, backgroundColor: "#f9f9f9" },
   searchBar: {
-    borderWidth: 1, borderColor: '#ccc', borderRadius: 10,
-    padding: 12, marginBottom: 16, backgroundColor: 'white',
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 10,
+    padding: 12,
+    marginBottom: 16,
+    backgroundColor: "white",
     fontSize: 15,
   },
   section: { flex: 1 },
-  sectionTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 12 },
+  sectionTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 12 },
   doctorCard: {
-    backgroundColor: 'white', borderRadius: 10,
-    padding: 16, marginBottom: 12,
-    shadowColor: '#000', shadowOpacity: 0.05,
-    shadowRadius: 4, elevation: 2,
+    backgroundColor: "white",
+    borderRadius: 10,
+    padding: 16,
+    marginBottom: 12,
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
-  doctorName: { fontSize: 16, fontWeight: 'bold', color: '#1e3a5f' },
-  doctorSpec: { fontSize: 14, color: '#2563eb', marginTop: 2 },
-  doctorInfo: { fontSize: 13, color: '#666', marginTop: 2 },
-  errorText: { color: 'red', textAlign: 'center' },
-  emptyText: { color: '#999', textAlign: 'center', marginTop: 20 },
+  doctorName: { fontSize: 16, fontWeight: "bold", color: "#1e3a5f" },
+  doctorSpec: { fontSize: 14, color: "#2563eb", marginTop: 2 },
+  doctorInfo: { fontSize: 13, color: "#666", marginTop: 2 },
+  errorText: { color: "red", textAlign: "center" },
+  emptyText: { color: "#999", textAlign: "center", marginTop: 20 },
+  // ── Vidu added ─────────────────────────────────────────────────────────────
+  viewProfile: {
+    fontSize: 13,
+    color: "#1E3A8A",
+    fontWeight: "600",
+    marginTop: 6,
+  },
 });
 
 export default PatientHomeScreen;

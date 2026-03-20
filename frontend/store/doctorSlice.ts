@@ -1,5 +1,5 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { searchDoctorsBySpecialization } from '../services/doctorApi';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { searchDoctorsBySpecialization } from "../services/doctorApi";
 
 // Type definition for one doctor
 export interface Doctor {
@@ -11,6 +11,8 @@ export interface Doctor {
     specialization: string;
     hospitalName: string;
     phoneNumber: string;
+    clinicLocation?: string; // added by vidu
+    profilePhoto?: string; //added by vidu
   };
 }
 
@@ -28,18 +30,18 @@ const initialState: DoctorState = {
 
 // Thunk — calls the API function and returns doctor list
 export const fetchDoctorsBySpecialization = createAsyncThunk(
-  'doctor/fetchBySpecialization',
+  "doctor/fetchBySpecialization",
   async (specialization: string, { rejectWithValue }) => {
     try {
       return await searchDoctorsBySpecialization(specialization);
     } catch (error) {
-      return rejectWithValue('Failed to fetch doctors');
+      return rejectWithValue("Failed to fetch doctors");
     }
   },
 );
 
 const doctorSlice = createSlice({
-  name: 'doctor',
+  name: "doctor",
   initialState,
   reducers: {
     // Clears results when search bar is cleared

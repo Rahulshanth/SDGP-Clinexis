@@ -4,8 +4,9 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 // Patient Screens
 import PatientHomeScreen from "../screens/Patient/PatientHomeScreen";
-/*import FindDoctorScreen from "../screens/Patient/FindDoctorScreen";
 import DoctorProfileScreen from "../screens/Patient/DoctorProfileScreen";
+
+/*import FindDoctorScreen from "../screens/Patient/FindDoctorScreen";
 import BookAppointmentScreen from "../screens/Patient/BookAppointmentScreen";
 import AppointmentConfirmScreen from "../screens/Patient/AppointmentConfirmScreen";
 import MyAppointmentsScreen from "../screens/Patient/MyAppointmentsScreen";
@@ -79,9 +80,10 @@ function PatientStackNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="PatientHome" component={PatientHomeScreen} />
+      <Stack.Screen name="DoctorProfile" component={DoctorProfileScreen} />
+
       {/*
       <Stack.Screen name="FindDoctor" component={FindDoctorScreen} />
-      <Stack.Screen name="DoctorProfile" component={DoctorProfileScreen} />
       <Stack.Screen name="BookAppointment" component={BookAppointmentScreen} />
       <Stack.Screen
         name="AppointmentConfirm"
