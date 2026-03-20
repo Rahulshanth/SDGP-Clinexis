@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Dimensions
 import { Ionicons, Feather, MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import PharmacyBottomNav from '../../components/PharmacyBottomNav';
+import PharmacyBottomNav from '../../navigation/PharmacyBottomNav';
 
 const { width } = Dimensions.get('window');
 

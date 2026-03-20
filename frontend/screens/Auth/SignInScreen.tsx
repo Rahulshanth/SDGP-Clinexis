@@ -24,14 +24,17 @@ import { AuthStackParamList } from "../../navigation/AuthNavigator";
 import { signInUser } from "../../services/authApi";
 
 
-type Props = NativeStackScreenProps<AuthStackParamList, "SignIn">;
+//type Props = NativeStackScreenProps<AuthStackParamList, "SignIn">; // commented on 20th march RAHUL
+type Props = NativeStackScreenProps<AuthStackParamList, "SignIn"> & {
+  onLoginSuccess: () => void;
+};
 
 const BLUE = "#2EA8FF";
 const DARK_BLUE = "#1E3A8A";
 const PANEL_BLUE = "#EAF6FF";
 const WHITE = "#FFFFFF";
 
-export default function SignInScreen({ navigation, route }: Props) {
+export default function SignInScreen({ navigation, route , onLoginSuccess }: Props) {
   const selectedRole = route.params.role;
 
   const [email, setEmail] = useState("");
@@ -103,18 +106,23 @@ export default function SignInScreen({ navigation, route }: Props) {
         password,
       });
 
-      const role =
+      /*const role =
         result?.user?.role ?? selectedRole ?? "patient";
+        console.log("Logged in as:", role); // useful for debugging
 
-      const parentNavigation = navigation.getParent() as any;
+      const parentNavigation = navigation.getParent() as any;*/
 
-      if (role === "patient") parentNavigation?.replace("Patient");
+      /*if (role === "patient") parentNavigation?.replace("Patient");
       else if (role === "doctor") parentNavigation?.replace("Doctor");
-      else parentNavigation?.replace("Pharmacy");
+      else parentNavigation?.replace("Pharmacy");*/
+      console.log("Login result:", JSON.stringify(result));
+      onLoginSuccess();
 
-    } catch {
-      Alert.alert("Error", "Sign in failed");
-    } finally {
+    } catch (error) {
+  // ✅ Change this to see the real error
+  console.log("Sign in error:", JSON.stringify(error));
+  Alert.alert("Error", "Sign in failed");
+} finally {
       setLoading(false);
     }
   };
