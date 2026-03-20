@@ -13,6 +13,7 @@ import {
   Text,
   TextInput,
   View,
+  Image,
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { LinearGradient } from "expo-linear-gradient";
@@ -116,6 +117,8 @@ export default function ForgotPasswordOtpScreen({ navigation, route }: Props) {
             contentContainerStyle={styles.scrollContent}
             keyboardShouldPersistTaps="always"
           >
+
+            {/* FLOATING LOGO */}
             <Animated.View
               style={[
                 styles.card,
@@ -125,6 +128,15 @@ export default function ForgotPasswordOtpScreen({ navigation, route }: Props) {
                 },
               ]}
             >
+
+              {/* FLOATING LOGO */}
+              <View style={styles.logoFloating}>
+                <Image
+                  source={require("../../assets/images/Logo.png")}
+                  style={styles.logo}
+                />
+              </View>
+
               <Text style={styles.title}>Verify Code</Text>
 
               <Text style={styles.subtitle}>
@@ -181,7 +193,9 @@ export default function ForgotPasswordOtpScreen({ navigation, route }: Props) {
               <Pressable onPress={() => navigation.goBack()}>
                 <Text style={styles.cancelText}>Cancel Request</Text>
               </Pressable>
+
             </Animated.View>
+
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
@@ -195,6 +209,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     justifyContent: "flex-end",
+    paddingTop: 100, // important
   },
 
   card: {
@@ -202,7 +217,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
     paddingHorizontal: 24,
-    paddingTop: 60,
+    paddingTop: 90, // space for logo
     paddingBottom: 40,
   },
 
@@ -300,6 +315,19 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#6B7280",
     textDecorationLine: "underline",
+  },
+
+  logoFloating: {
+    position: "absolute",
+    top: -90,
+    alignSelf: "center",
+    zIndex: 10,
+  },
+
+  logo: {
+    width: 200,
+    height: 200,
+    borderRadius: 60,
   },
 });
 //edited by rivithi

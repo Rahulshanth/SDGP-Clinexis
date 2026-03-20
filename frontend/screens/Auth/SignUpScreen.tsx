@@ -14,6 +14,7 @@ import {
   Animated,
   Easing,
   Pressable,
+  Image,
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { LinearGradient } from "expo-linear-gradient";
@@ -158,6 +159,7 @@ export default function SignUpScreen({ navigation, route }: Props) {
         >
           <ScrollView contentContainerStyle={styles.scrollContent}>
 
+            {/* FLOATING LOGO */}
             <Animated.View
               style={[
                 styles.card,
@@ -168,10 +170,13 @@ export default function SignUpScreen({ navigation, route }: Props) {
               ]}
             >
 
-              {/* <Image
-                source={require("../../assets/images/ClinexisLogo.png")}
-                style={styles.logo}
-              />*/}
+              {/* FLOATING LOGO */}
+              <View style={styles.logoFloating}>
+                <Image
+                  source={require("../../assets/images/Logo.png")}
+                  style={styles.logo}
+                />
+              </View>
 
               <Text style={styles.title}>Sign Up</Text>
 
@@ -361,6 +366,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     justifyContent: "flex-end",
+    paddingTop: 100, // important for logo spacing
   },
 
   card: {
@@ -369,15 +375,8 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 40,
     paddingBottom: 60,
     paddingHorizontal: 24,
-    paddingTop: 60,
+    paddingTop: 90, // space for floating logo
   },
-
-  /*logo: {
-    width: 70,
-    height: 70,
-    alignSelf: "center",
-    marginBottom: 10,
-  },*/
 
   title: {
     fontSize: 28,
@@ -485,6 +484,20 @@ const styles = StyleSheet.create({
   strengthBar: {
   height: 6,
   borderRadius: 10,
+  },
+
+  logoFloating: {
+    position: "absolute",
+    top: -100,
+    alignSelf: "center",
+    zIndex: 10,
+  },
+
+  logo: {
+    width: 200,
+    height: 200,
+    borderRadius: 60,
+    padding: 12,
   },
 });
 

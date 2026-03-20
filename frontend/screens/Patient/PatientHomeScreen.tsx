@@ -16,7 +16,10 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { fetchConsultations } from "../../store/consultationSlice";
-import { fetchDoctorsBySpecialization, clearDoctors } from "../../store/doctorSlice";
+import {
+  fetchDoctorsBySpecialization,
+  clearDoctors,
+} from "../../store/doctorSlice";
 import ConsultationCard from "../../components/features/ConsultationCard/ConsultationCard";
 import { PatientStackParamList } from "../../navigation/PatientNavigator";
 //import PatientProfileScreen from "./PatientProfileScreen"; <-- After create the Profile screen consider this
@@ -93,7 +96,9 @@ const PatientHomeScreen = () => {
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.secondaryButton}>
-          <Text style={styles.secondaryButtonText}>📋 View My Consultations</Text>
+          <Text style={styles.secondaryButtonText}>
+            📋 View My Consultations
+          </Text>
         </TouchableOpacity>
 
         {/* Search Bar */}
@@ -183,7 +188,11 @@ const PatientHomeScreen = () => {
 const styles = StyleSheet.create({
   // ── From develop — nice styles ────────────────────────────────────────────
   safeArea: { flex: 1, backgroundColor: COLORS.background },
-  container: { flex: 1, backgroundColor: COLORS.background, paddingHorizontal: 16 },
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.background,
+    paddingHorizontal: 16,
+  },
   contentContainer: { paddingTop: 16, paddingBottom: 24 },
   header: {
     flexDirection: "row",
@@ -224,7 +233,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.primary,
   },
-  secondaryButtonText: { color: COLORS.primary, fontSize: 16, fontWeight: "600" },
+  secondaryButtonText: {
+    color: COLORS.primary,
+    fontSize: 16,
+    fontWeight: "600",
+  },
   searchBar: {
     borderWidth: 1,
     borderColor: COLORS.border,
