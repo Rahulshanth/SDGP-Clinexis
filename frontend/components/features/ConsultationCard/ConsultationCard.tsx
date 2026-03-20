@@ -12,7 +12,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface Props {
   paragraphs: string[];
-  consultationId: string; // ← added so we can send to backend
+  consultationId: string;
 }
 
 // ── Extract userId from JWT token ─────────────────────────────────────────────
@@ -32,7 +32,6 @@ const ConsultationCard: React.FC<Props> = ({ paragraphs, consultationId }) => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [creatingReminder, setCreatingReminder] = useState(false);
 
-  // ── Create reminder from selected paragraph ───────────────────────────────
   const handleCreateReminder = async () => {
     if (selectedIndex === null) {
       Alert.alert(
@@ -80,7 +79,6 @@ const ConsultationCard: React.FC<Props> = ({ paragraphs, consultationId }) => {
     }
   };
 
-  // ── Empty state — your original code ─────────────────────────────────────
   if (!paragraphs || paragraphs.length === 0) {
     return (
       <View style={styles.container}>
@@ -89,7 +87,6 @@ const ConsultationCard: React.FC<Props> = ({ paragraphs, consultationId }) => {
     );
   }
 
-  // ── Main render ───────────────────────────────────────────────────────────
   return (
     <View style={styles.container}>
       {/* Instruction */}
@@ -97,7 +94,7 @@ const ConsultationCard: React.FC<Props> = ({ paragraphs, consultationId }) => {
         💡 Tap a paragraph to select it, then press Create Reminder
       </Text>
 
-      {/* Paragraphs — your original blocks, now tappable */}
+      {/* Paragraphs */}
       {paragraphs.map((paragraph, index) => (
         <TouchableOpacity
           key={index}
@@ -106,17 +103,13 @@ const ConsultationCard: React.FC<Props> = ({ paragraphs, consultationId }) => {
           }
           activeOpacity={0.8}
         >
-          <View
-            style={[
-              styles.block,
-              selectedIndex === index && styles.blockSelected,
-            ]}
-          >
-            {/* Selected indicator */}
+          <View style={[
+            styles.block,
+            selectedIndex === index && styles.blockSelected,
+          ]}>
             {selectedIndex === index && (
               <Text style={styles.selectedTick}>✓ Selected</Text>
             )}
-            {/* Your original text — unchanged */}
             <Text style={styles.text}>{paragraph}</Text>
           </View>
         </TouchableOpacity>
@@ -126,8 +119,7 @@ const ConsultationCard: React.FC<Props> = ({ paragraphs, consultationId }) => {
       <TouchableOpacity
         style={[
           styles.createBtn,
-          (selectedIndex === null || creatingReminder) &&
-            styles.createBtnDisabled,
+          (selectedIndex === null || creatingReminder) && styles.createBtnDisabled,
         ]}
         onPress={handleCreateReminder}
         disabled={creatingReminder || selectedIndex === null}
@@ -149,7 +141,6 @@ const ConsultationCard: React.FC<Props> = ({ paragraphs, consultationId }) => {
 export default ConsultationCard;
 
 const styles = StyleSheet.create({
-  // ── Your original styles — unchanged ──────────────────────────────────────
   container: { padding: 4 },
   block: {
     marginBottom: 10,
@@ -161,8 +152,6 @@ const styles = StyleSheet.create({
   },
   text: { fontSize: 14, color: "#1e293b", lineHeight: 22 },
   emptyText: { color: "#999", textAlign: "center", padding: 16 },
-
-  // ── New styles added ───────────────────────────────────────────────────────
   instruction: {
     fontSize: 12,
     color: "#64748B",

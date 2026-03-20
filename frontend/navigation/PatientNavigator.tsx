@@ -4,6 +4,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 // Patient Screens
 import PatientHomeScreen from "../screens/Patient/PatientHomeScreen";
+<<<<<<< HEAD
 import DoctorProfileScreen from "../screens/Patient/DoctorProfileScreen";
 
 /*import FindDoctorScreen from "../screens/Patient/FindDoctorScreen";
@@ -18,6 +19,17 @@ import PatientPharmacyScreen from "../screens/Patient/PatientPharmacyScreen";
 import PatientSummaryScreen from "../screens/Patient/PatientSummaryScreen";
 import PatientProfileScreen from "../screens/Patient/ PatientProfileScreen";
 import PatientAppointmentScreen from "../screens/Patient/PatientAppointmentsScreen";*/
+=======
+//import PatientProfileScreen from "../screens/Patient/PatientProfileScreen";
+//import PatientRemindersScreen from "../screens/Patient/PatientRemindersScreen";
+//import PatientPharmacyScreen from "../screens/Patient/PatientPharmacyScreen";
+//import PatientSummaryScreen from "../screens/Patient/PatientSummaryScreen";
+//import PatientAppointmentScreen from "../screens/Patient/PatientAppointmentsScreen";
+import LiveTranscript from "../screens/Consultation/LiveTranscript";
+import VoiceRecorder from "../screens/Consultation/VoiceRecorder";
+
+
+>>>>>>> develop
 
 // ─── Stack param list (Vidu's screens) ───────────────────────
 export type PatientStackParamList = {

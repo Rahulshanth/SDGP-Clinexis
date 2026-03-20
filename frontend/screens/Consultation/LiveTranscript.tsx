@@ -1,4 +1,4 @@
-// frontend/screens/Consultation/LiveTranscript.tsx — updated by Vidu
+// frontend/screens/Consultation/LiveTranscript.tsx — merged by Vidu
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -29,15 +29,13 @@ const getUserIdFromToken = async (): Promise<string | null> => {
 
 const LiveTranscript = () => {
   const dispatch = useAppDispatch();
-  const { consultations } = useAppSelector((state) => state.consultation);
+  const { consultations, status, error } = useAppSelector(
+    (state) => state.consultation,
+  );
 
   // ── Track selected paragraph across all consultations ─────────────────────
-  const [selectedConsultId, setSelectedConsultId] = useState<string | null>(
-    null,
-  );
-  const [selectedParaIndex, setSelectedParaIndex] = useState<number | null>(
-    null,
-  );
+  const [selectedConsultId, setSelectedConsultId] = useState<string | null>(null);
+  const [selectedParaIndex, setSelectedParaIndex] = useState<number | null>(null);
   const [creatingReminder, setCreatingReminder] = useState(false);
 
   useEffect(() => {
@@ -47,7 +45,6 @@ const LiveTranscript = () => {
   // ── Handle paragraph tap ──────────────────────────────────────────────────
   const handleParaTap = (consultId: string, index: number) => {
     if (selectedConsultId === consultId && selectedParaIndex === index) {
-      // Tap same paragraph again → deselect
       setSelectedConsultId(null);
       setSelectedParaIndex(null);
     } else {
@@ -66,7 +63,6 @@ const LiveTranscript = () => {
       return;
     }
 
-    // Find the selected consultation and paragraph
     const consult = consultations.find((c) => c._id === selectedConsultId);
     if (!consult) return;
 
@@ -96,7 +92,6 @@ const LiveTranscript = () => {
           "✅ Reminders Created!",
           `${reminders.length} reminder${reminders.length > 1 ? "s" : ""} added to your Reminders screen.`,
         );
-        // Reset selection after success
         setSelectedConsultId(null);
         setSelectedParaIndex(null);
       }
@@ -114,45 +109,88 @@ const LiveTranscript = () => {
 
   return (
     <ScrollView style={styles.container}>
+
+      {/* ── From develop — nice title ── */}
+      <Text style={styles.title}>Consultation Records</Text>
+
+      {/* ── From develop — loading state ── */}
+      {status === "loading" && (
+        <ActivityIndicator
+          size="large"
+          color="#2563eb"
+          style={{ marginTop: 40 }}
+        />
+      )}
+
+      {/* ── From develop — error state ── */}
+      {status === "failed" && (
+        <Text style={styles.errorText}>
+          {error ?? "Failed to load consultations."}
+        </Text>
+      )}
+
+      {/* ── From develop — empty state ── */}
+      {status === "succeeded" && consultations.length === 0 && (
+        <Text style={styles.emptyText}>No consultations found.</Text>
+      )}
+
       {/* Instruction */}
       <Text style={styles.instruction}>
         💡 Tap a paragraph to select it, then press Create Reminder
       </Text>
 
-      {/* ── Original code — all consultations and paragraphs ── */}
-      {consultations.map((consult) =>
-        consult.conversationParagraphs.map(
-          (paragraph: string, index: number) => {
-            const isSelected =
-              selectedConsultId === consult._id && selectedParaIndex === index;
-            return (
-              <TouchableOpacity
-                key={`${consult._id}-${index}`}
-                onPress={() => handleParaTap(consult._id, index)}
-                activeOpacity={0.8}
-              >
-                <View
-                  style={[styles.block, isSelected && styles.blockSelected]}
+      {/* ── Consultations — nice card from develop + tappable paragraphs from HEAD ── */}
+      {consultations.map((consult) => (
+        <View key={consult._id} style={styles.card}>
+
+          {/* ── From develop — date header ── */}
+          <Text style={styles.dateText}>
+            🗓️{" "}
+            {new Date(consult.createdAt).toLocaleDateString("en-IN", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })}
+          </Text>
+
+          {/* ── Paragraphs — tappable from HEAD ── */}
+          {consult.conversationParagraphs.map(
+            (paragraph: string, index: number) => {
+              const isSelected =
+                selectedConsultId === consult._id &&
+                selectedParaIndex === index;
+              return (
+                <TouchableOpacity
+                  key={`${consult._id}-${index}`}
+                  onPress={() => handleParaTap(consult._id, index)}
+                  activeOpacity={0.8}
                 >
-                  {isSelected && (
-                    <Text style={styles.selectedTick}>✓ Selected</Text>
-                  )}
-                  <Text
+                  <View
                     style={[
-                      styles.paragraph,
-                      isSelected && styles.paragraphSelected,
+                      styles.block,
+                      isSelected && styles.blockSelected,
                     ]}
                   >
-                    {paragraph}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            );
-          },
-        ),
-      )}
+                    {isSelected && (
+                      <Text style={styles.selectedTick}>✓ Selected</Text>
+                    )}
+                    <Text
+                      style={[
+                        styles.paragraph,
+                        isSelected && styles.paragraphSelected,
+                      ]}
+                    >
+                      {paragraph}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            },
+          )}
+        </View>
+      ))}
 
-      {/* ── Create Reminder button — below the table ── */}
+      {/* ── Create Reminder button — below all consultations ── */}
       <TouchableOpacity
         style={[
           styles.createBtn,
@@ -165,7 +203,9 @@ const LiveTranscript = () => {
           <ActivityIndicator size="small" color="#fff" />
         ) : (
           <Text style={styles.createBtnText}>
-            {hasSelection ? "🔔 Create Reminder" : "Select a paragraph first"}
+            {hasSelection
+              ? "🔔 Create Reminder"
+              : "Select a paragraph first"}
           </Text>
         )}
       </TouchableOpacity>
@@ -178,10 +218,29 @@ const LiveTranscript = () => {
 export default LiveTranscript;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
+  // ── From develop ──────────────────────────────────────────────────────────
+  container: { flex: 1, padding: 16, backgroundColor: "#f9f9f9" },
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#1e3a5f",
+    marginBottom: 16,
   },
+  card: {
+    backgroundColor: "white",
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  dateText: { fontSize: 12, color: "#999", marginBottom: 10 },
+  errorText: { color: "red", textAlign: "center", marginTop: 20 },
+  emptyText: { color: "#999", textAlign: "center", marginTop: 40, fontSize: 15 },
+
+  // ── From HEAD ─────────────────────────────────────────────────────────────
   instruction: {
     fontSize: 12,
     color: "#64748B",
@@ -189,7 +248,6 @@ const styles = StyleSheet.create({
     fontStyle: "italic",
     textAlign: "center",
   },
-  // ── Original paragraph block style ───────────────────────────────────────
   block: {
     marginBottom: 10,
     padding: 12,
@@ -218,7 +276,6 @@ const styles = StyleSheet.create({
   paragraphSelected: {
     color: "#1D4ED8",
   },
-  // ── Create Reminder button ────────────────────────────────────────────────
   createBtn: {
     backgroundColor: "#1D4ED8",
     borderRadius: 12,
