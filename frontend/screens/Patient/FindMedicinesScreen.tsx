@@ -12,7 +12,8 @@ import {
 } from 'react-native';
 import { Ionicons, MaterialIcons, Feather } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { PatientStackParamList } from '../../navigation/PatientNavigator';
 
 const { width } = Dimensions.get('window');
 
@@ -78,8 +79,9 @@ const MOCK_PHARMACIES: Pharmacy[] = [
 
 export default function FindMedicinesScreen() {
   const insets = useSafeAreaInsets();
-  const router = useRouter();
-  const params = useLocalSearchParams();
+  const navigation = useNavigation<any>();
+  const route = useRoute<RouteProp<PatientStackParamList, 'FindMedicines'>>();
+  const params = route.params;
   
   const [inputText, setInputText] = useState('');
   const [searchedMedicines, setSearchedMedicines] = useState<string[]>([]);
@@ -214,11 +216,20 @@ export default function FindMedicinesScreen() {
     return sorted;
   };
 
+  const handleBack = () => {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+      return;
+    }
+
+    navigation.navigate('Home');
+  };
+
   return (
     <View style={[styles.container, { paddingTop: Math.max(insets.top, 20) }]}>
       {/* Top Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+        <TouchableOpacity style={styles.backButton} onPress={handleBack}>
           <Ionicons name="chevron-back" size={24} color="#1e293b" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>

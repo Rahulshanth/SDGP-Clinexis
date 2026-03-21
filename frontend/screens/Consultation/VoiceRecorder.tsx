@@ -3,7 +3,9 @@ import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'rea
 import { Audio } from 'expo-av';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { uploadConsultationAudio } from '../../store/consultationSlice';
-import { useRouter } from 'expo-router';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { PatientStackParamList } from '../../navigation/PatientNavigator';
 
 // TODO: replace with real auth state when login is ready
 // const TEST_PATIENT_ID = '69b8ead12a41401d6b03f912';
@@ -12,7 +14,7 @@ import { useRouter } from 'expo-router';
 const VoiceRecorder = () => {
   const [recording, setRecording] = useState<Audio.Recording | null>(null);
   const dispatch = useAppDispatch();
-  const router = useRouter();
+  const navigation = useNavigation<NativeStackNavigationProp<PatientStackParamList>>();
   const { status } = useAppSelector((state) => state.consultation);
 
   const startRecording = async () => {
@@ -101,7 +103,7 @@ const VoiceRecorder = () => {
           <Text style={styles.successText}>✅ Consultation saved successfully!</Text>
           <TouchableOpacity
             style={styles.viewButton}
-            onPress={() => router.push('/live-transcript' as any)}
+            onPress={() => navigation.navigate('LiveTranscript')}
           >
             <Text style={styles.viewButtonText}>View Transcript →</Text>
           </TouchableOpacity>

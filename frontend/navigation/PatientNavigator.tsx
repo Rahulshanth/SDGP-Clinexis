@@ -1,40 +1,88 @@
 import React from "react";
+import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import PatientHomeScreen from "../screens/Patient/PatientHomeScreen";
-//import PatientProfileScreen from "../screens/Patient/PatientProfileScreen";
-//import PatientRemindersScreen from "../screens/Patient/PatientRemindersScreen";
-//import PatientPharmacyScreen from "../screens/Patient/PatientPharmacyScreen";
-//import PatientSummaryScreen from "../screens/Patient/PatientSummaryScreen";
-//import PatientAppointmentScreen from "../screens/Patient/PatientAppointmentsScreen";
+import SharePrescriptionScreen from "../screens/Patient/SharePrescriptionScreen";
+import FindMedicinesScreen from "../screens/Patient/FindMedicinesScreen";
+import PatientProfileScreen from "../screens/Patient/PatientProfileScreen";
 import LiveTranscript from "../screens/Consultation/LiveTranscript";
 import VoiceRecorder from "../screens/Consultation/VoiceRecorder";
 
-
-
 export type PatientTabParamList = {
   Home: undefined;
-  Reminders: undefined;
-  Pharmacy: undefined;
-  Summary: undefined;
-  Appointments: undefined;
+  SharePrescription: undefined;
+  FindMedicines: undefined;
   Profile: undefined;
 };
 
-const Tab = createBottomTabNavigator<PatientTabParamList>();
+export type PatientStackParamList = {
+  PatientTabs: undefined;
+  VoiceRecorder: undefined;
+  LiveTranscript: undefined;
+  FindMedicines:
+    | {
+        medicines?: string;
+        results?: string;
+      }
+    | undefined;
+};
 
-export default function PatientNavigator() {
+const Tab = createBottomTabNavigator<PatientTabParamList>();
+const Stack = createNativeStackNavigator<PatientStackParamList>();
+
+function PatientTabs() {
   return (
     <Tab.Navigator
-      screenOptions={{
+      screenOptions={({ route }) => ({
         headerShown: true,
         tabBarActiveTintColor: "#2563eb",
-        tabBarInactiveTintColor: "#6b7280",
-      }}
+        tabBarInactiveTintColor: "#64748b",
+        tabBarStyle: {
+          height: 68,
+          paddingTop: 8,
+          paddingBottom: 8,
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: "600",
+        },
+        tabBarIcon: ({ color, focused, size }) => {
+          const icons: Record<keyof PatientTabParamList, React.ComponentProps<typeof Ionicons>["name"]> = {
+            Home: focused ? "home" : "home-outline",
+            SharePrescription: focused ? "document-text" : "document-text-outline",
+            FindMedicines: focused ? "medkit" : "medkit-outline",
+            Profile: focused ? "person" : "person-outline",
+          };
+
+          return <Ionicons name={icons[route.name as keyof PatientTabParamList]} size={size} color={color} />;
+        },
+      })}
     >
-      <Tab.Screen name="Home" component={PatientHomeScreen} />
+      <Tab.Screen name="Home" component={PatientHomeScreen} options={{ title: "Home" }} />
+      <Tab.Screen
+        name="SharePrescription"
+        component={SharePrescriptionScreen}
+        options={{ title: "Prescription" }}
+      />
+      <Tab.Screen
+        name="FindMedicines"
+        component={FindMedicinesScreen}
+        options={{ title: "Medicines" }}
+      />
+      <Tab.Screen name="Profile" component={PatientProfileScreen} options={{ title: "Profile" }} />
     </Tab.Navigator>
   );
 }
 
-//Added by Nadithi
+export default function PatientNavigator() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="PatientTabs" component={PatientTabs} />
+      <Stack.Screen name="VoiceRecorder" component={VoiceRecorder} />
+      <Stack.Screen name="LiveTranscript" component={LiveTranscript} />
+      <Stack.Screen name="FindMedicines" component={FindMedicinesScreen} />
+    </Stack.Navigator>
+  );
+}

@@ -5,9 +5,11 @@ import {
   TouchableOpacity, ScrollView,
   SafeAreaView, Image,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { fetchDoctorsBySpecialization, clearDoctors } from '../../store/doctorSlice';
+import { PatientStackParamList } from '../../navigation/PatientNavigator';
 
 const COLORS = {
   primary: '#2EA7FF',
@@ -19,7 +21,7 @@ const COLORS = {
 };
 
 const PatientHomeScreen = () => {
-  const router = useRouter();
+  const navigation = useNavigation<NativeStackNavigationProp<PatientStackParamList>>();
   const dispatch = useAppDispatch();
   const { doctors, loading, error } = useAppSelector((state) => state.doctor);
   const [searchText, setSearchText] = useState('');
@@ -67,14 +69,14 @@ const PatientHomeScreen = () => {
         {/* Action Buttons */}
         <TouchableOpacity
           style={styles.primaryButton}
-          onPress={() => router.push('/voice-recorder' as any)}
+          onPress={() => navigation.navigate('VoiceRecorder')}
         >
           <Text style={styles.primaryButtonText}>🎙️ Start New Recording</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.secondaryButton}
-          onPress={() => router.push('/live-transcript' as any)}
+          onPress={() => navigation.navigate('LiveTranscript')}
         >
           <Text style={styles.secondaryButtonText}>📋 View My Consultations</Text>
         </TouchableOpacity>

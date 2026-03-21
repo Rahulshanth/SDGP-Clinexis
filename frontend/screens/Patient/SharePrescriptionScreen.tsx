@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { Ionicons, MaterialIcons, Feather } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { useNavigation } from '@react-navigation/native';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { fetchConsultations } from '../../store/consultationSlice';
 import { matchPharmaciesWithMedicines, PharmacyMatch } from '../../services/pharmacyMatchingApi';
@@ -23,7 +23,7 @@ const { width } = Dimensions.get('window');
 
 export default function SharePrescriptionScreen() {
   const insets = useSafeAreaInsets();
-  const router = useRouter();
+  const navigation = useNavigation<any>();
   const dispatch = useAppDispatch();
   
   const { consultations } = useAppSelector((state) => state.consultation);
@@ -55,12 +55,9 @@ export default function SharePrescriptionScreen() {
     setIsSearching(true);
     try {
       const response = await matchPharmaciesWithMedicines(medicines);
-      router.push({
-        pathname: '/FindMedicines',
-        params: { 
-          medicines: JSON.stringify(medicines),
-          results: JSON.stringify(response.data)
-        }
+      navigation.navigate('FindMedicines', {
+        medicines: JSON.stringify(medicines),
+        results: JSON.stringify(response.data),
       });
     } catch (error) {
       Alert.alert('Error', 'Failed to search pharmacies. Please try again.');
@@ -68,6 +65,15 @@ export default function SharePrescriptionScreen() {
     } finally {
       setIsSearching(false);
     }
+  };
+
+  const handleBack = () => {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+      return;
+    }
+
+    navigation.navigate('Home');
   };
 
   const renderConsultationCard = (item: any) => (
@@ -115,7 +121,7 @@ export default function SharePrescriptionScreen() {
     <View style={[styles.container, { paddingTop: Math.max(insets.top, 20) }]}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+        <TouchableOpacity style={styles.backButton} onPress={handleBack}>
           <Ionicons name="chevron-back" size={24} color="#1e293b" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Share Prescription</Text>
