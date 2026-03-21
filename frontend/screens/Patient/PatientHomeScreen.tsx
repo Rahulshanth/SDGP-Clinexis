@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-// Rivithi and Nadithi when you are done with PatientProfileScreen uncomment line 21
-=======
->>>>>>> a810a93 (Modified the Patient Home Screen Interface)
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -10,88 +6,38 @@ import {
   FlatList,
   StyleSheet,
   ActivityIndicator,
-<<<<<<< HEAD
-  TouchableOpacity,
-  ScrollView,
-  SafeAreaView,
-  Image,
-} from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-=======
   SafeAreaView,
   ScrollView,
-  Image,
   TouchableOpacity,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 
->>>>>>> a810a93 (Modified the Patient Home Screen Interface)
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { fetchConsultations } from "../../store/consultationSlice";
 import {
   fetchDoctorsBySpecialization,
   clearDoctors,
 } from "../../store/doctorSlice";
-<<<<<<< HEAD
-import ConsultationCard from "../../components/features/ConsultationCard/ConsultationCard";
-import { PatientStackParamList } from "../../navigation/PatientNavigator";
-//import PatientProfileScreen from "./PatientProfileScreen"; <-- After create the Profile screen consider this
-=======
 
 import ConsultationCard from "../../components/features/ConsultationCard/ConsultationCard";
->>>>>>> a810a93 (Modified the Patient Home Screen Interface)
-
-// ── Vidu added navigation type ────────────────────────────────────────────────
-type Nav = NativeStackNavigationProp<PatientStackParamList>;
-
-// ── From develop — color constants ────────────────────────────────────────────
-const COLORS = {
-  primary: "#2EA7FF",
-  background: "#F5F7FB",
-  white: "#FFFFFF",
-  text: "#1E2A3A",
-  subtext: "#8A94A6",
-<<<<<<< HEAD
-  border: "#E8EEF5",
-};
-
-const PatientHomeScreen = () => {
-  const dispatch = useAppDispatch();
-  const navigation = useNavigation<Nav>();
-  const { consultations } = useAppSelector((state) => state.consultation);
-  const { doctors, loading, error } = useAppSelector((state) => state.doctor);
-=======
-};
 
 export default function PatientHomeScreen() {
   const dispatch = useAppDispatch();
 
   const { consultations } = useAppSelector((state) => state.consultation);
   const { doctors, loading } = useAppSelector((state) => state.doctor);
->>>>>>> a810a93 (Modified the Patient Home Screen Interface)
 
   const [searchText, setSearchText] = useState("");
   const [isSearching, setIsSearching] = useState(false);
 
   useEffect(() => {
     dispatch(fetchConsultations());
-<<<<<<< HEAD
-  }, []);
-
-  const handleSearch = (text: string) => {
-    setSearchText(text);
-    if (text.trim().length === 0) {
-      // If search bar is cleared, go back to consultations view
-=======
   }, [dispatch]);
 
   const handleSearch = (text: string) => {
     setSearchText(text);
 
     if (!text.trim()) {
->>>>>>> a810a93 (Modified the Patient Home Screen Interface)
       setIsSearching(false);
       dispatch(clearDoctors());
       return;
@@ -102,196 +48,68 @@ export default function PatientHomeScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      {/* HEADER */}
-      <LinearGradient
-        colors={["#1E3A8A", "#2EA7FF"]}
-        style={styles.headerGradient}
-      >
-<<<<<<< HEAD
-        {/* ── From develop — Header ── */}
-=======
->>>>>>> a810a93 (Modified the Patient Home Screen Interface)
+    <SafeAreaView style={styles.container}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+
+        {/* HEADER */}
         <View style={styles.header}>
-          <View>
-            <Text style={styles.subtitle}>Welcome</Text>
-            <Text style={styles.name}>Patient</Text>
+          <Text style={styles.title}>Home</Text>
+        </View>
+
+        {/* STATS */}
+        <View style={styles.statsRow}>
+          <View style={[styles.statCard, styles.statBlue]}>
+            <Ionicons name="calendar-outline" size={18} color="#2563eb" />
+            <Text style={styles.statNumber}>{consultations.length}</Text>
+            <Text style={styles.statLabel}>Appointments</Text>
           </View>
 
-          <Image
-            source={{ uri: "https://i.pravatar.cc/150?img=32" }}
-            style={styles.avatar}
+          <View style={[styles.statCard, styles.statGreen]}>
+            <Ionicons name="medkit-outline" size={18} color="#16a34a" />
+            <Text style={styles.statNumber}>3</Text>
+            <Text style={styles.statLabel}>Prescriptions</Text>
+          </View>
+
+          <View style={[styles.statCard, styles.statPurple]}>
+            <Ionicons name="notifications-outline" size={18} color="#7c3aed" />
+            <Text style={styles.statNumber}>2</Text>
+            <Text style={styles.statLabel}>Reminders</Text>
+          </View>
+        </View>
+
+        {/* SEARCH */}
+        <View style={styles.searchBar}>
+          <Ionicons name="search" size={18} color="#94a3b8" />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search doctors..."
+            placeholderTextColor="#94a3b8"
+            value={searchText}
+            onChangeText={handleSearch}
           />
         </View>
-      </LinearGradient>
 
-<<<<<<< HEAD
-        {/* ── From develop — Top card ── */}
-        <View style={styles.topCard}>
-          <Text style={styles.topCardTitle}>Find Your Doctor</Text>
-          <Text style={styles.topCardText}>
-            Search doctors by specialization and manage your consultations.
-          </Text>
-        </View>
-
-        {/* ── From develop — Action buttons ── */}
-        <TouchableOpacity style={styles.primaryButton}>
-          <Text style={styles.primaryButtonText}>🎙️ Start New Recording</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.secondaryButton}>
-          <Text style={styles.secondaryButtonText}>
-            📋 View My Consultations
-          </Text>
-        </TouchableOpacity>
-
-        {/* Search Bar */}
-        <TextInput
-          style={styles.searchBar}
-          placeholder="Search doctors by specialization..."
-          placeholderTextColor="#9AA4B2"
-          value={searchText}
-          onChangeText={handleSearch}
-        />
-
-        {/* While searching — show doctor results */}
+        {/* CONTENT */}
         {isSearching ? (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Doctors Found</Text>
+          <View>
+            <Text style={styles.sectionTitle}>Doctors</Text>
 
-            {loading && (
-              <ActivityIndicator size="large" color={COLORS.primary} />
-            )}
-            {error && <Text style={styles.errorText}>{error}</Text>}
+            {loading && <ActivityIndicator size="large" color="#3b82f6" />}
+
             {!loading && doctors.length === 0 && (
               <Text style={styles.emptyText}>
-                No doctors found for "{searchText}"
+                {`No doctors found for "${searchText}"`}
               </Text>
             )}
 
-            {/* ── Vidu — navigation to DoctorProfile ── */}
             <FlatList
               data={doctors}
-              keyExtractor={(item) => item._id}
+              keyExtractor={(item) => item._id.toString()}
               scrollEnabled={false}
               renderItem={({ item }) => (
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate("DoctorProfile", {
-                      doctor: {
-                        id: item._id,
-                        name: item.profile.name,
-                        specialty: item.profile.specialization,
-                        hospital: item.profile.hospitalName,
-                        image: "",
-                        rating: 0,
-                        reviews: 0,
-                        earliest: "",
-                      },
-                    })
-                  }
-                >
-                  <View style={styles.doctorCard}>
-                    <Text style={styles.doctorName}>
-                      {item.profile?.name || "Doctor"}
-                    </Text>
-                    <Text style={styles.doctorSpec}>
-                      {item.profile?.specialization || "Specialist"}
-                    </Text>
-                    <Text style={styles.doctorInfo}>
-                      {item.profile?.hospitalName || "Hospital"}
-                    </Text>
-                    <Text style={styles.doctorInfo}>
-                      {item.profile?.phoneNumber || ""}
-                    </Text>
-                    <Text style={styles.viewProfile}>View Profile →</Text>
-                  </View>
-                </TouchableOpacity>
-              )}
-            />
-          </View>
-        ) : (
-          /* Not searching — show consultations */
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Your Consultations</Text>
-            {/* ── Vidu — ConsultationCard with Create Reminder ── */}
-            {consultations.map((consult) => (
-              <ConsultationCard
-                key={consult._id}
-                consultationId={consult._id}
-                paragraphs={consult.conversationParagraphs}
-              />
-            ))}
-          </View>
-        )}
-      </ScrollView>
-    </SafeAreaView>
-  );
-};
-
-const styles = StyleSheet.create({
-  // ── From develop — nice styles ────────────────────────────────────────────
-  safeArea: { flex: 1, backgroundColor: COLORS.background },
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-    paddingHorizontal: 16,
-  },
-  contentContainer: { paddingTop: 16, paddingBottom: 24 },
-=======
-      {/* MAIN CARD */}
-      <View style={styles.mainCard}>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          
-          {/* STATS */}
-          <View style={styles.statsRow}>
-            <View style={styles.statCard}>
-              <Text style={styles.statNumber}>{consultations.length}</Text>
-              <Text style={styles.statLabel}>Appointments</Text>
-            </View>
-
-            <View style={styles.statCard}>
-              <Text style={styles.statNumber}>3</Text>
-              <Text style={styles.statLabel}>Prescriptions</Text>
-            </View>
-
-            <View style={styles.statCard}>
-              <Text style={styles.statNumber}>2</Text>
-              <Text style={styles.statLabel}>Reminders</Text>
-            </View>
-          </View>
-
-          {/* SEARCH */}
-          <View style={styles.searchContainer}>
-            <Ionicons name="search-outline" size={18} color="#9AA4B2" />
-            <TextInput
-              style={styles.searchInput}
-              placeholder="Search doctors by specialization"
-              placeholderTextColor="#9AA4B2"
-              value={searchText}
-              onChangeText={handleSearch}
-            />
-          </View>
-
-          {/* CONTENT */}
-          {isSearching ? (
-            <View>
-              <Text style={styles.sectionTitle}>Doctors</Text>
-
-              {loading && <ActivityIndicator size="large" color={COLORS.primary} />}
-
-              {!loading && doctors.length === 0 && (
-                <Text style={styles.emptyText}>
-                  {`No doctors found for "${searchText}"`}
-                </Text>
-              )}
-
-              <FlatList
-                data={doctors}
-                keyExtractor={(item) => item._id.toString()}
-                scrollEnabled={false}
-                renderItem={({ item }) => (
-                  <View style={styles.doctorCard}>
+                <View style={styles.card}>
+                  
+                  <View style={styles.cardHeader}>
                     <View>
                       <Text style={styles.doctorName}>
                         {item.profile?.name || "Doctor"}
@@ -301,166 +119,55 @@ const styles = StyleSheet.create({
                       </Text>
                     </View>
 
-                    <TouchableOpacity style={styles.bookBtn}>
-                      <Text style={styles.bookText}>Book</Text>
+                    <TouchableOpacity style={styles.button}>
+                      <Text style={styles.buttonText}>Book</Text>
                     </TouchableOpacity>
                   </View>
-                )}
-              />
-            </View>
-          ) : (
-            <View>
-              <Text style={styles.sectionTitle}>Consultations</Text>
 
-              {consultations.length > 0 ? (
-                consultations.map((c) => (
-                  <ConsultationCard key={c._id} consultation={c} />
-                ))
-              ) : (
-                <Text style={styles.emptyText}>
-                  No consultations available
-                </Text>
+                </View>
               )}
-            </View>
-          )}
-        </ScrollView>
-      </View>
+            />
+          </View>
+        ) : (
+          <View>
+            <Text style={styles.sectionTitle}>Consultations</Text>
+
+            {consultations.length > 0 ? (
+              consultations.map((c) => (
+                <ConsultationCard key={c._id} consultation={c} />
+              ))
+            ) : (
+              <Text style={styles.emptyText}>
+                No consultations available
+              </Text>
+            )}
+          </View>
+        )}
+
+      </ScrollView>
     </SafeAreaView>
   );
 }
-
 const styles = StyleSheet.create({
-  safeArea: {
+  container: {
     flex: 1,
-    backgroundColor: "#1E3A8A",
+    backgroundColor: "#f8fafc",
+    paddingHorizontal: 20,
   },
 
-  headerGradient: {
-    padding: 20,
-    paddingBottom: 50,
-  },
-
->>>>>>> a810a93 (Modified the Patient Home Screen Interface)
   header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-<<<<<<< HEAD
+    marginTop: 10,
     marginBottom: 20,
   },
-  greeting: { fontSize: 14, color: COLORS.subtext },
-  name: { fontSize: 24, fontWeight: "700", color: COLORS.text, marginTop: 4 },
-  avatar: { width: 58, height: 58, borderRadius: 29 },
-  topCard: {
-    backgroundColor: COLORS.primary,
-    borderRadius: 20,
-    padding: 18,
-    marginBottom: 18,
-  },
-  topCardTitle: {
-    color: "#FFFFFF",
-    fontSize: 18,
-    fontWeight: "700",
-    marginBottom: 8,
-  },
-  topCardText: { color: "#EAF6FF", fontSize: 13, lineHeight: 20 },
-  primaryButton: {
-    backgroundColor: COLORS.primary,
-    borderRadius: 12,
-    padding: 16,
-    alignItems: "center",
-    marginBottom: 12,
-  },
-  primaryButtonText: { color: "white", fontSize: 16, fontWeight: "600" },
-  secondaryButton: {
-    backgroundColor: COLORS.white,
-    borderRadius: 12,
-    padding: 16,
-    alignItems: "center",
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: COLORS.primary,
-  },
-  secondaryButtonText: {
-    color: COLORS.primary,
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  searchBar: {
-    borderWidth: 1,
-    borderColor: COLORS.border,
-    borderRadius: 14,
-    padding: 14,
-    marginBottom: 18,
-    backgroundColor: COLORS.white,
-    fontSize: 15,
-    color: COLORS.text,
-  },
-  section: { flex: 1 },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "700",
-    marginBottom: 12,
-    color: COLORS.text,
-  },
-  doctorCard: {
-    backgroundColor: COLORS.white,
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: COLORS.border,
-  },
-  doctorName: { fontSize: 16, fontWeight: "700", color: COLORS.text },
-  doctorSpec: { fontSize: 14, color: COLORS.primary, marginTop: 4 },
-  doctorInfo: { fontSize: 13, color: COLORS.subtext, marginTop: 4 },
-  errorText: { color: "red", textAlign: "center", marginTop: 10 },
-  emptyText: {
-    color: COLORS.subtext,
+
+  title: {
+    fontSize: 22,
+    fontWeight: "800",
+    color: "#0f172a",
     textAlign: "center",
-    marginTop: 20,
-    fontSize: 14,
-  },
-  // ── Vidu added ────────────────────────────────────────────────────────────
-  viewProfile: {
-    fontSize: 13,
-    color: "#1E3A8A",
-    fontWeight: "600",
-    marginTop: 6,
-  },
-});
-
-export default PatientHomeScreen;
-=======
   },
 
-  subtitle: {
-    color: "#DCEBFF",
-    fontSize: 13,
-  },
-
-  name: {
-    color: "#FFFFFF",
-    fontSize: 24,
-    fontWeight: "600",
-    marginTop: 4,
-  },
-
-  avatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-  },
-
-  mainCard: {
-    flex: 1,
-    backgroundColor: "#F5F7FB",
-    borderTopLeftRadius: 32,
-    borderTopRightRadius: 32,
-    marginTop: -20,
-    padding: 16,
-  },
-
+  /* STATS */
   statsRow: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -469,91 +176,113 @@ export default PatientHomeScreen;
 
   statCard: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
     marginHorizontal: 5,
-    borderRadius: 14,
-    paddingVertical: 14,
+    borderRadius: 16,
+    padding: 14,
     alignItems: "center",
-    elevation: 2,
+    borderWidth: 1,
+  },
+
+  statBlue: {
+    backgroundColor: "#eff6ff",
+    borderColor: "#dbeafe",
+  },
+
+  statGreen: {
+    backgroundColor: "#ecfdf5",
+    borderColor: "#d1fae5",
+  },
+
+  statPurple: {
+    backgroundColor: "#f5f3ff",
+    borderColor: "#ede9fe",
   },
 
   statNumber: {
     fontSize: 18,
-    fontWeight: "600",
-    color: "#1E2A3A",
+    fontWeight: "800",
+    color: "#0f172a",
+    marginTop: 4,
   },
 
   statLabel: {
     fontSize: 12,
-    color: "#8A94A6",
+    color: "#64748b",
     marginTop: 4,
   },
 
-  searchContainer: {
+  /* SEARCH */
+  searchBar: {
     flexDirection: "row",
-    backgroundColor: "#FFFFFF",
-    borderRadius: 12,
-    padding: 12,
     alignItems: "center",
+    backgroundColor: "#ffffff",
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    height: 56,
+    borderWidth: 1,
+    borderColor: "#e2e8f0",
     marginBottom: 20,
-    elevation: 1,
   },
 
   searchInput: {
-    marginLeft: 8,
     flex: 1,
-    fontSize: 14,
-    color: "#1E2A3A",
+    marginLeft: 10,
+    fontSize: 15,
+    color: "#1e293b",
   },
 
   sectionTitle: {
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: "700",
+    color: "#0f172a",
     marginBottom: 12,
-    color: "#1E2A3A",
   },
 
-  doctorCard: {
+  /* CARD */
+  card: {
+    backgroundColor: "#ffffff",
+    borderRadius: 18,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "#f1f5f9",
+  },
+
+  cardHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
-    backgroundColor: "#FFFFFF",
-    padding: 14,
-    borderRadius: 12,
-    marginBottom: 10,
-    elevation: 1,
+    alignItems: "center",
   },
 
   doctorName: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#1E2A3A",
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#1e293b",
   },
 
   doctorSpec: {
-    fontSize: 12,
-    color: "#2EA7FF",
+    fontSize: 13,
+    color: "#3b82f6",
     marginTop: 4,
   },
 
-  bookBtn: {
-    backgroundColor: "#2EA7FF",
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    borderRadius: 8,
-    justifyContent: "center",
+  button: {
+    backgroundColor: "#3b82f6",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 12,
   },
 
-  bookText: {
-    color: "#FFFFFF",
-    fontSize: 12,
-    fontWeight: "600",
+  buttonText: {
+    color: "#ffffff",
+    fontSize: 13,
+    fontWeight: "700",
   },
 
   emptyText: {
     textAlign: "center",
     marginTop: 20,
-    color: "#8A94A6",
-    fontSize: 13,
+    color: "#94a3b8",
+    fontSize: 14,
   },
 });
->>>>>>> a810a93 (Modified the Patient Home Screen Interface)

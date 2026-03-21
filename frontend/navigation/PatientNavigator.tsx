@@ -18,6 +18,8 @@ import FindMedicinesScreen from "../screens/Patient/FindMedicinesScreen";
 import PatientProfileScreen from "../screens/Patient/PatientProfileScreen";
 import LiveTranscript from "../screens/Consultation/LiveTranscript";
 import VoiceRecorder from "../screens/Consultation/VoiceRecorder";
+import SharePrescriptionScreen from "../screens/Patient/SharePrescriptionScreen";
+import FindMedicinesScreen from "../screens/Patient/FindMedicinesScreen";
 
 
 
@@ -96,8 +98,13 @@ export type PatientTabParamList = {
   Record: undefined;
   Transcripts: undefined;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> dc0336c (Modified the Patient Navigator Interface)
 =======
+=======
+  Pharmacy: undefined;
+  Share: undefined;
+>>>>>>> 1550f6d (Initial commit - Clinexis frontend)
   Profile: undefined;
 >>>>>>> 988926a (Made few changes in the Patient Navigator)
 };
@@ -179,7 +186,9 @@ export default function PatientNavigator() {
           if (route.name === "Home") iconName = "home-outline";
           else if (route.name === "Record") iconName = "mic-outline";
           else if (route.name === "Transcripts") iconName = "document-text-outline";
-          else if (route.name === "Profile") iconName = "person-outline"; 
+          else if (route.name === "Pharmacy") iconName = "medkit-outline";
+          else if (route.name === "Share") iconName = "share-social-outline";
+          else if (route.name === "Profile") iconName = "person-outline";
 
           return (
             <View style={styles.iconWrapper}>
@@ -197,8 +206,13 @@ export default function PatientNavigator() {
       <Tab.Screen name="Record" component={VoiceRecorder} />
       <Tab.Screen name="Transcripts" component={LiveTranscript} />
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> dc0336c (Modified the Patient Navigator Interface)
 =======
+=======
+      <Tab.Screen name="Pharmacy" component={FindMedicinesScreen} />
+      <Tab.Screen name="Share" component={SharePrescriptionScreen} />
+>>>>>>> 1550f6d (Initial commit - Clinexis frontend)
       <Tab.Screen name="Profile" component={PatientProfileScreen} />
 >>>>>>> 988926a (Made few changes in the Patient Navigator)
     </Tab.Navigator>
@@ -236,6 +250,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
 <<<<<<< HEAD
+<<<<<<< HEAD
 });
 
 //Added by Nadithi
@@ -243,3 +258,8 @@ const styles = StyleSheet.create({
 =======
 });
 >>>>>>> 988926a (Made few changes in the Patient Navigator)
+=======
+});
+
+//Added by Nadithi
+>>>>>>> 1550f6d (Initial commit - Clinexis frontend)

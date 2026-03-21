@@ -11,8 +11,7 @@ import { createRemindersFromConsultation } from "../../../services/reminderApi";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface Props {
-  paragraphs: string[];
-  consultationId: string;
+  consultation: any; // or proper type if you have it
 }
 
 // ── Extract userId from JWT token ─────────────────────────────────────────────
@@ -95,7 +94,7 @@ const ConsultationCard: React.FC<Props> = ({ paragraphs, consultationId }) => {
       </Text>
 
       {/* Paragraphs */}
-      {paragraphs.map((paragraph, index) => (
+      {paragraphs.map((paragraph: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined, index: string | number | bigint | ((prevState: number | null) => number | null) | null | undefined) => (
         <TouchableOpacity
           key={index}
           onPress={() =>
