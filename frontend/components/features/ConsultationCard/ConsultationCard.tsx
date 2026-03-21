@@ -1,85 +1,34 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ActivityIndicator,
-  Alert,
-} from "react-native";
-import { createRemindersFromConsultation } from "../../../services/reminderApi";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useEffect } from "react";
+import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
+import { fetchConsultationById } from "../../../store/consultationSlice";
 
 interface Props {
   paragraphs: string[];
   consultationId: string;
 }
 
-// ── Extract userId from JWT token ─────────────────────────────────────────────
-const getUserIdFromToken = async (): Promise<string | null> => {
-  try {
-    const token = await AsyncStorage.getItem("accessToken");
-    if (!token) return null;
-    const payload = token.split(".")[1];
-    const decoded = JSON.parse(atob(payload));
-    return decoded.sub || decoded.userId || null;
-  } catch {
-    return null;
+const ConsultationCard: React.FC<Props> = ({ consultationId }) => {
+  const dispatch = useAppDispatch();
+  const { activeConsultationParagraphs, status, error } = useAppSelector(
+    (state) => state.consultation
+  );
+
+  useEffect(() => {
+    dispatch(fetchConsultationById(consultationId));
+  }, [consultationId, dispatch]); // re-fetches if ID changes
+
+  // Loading state
+  if (status === 'loading') {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color="#2563eb" />
+      </View>
+    );
   }
-};
 
-const ConsultationCard: React.FC<Props> = ({ paragraphs, consultationId }) => {
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  const [creatingReminder, setCreatingReminder] = useState(false);
-
-  const handleCreateReminder = async () => {
-    if (selectedIndex === null) {
-      Alert.alert(
-        "Select a paragraph",
-        "Please tap a conversation paragraph first, then press Create Reminder.",
-      );
-      return;
-    }
-
-    setCreatingReminder(true);
-    try {
-      const patientId = await getUserIdFromToken();
-      if (!patientId) {
-        Alert.alert("Error", "Could not get user info. Please log in again.");
-        return;
-      }
-
-      const fullTranscript = paragraphs[selectedIndex];
-
-      const reminders = await createRemindersFromConsultation({
-        consultationId,
-        patientId,
-        fullTranscript,
-      });
-
-      if (reminders.length === 0) {
-        Alert.alert(
-          "No reminders created",
-          "No timing keywords found (morning, afternoon, evening, night, noon, bedtime). Try a different paragraph.",
-        );
-      } else {
-        Alert.alert(
-          "✅ Reminders Created!",
-          `${reminders.length} reminder${reminders.length > 1 ? "s" : ""} added to your Reminders screen.`,
-        );
-        setSelectedIndex(null);
-      }
-    } catch (err: any) {
-      Alert.alert(
-        "Error",
-        err?.message || "Failed to create reminders. Try again.",
-      );
-    } finally {
-      setCreatingReminder(false);
-    }
-  };
-
-  if (!paragraphs || paragraphs.length === 0) {
+  // Error state
+  if (error) {
     return (
       <View style={styles.container}>
         <Text style={styles.emptyText}>No conversation recorded.</Text>
@@ -89,30 +38,11 @@ const ConsultationCard: React.FC<Props> = ({ paragraphs, consultationId }) => {
 
   return (
     <View style={styles.container}>
-      {/* Instruction */}
-      <Text style={styles.instruction}>
-        💡 Tap a paragraph to select it, then press Create Reminder
-      </Text>
-
-      {/* Paragraphs */}
-      {paragraphs.map((paragraph, index) => (
-        <TouchableOpacity
-          key={index}
-          onPress={() =>
-            setSelectedIndex(index === selectedIndex ? null : index)
-          }
-          activeOpacity={0.8}
-        >
-          <View style={[
-            styles.block,
-            selectedIndex === index && styles.blockSelected,
-          ]}>
-            {selectedIndex === index && (
-              <Text style={styles.selectedTick}>✓ Selected</Text>
-            )}
-            <Text style={styles.text}>{paragraph}</Text>
-          </View>
-        </TouchableOpacity>
+      {activeConsultationParagraphs.map((paragraph: string, index: number) => (
+        <View key={index} style={styles.block}>
+          <Text style={styles.speakerLabel}>Speaker {index + 1}</Text>
+          <Text style={styles.text}>{paragraph}</Text>
+        </View>
       ))}
 
       {/* Create Reminder button */}

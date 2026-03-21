@@ -14,6 +14,10 @@ export default function RootNavigator() {
     try {
       const token = await AsyncStorage.getItem("token");
       const role = await AsyncStorage.getItem("userRole");
+      
+      console.log("Token:", token);
+      console.log("Role:", role);
+      
       setIsLoggedIn(!!token);
       setUserRole(role);
     } catch {
@@ -26,6 +30,7 @@ export default function RootNavigator() {
   }, []);
  
   // ✅ Clears token every app start (dev/testing mode)
+
   const clearTokenOnStart = async () => {
     await AsyncStorage.removeItem("token");
     await AsyncStorage.removeItem("userRole");
