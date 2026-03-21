@@ -27,7 +27,7 @@ export class RemindersController {
 
   // DOCTOR: After consultation saved, create reminders from transcript
   @Post('from-consultation')
-  @Roles(UserRole.DOCTOR)
+  @Roles(UserRole.DOCTOR, UserRole.PATIENT) // ← added PATIENT
   createFromConsultation(@Body() dto: CreateRemindersFromConsultationDto) {
     return this.remindersService.createRemindersFromConsultation(dto);
   }
