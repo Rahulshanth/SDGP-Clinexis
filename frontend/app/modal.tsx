@@ -1,7 +1,11 @@
+<<<<<<< HEAD
 
 
                                                 // COMMENTED BY RAHUL ON 6TH MARCH
 
+=======
+// COMMENTED BY RAHUL ON 6TH MARCH
+>>>>>>> develop
 
 /*import { Link } from 'expo-router';
 import { StyleSheet } from 'react-native';
@@ -38,6 +42,7 @@ export default function Modal() {
 }
 */
 
+<<<<<<< HEAD
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
@@ -60,3 +65,11 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 });
+=======
+// app/modal.tsx - modified by Vidu for testing
+/*
+export default function ModalScreen() {
+  return null;
+}
+*/
+>>>>>>> develop
