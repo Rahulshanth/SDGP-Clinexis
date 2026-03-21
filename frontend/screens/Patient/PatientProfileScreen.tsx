@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 
+
 const PatientProfileScreen = () => {
   const handleLogout = () => {
     Alert.alert("Logout", "Logout button pressed");
