@@ -15,11 +15,10 @@ export default function RootNavigator() {
       const token = await AsyncStorage.getItem("token");
       const role = await AsyncStorage.getItem("userRole");
       
-       // ✅ Add these temporarily
-         console.log("Token:", token);
-        console.log("Role:", role);
+      console.log("Token:", token);
+      console.log("Role:", role);
       
-      setIsLoggedIn(!!token);  // ✅ cleaner way to set true/false
+      setIsLoggedIn(!!token);
       setUserRole(role);
       
 
@@ -28,40 +27,23 @@ export default function RootNavigator() {
     }
   }, []);
 
-  useEffect(() => {
-  clearTokenOnStart();
-}, []);
-
-  /*const clearTokenOnStart = async () => {
+  const clearTokenOnStart = async () => {
     await AsyncStorage.removeItem("token");
-    setIsLoggedIn(false);
-  };
-
-  if (isLoggedIn === null) return null;
-
-  return (
-    <NavigationContainer>
-      {isLoggedIn 
-        ? <PatientNavigator /> 
-        : <AuthNavigator onLoginSuccess={checkLogin} />}  
-    </NavigationContainer>
-  );
-}*/
-
-const clearTokenOnStart = async () => {
-    await AsyncStorage.removeItem("token");
-    await AsyncStorage.removeItem("userRole"); // ✅ clear role too
+    await AsyncStorage.removeItem("userRole");
     setIsLoggedIn(false);
     setUserRole(null);
   };
 
+  useEffect(() => {
+    clearTokenOnStart();
+  }, []);
+
   if (isLoggedIn === null) return null;
 
-  // ✅ Render correct navigator based on role
   const renderHome = () => {
     if (userRole === "doctor") return <DoctorNavigator />;
     if (userRole === "pharmacy") return <PharmacyNavigator />;
-    return <PatientNavigator />; // default
+    return <PatientNavigator />;
   };
 
   return (
