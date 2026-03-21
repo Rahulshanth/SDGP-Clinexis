@@ -1,34 +1,24 @@
-export type SpeakerRole = "doctor" | "patient";
-
-export interface TranscriptLine {
-  id: string;
-  speaker: SpeakerRole;
-  text: string;
-  createdAt: string;
-}
-
 export interface CurrentSummaryData {
+  _id: string;
   consultationId: string;
-  doctorName: string;
-  patientName: string;
-  date: string;
-  transcript: TranscriptLine[];
-  summary: string;
-  updatedAt?: string;
+  selectedText: string;
+  patientCondition: string;
+  keySymptoms: string[];
+  diagnosis: string;
+  treatmentPlan: string;
+  medications: string[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface SummaryHistoryItem {
-  id: string;
+  _id: string;
   consultationId: string;
-  doctorName: string;
-  patientName: string;
-  date: string;
-  summary: string;
+  patientCondition: string;
+  diagnosis: string;
+  createdAt: string;
 }
 
 export interface GenerateSummaryPayload {
   consultationId: string;
-  selectedTranscriptIds?: string[];
 }
-
-//edit by Rivithi
