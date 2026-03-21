@@ -23,6 +23,15 @@ const DoctorHomeScreen = () => {
       >
         <Text style={styles.primaryButtonText}>📋 View My Consultations</Text>
       </TouchableOpacity>
+
+      {/* ── NEW: Profile Button ── */}
+      <TouchableOpacity
+        style={styles.secondaryButton}
+        onPress={() => navigation.navigate('DoctorEditProfile')}
+      >
+        <Text style={styles.secondaryButtonText}>👤 My Profile</Text>
+      </TouchableOpacity>
+
     </View>
   );
 };
@@ -37,6 +46,21 @@ const styles = StyleSheet.create({
     padding: 16, alignItems: 'center',
   },
   primaryButtonText: { color: 'white', fontSize: 16, fontWeight: '600' },
+  // ── NEW ──
+  secondaryButton: {
+    backgroundColor: '#EFF6FF',
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#BFDBFE',
+  },
+  secondaryButtonText: {
+    color: '#1E3A8A',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+
 });
 
 

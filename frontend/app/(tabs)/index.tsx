@@ -1,3 +1,10 @@
+//import { View } from 'react-native';
+
+export default function HomeScreen() {
+  return null;
+}
+
+
 // import { View, Text } from 'react-native';
 
 // export default function HomeScreen() {
@@ -164,7 +171,7 @@
 // });
 
 // //Added by Nadithi
-import { View, Text } from 'react-native';
+//import { View, Text } from 'react-native';
 
 /*export default function HomeScreen() {
   return (
@@ -316,9 +323,7 @@ export default function HomeScreen() {
 // 🔧 TEMP: Change to 'doctor' to test doctor view — remove when login is ready
 //const TEST_ROLE: 'patient' | 'doctor' = 'patient';
 
-export default function HomeScreen() {
-  return null;
-}
+
 
 
 

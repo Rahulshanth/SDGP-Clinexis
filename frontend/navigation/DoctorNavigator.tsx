@@ -2,11 +2,13 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import DoctorHomeScreen from "../screens/Doctor/DoctorHomeScreen";
 import LiveTranscript from "../screens/Consultation/LiveTranscript";
+import DoctorEditProfileScreen from "../screens/Doctor/DoctorEditProfileScreen";
 
 
 export type DoctorStackParamList = {
   DoctorHome: undefined;
   LiveTranscript: undefined;
+  DoctorEditProfile: undefined; 
 };
 
 const Stack = createNativeStackNavigator<DoctorStackParamList>();
@@ -22,6 +24,14 @@ export default function DoctorNavigator() {
         component={LiveTranscript}
         options={{ title: 'Consultation Records' }}
       />
+
+    <Stack.Screen
+        name="DoctorEditProfile"
+        component={DoctorEditProfileScreen}
+        options={{ title: 'My Profile', headerShown: false }}  
+        // headerShown: false because DoctorEditProfileScreen has its own header
+      />  
+
     </Stack.Navigator>
   );
 }

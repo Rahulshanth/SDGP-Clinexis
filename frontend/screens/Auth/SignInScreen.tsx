@@ -20,35 +20,38 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialIcons, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
-
+ 
 import { AuthStackParamList } from "../../navigation/AuthNavigator";
 import { signInUser } from "../../services/authApi";
-
-
-type Props = NativeStackScreenProps<AuthStackParamList, "SignIn">;
-
+ 
+// ✅ Props includes onLoginSuccess
+type Props = NativeStackScreenProps<AuthStackParamList, "SignIn"> & {
+  onLoginSuccess: () => void;
+};
+ 
 const BLUE = "#2EA8FF";
 const DARK_BLUE = "#1E3A8A";
 const PANEL_BLUE = "#EAF6FF";
 const WHITE = "#FFFFFF";
-
-export default function SignInScreen({ navigation, route }: Props) {
+ 
+// ✅ Accept onLoginSuccess from AuthNavigator
+export default function SignInScreen({ navigation, route, onLoginSuccess }: Props) {
   const selectedRole = route.params.role;
-
+ 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [loading, setLoading] = useState(false);
   const [focused, setFocused] = useState<string | null>(null);
-
+ 
   // animations
   const slideAnim = useRef(new Animated.Value(120)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
   const buttonScale = useRef(new Animated.Value(1)).current;
-
+ 
   const emailLabel = useRef(new Animated.Value(0)).current;
   const passwordLabel = useRef(new Animated.Value(0)).current;
-
+ 
   useEffect(() => {
     Animated.parallel([
       Animated.timing(slideAnim, {
@@ -64,7 +67,7 @@ export default function SignInScreen({ navigation, route }: Props) {
       }),
     ]).start();
   }, [opacityAnim, slideAnim]);
-
+ 
   const animateLabel = (anim: Animated.Value, toValue: number) => {
     Animated.timing(anim, {
       toValue,
@@ -72,14 +75,14 @@ export default function SignInScreen({ navigation, route }: Props) {
       useNativeDriver: false,
     }).start();
   };
-
+ 
   const pressIn = () => {
     Animated.spring(buttonScale, {
       toValue: 0.96,
       useNativeDriver: true,
     }).start();
   };
-
+ 
   const pressOut = () => {
     Animated.spring(buttonScale, {
       toValue: 1,
@@ -87,51 +90,49 @@ export default function SignInScreen({ navigation, route }: Props) {
       useNativeDriver: true,
     }).start();
   };
-
+ 
   const handleSignIn = async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-
+ 
     if (!email.trim() || !password.trim()) {
       Alert.alert("Validation", "Please enter email and password");
       return;
     }
-
+ 
     try {
       setLoading(true);
-
+ 
       const result = await signInUser({
         email: email.trim(),
         password,
       });
-
-      const role =
-        result?.user?.role ?? selectedRole ?? "patient";
-
-      const parentNavigation = navigation.getParent() as any;
-
-      if (role === "patient") parentNavigation?.replace("Patient");
-      else if (role === "doctor") parentNavigation?.replace("Doctor");
-      else parentNavigation?.replace("Pharmacy");
-
+ 
+      const role = result?.user?.role ?? selectedRole ?? "patient";
+      console.log("Logged in as:", role);
+ 
+      // ✅ This triggers checkLogin in RootNavigator
+      // which reads token + role from AsyncStorage
+      // and renders the correct home screen
+      onLoginSuccess();
+ 
     } catch {
       Alert.alert("Error", "Sign in failed");
     } finally {
       setLoading(false);
     }
   };
-
+ 
   return (
     <LinearGradient colors={[DARK_BLUE, BLUE, "#6EC6FF"]} style={styles.screen}>
       <StatusBar barStyle="light-content" />
-
+ 
       <SafeAreaView style={{ flex: 1 }}>
         <KeyboardAvoidingView
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "padding" : undefined}
         >
           <ScrollView contentContainerStyle={styles.scrollContent}>
-
-
+ 
             <Animated.View
               style={[
                 styles.card,
@@ -141,7 +142,7 @@ export default function SignInScreen({ navigation, route }: Props) {
                 },
               ]}
             >
-
+ 
               {/* FLOATING LOGO */}
               <View style={styles.logoFloating}>
                 <Image
@@ -149,23 +150,23 @@ export default function SignInScreen({ navigation, route }: Props) {
                   style={styles.logo}
                 />
               </View>
-
+ 
               <Text style={styles.title}>Sign In</Text>
-
+ 
               <Text style={styles.subtitle}>
                 Welcome back, please enter your details
               </Text>
-
+ 
               <Text style={styles.profileText}>
                 {selectedRole} account
               </Text>
-
+ 
               {/* SEGMENT */}
               <View style={styles.segment}>
                 <View style={styles.segmentActive}>
                   <Text style={styles.segmentActiveText}>Sign In</Text>
                 </View>
-
+ 
                 <TouchableOpacity
                   style={styles.segmentInactive}
                   onPress={() =>
@@ -175,7 +176,7 @@ export default function SignInScreen({ navigation, route }: Props) {
                   <Text style={styles.segmentInactiveText}>Sign Up</Text>
                 </TouchableOpacity>
               </View>
-
+ 
               {/* EMAIL */}
               <View
                 style={[
@@ -200,9 +201,9 @@ export default function SignInScreen({ navigation, route }: Props) {
                 >
                   Email
                 </Animated.Text>
-
+ 
                 <MaterialIcons name="email" size={18} color="#6B7280" />
-
+ 
                 <TextInput
                   style={styles.input}
                   value={email}
@@ -220,7 +221,7 @@ export default function SignInScreen({ navigation, route }: Props) {
                   }}
                 />
               </View>
-
+ 
               {/* PASSWORD */}
               <View
                 style={[
@@ -245,9 +246,9 @@ export default function SignInScreen({ navigation, route }: Props) {
                 >
                   Password
                 </Animated.Text>
-
+ 
                 <FontAwesome5 name="lock" size={16} color="#6B7280" />
-
+ 
                 <TextInput
                   style={styles.input}
                   secureTextEntry={secureTextEntry}
@@ -265,7 +266,7 @@ export default function SignInScreen({ navigation, route }: Props) {
                     !password && animateLabel(passwordLabel, 0);
                   }}
                 />
-
+ 
                 <TouchableOpacity onPress={() => setSecureTextEntry(!secureTextEntry)}>
                   <Ionicons
                     name={secureTextEntry ? "eye-off-outline" : "eye-outline"}
@@ -273,13 +274,13 @@ export default function SignInScreen({ navigation, route }: Props) {
                   />
                 </TouchableOpacity>
               </View>
-
+ 
               <TouchableOpacity
                 onPress={() => navigation.navigate("ForgotPasswordEmail")}
               >
                 <Text style={styles.forgot}>Forgot password?</Text>
               </TouchableOpacity>
-
+ 
               {/* BUTTON */}
               <Animated.View style={{ transform: [{ scale: buttonScale }] }}>
                 <Pressable
@@ -292,13 +293,13 @@ export default function SignInScreen({ navigation, route }: Props) {
                   <Text style={styles.buttonText}>Sign In</Text>
                 </Pressable>
               </Animated.View>
-
+ 
             </Animated.View>
-
+ 
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
-
+ 
       {/* LOADING OVERLAY */}
       {loading && (
         <View style={styles.overlay}>
@@ -310,26 +311,25 @@ export default function SignInScreen({ navigation, route }: Props) {
     </LinearGradient>
   );
 }
-
-
+ 
 const styles = StyleSheet.create({
   screen: { flex: 1 },
-
+ 
   scrollContent: {
     flexGrow: 1,
     justifyContent: "flex-end",
-    paddingTop: 100, // gives space for floating logo
+    paddingTop: 100,
   },
-
+ 
   card: {
     backgroundColor: PANEL_BLUE,
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
     paddingBottom: 78,
     paddingHorizontal: 24,
-    paddingTop: 90, // increased space for floating logo
+    paddingTop: 90,
   },
-
+ 
   title: {
     fontSize: 30,
     fontWeight: "800",
@@ -337,19 +337,19 @@ const styles = StyleSheet.create({
     color: BLUE,
     marginBottom: 10,
   },
-
+ 
   subtitle: {
     textAlign: "center",
     color: "#6B7280",
     marginBottom: 7,
   },
-
+ 
   profileText: {
     textAlign: "center",
     marginBottom: 20,
     color: "#374151",
   },
-
+ 
   segment: {
     flexDirection: "row",
     backgroundColor: "#DFF1FF",
@@ -357,7 +357,7 @@ const styles = StyleSheet.create({
     padding: 4,
     marginBottom: 18,
   },
-
+ 
   segmentActive: {
     flex: 1,
     backgroundColor: BLUE,
@@ -365,22 +365,22 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: "center",
   },
-
+ 
   segmentInactive: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
   },
-
+ 
   segmentActiveText: {
     color: WHITE,
     fontWeight: "700",
   },
-
+ 
   segmentInactiveText: {
     color: BLUE,
   },
-
+ 
   inputWrapper: {
     flexDirection: "row",
     alignItems: "center",
@@ -390,18 +390,18 @@ const styles = StyleSheet.create({
     marginBottom: 14,
     position: "relative",
   },
-
+ 
   inputFocused: {
     borderWidth: 1.5,
     borderColor: BLUE,
   },
-
+ 
   input: {
     flex: 1,
     paddingVertical: 14,
     marginLeft: 6,
   },
-
+ 
   label: {
     position: "absolute",
     left: 40,
@@ -409,25 +409,25 @@ const styles = StyleSheet.create({
     backgroundColor: WHITE,
     paddingHorizontal: 4,
   },
-
+ 
   forgot: {
     textAlign: "right",
     color: BLUE,
     marginBottom: 18,
   },
-
+ 
   button: {
     backgroundColor: BLUE,
     padding: 16,
     borderRadius: 14,
     alignItems: "center",
   },
-
+ 
   buttonText: {
     color: WHITE,
     fontWeight: "800",
   },
-
+ 
   overlay: {
     position: "absolute",
     width: "100%",
@@ -436,25 +436,25 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-
+ 
   loaderBox: {
     backgroundColor: WHITE,
     padding: 20,
     borderRadius: 16,
   },
-
+ 
   logoFloating: {
     position: "absolute",
     top: -100,
     alignSelf: "center",
     zIndex: 10,
   },
-
+ 
   logo: {
     width: 200,
     height: 200,
     borderRadius: 60,
   },
 });
-
-//Added by Rivithi & Edited by Nadithi
+ 
+// Added by Rivithi & Edited by Nadithi
