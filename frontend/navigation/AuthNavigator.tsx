@@ -1,4 +1,3 @@
-
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
  
@@ -23,7 +22,7 @@ export type AuthStackParamList = {
   ResetPassword: { email: string; code: string };
 };
  
-// Accept onLoginSuccess as a prop
+// ✅ Accept onLoginSuccess as a prop
 type AuthNavigatorProps = {
   onLoginSuccess: () => void;
 };
@@ -44,13 +43,11 @@ export default function AuthNavigator({ onLoginSuccess }: AuthNavigatorProps) {
       <Stack.Screen name="ChooseProfile" component={ChooseProfileScreen} />
  
       {/* children prop passes onLoginSuccess to SignInScreen */}
-      <Stack.Screen
-        name="SignIn"
-        // eslint-disable-next-line react/no-children-prop
-        children={(props) => (
+      <Stack.Screen name="SignIn">
+        {(props) => (
           <SignInScreen {...props} onLoginSuccess={onLoginSuccess} />
         )}
-      />
+      </Stack.Screen>
  
       <Stack.Screen name="SignUp" component={SignUpScreen} />
       <Stack.Screen name="ForgotPasswordEmail" component={ForgotPasswordEmailScreen} />
@@ -61,4 +58,3 @@ export default function AuthNavigator({ onLoginSuccess }: AuthNavigatorProps) {
 }
 
 // Added by Rivithi
-
