@@ -1,3 +1,4 @@
+
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Provider } from 'react-redux';
@@ -6,10 +7,10 @@ import { store } from '../store';
 export default function RootLayout() {
   return (
     <Provider store={store}>
-      <Stack screenOptions={{ headerShown: true }}>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="voice-recorder" options={{ headerShown: true, title: 'Record Consultation' }} />
+        <Stack.Screen name="live-transcript" options={{ headerShown: true, title: 'Consultation Records' }} />
         <Stack.Screen name="FindMedicines" options={{ headerShown: false }} />
         <Stack.Screen name="SharePrescription" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
@@ -21,7 +22,28 @@ export default function RootLayout() {
 
 
 
-
+/*import { Stack } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import { Provider } from 'react-redux';
+import { store } from '../store';
+import RootNavigator from '../navigation'; // ✅ Add back RootNavigator
+ 
+export default function RootLayout() {
+  return (
+    <Provider store={store}>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="voice-recorder" options={{ headerShown: true, title: 'Record Consultation' }} />
+        <Stack.Screen name="live-transcript" options={{ headerShown: true, title: 'Consultation Records' }} />
+        <Stack.Screen name="FindMedicines" options={{ headerShown: false }} />
+        <Stack.Screen name="SharePrescription" options={{ headerShown: false }} />
+        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+      </Stack>
+      <RootNavigator />  /* ✅ Our navigation system runs here */
+     /* <StatusBar style="auto" />
+    </Provider>
+  );
+}*/
 
 
 // Once our navigation/ folder is built, we can replace the <Stack> part with our RootNavigator(navigation/index.tsx)
