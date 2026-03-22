@@ -1,26 +1,38 @@
+
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import DoctorHomeScreen from "../screens/Doctor/DoctorHomeScreen";
-import SummaryScreen from "../screens/Summary/SummaryScreen";
-import CurrentSummaryScreen from "../screens/Summary/CurrentSummaryScreen";
-import SummaryHistoryScreen from "../screens/Summary/SummaryHistoryScreen";
+import LiveTranscript from "../screens/Consultation/LiveTranscript";
+import DoctorEditProfileScreen from "../screens/Doctor/DoctorEditProfileScreen";
+
 
 export type DoctorStackParamList = {
   DoctorHome: undefined;
-  Summary: undefined;
-  CurrentSummary: { consultationId: string };
-  SummaryHistory: undefined;
+  LiveTranscript: undefined;
+  DoctorEditProfile: undefined; 
 };
 
 const Stack = createNativeStackNavigator<DoctorStackParamList>();
 
 export default function DoctorNavigator() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="DoctorHome" component={DoctorHomeScreen} />
-      <Stack.Screen name="Summary" component={SummaryScreen} />
-      <Stack.Screen name="CurrentSummary" component={CurrentSummaryScreen} />
-      <Stack.Screen name="SummaryHistory" component={SummaryHistoryScreen} />
+    <Stack.Navigator screenOptions={{ headerShown: true }}>
+      <Stack.Screen name="DoctorHome" component={DoctorHomeScreen}
+      options={{ title: 'Home' }} />
+
+    <Stack.Screen
+        name="LiveTranscript"
+        component={LiveTranscript}
+        options={{ title: 'Consultation Records' }}
+      />
+
+    <Stack.Screen
+        name="DoctorEditProfile"
+        component={DoctorEditProfileScreen}
+        options={{ title: 'My Profile', headerShown: false }}  
+        // headerShown: false because DoctorEditProfileScreen has its own header
+      />  
+
     </Stack.Navigator>
   );
 }
