@@ -24,15 +24,22 @@ import * as Haptics from "expo-haptics";
 import { AuthStackParamList } from "../../navigation/AuthNavigator";
 import { signInUser } from "../../services/authApi";
 
-
-type Props = NativeStackScreenProps<AuthStackParamList, "SignIn">;
+// ✅ Props includes onLoginSuccess
+type Props = NativeStackScreenProps<AuthStackParamList, "SignIn"> & {
+  onLoginSuccess: () => void;
+};
 
 const BLUE = "#2EA8FF";
 const DARK_BLUE = "#1E3A8A";
 const PANEL_BLUE = "#EAF6FF";
 const WHITE = "#FFFFFF";
 
-export default function SignInScreen({ navigation, route }: Props) {
+// ✅ Accept onLoginSuccess from AuthNavigator
+export default function SignInScreen({
+  navigation,
+  route,
+  onLoginSuccess,
+}: Props) {
   const selectedRole = route.params.role;
 
   const [email, setEmail] = useState("");
@@ -104,15 +111,13 @@ export default function SignInScreen({ navigation, route }: Props) {
         password,
       });
 
-      const role =
-        result?.user?.role ?? selectedRole ?? "patient";
+      const role = result?.user?.role ?? selectedRole ?? "patient";
+      console.log("Logged in as:", role);
 
-      const parentNavigation = navigation.getParent() as any;
-
-      if (role === "patient") parentNavigation?.replace("Patient");
-      else if (role === "doctor") parentNavigation?.replace("Doctor");
-      else parentNavigation?.replace("Pharmacy");
-
+      // ✅ This triggers checkLogin in RootNavigator
+      // which reads token + role from AsyncStorage
+      // and renders the correct home screen
+      onLoginSuccess();
     } catch {
       Alert.alert("Error", "Sign in failed");
     } finally {
@@ -130,8 +135,6 @@ export default function SignInScreen({ navigation, route }: Props) {
           behavior={Platform.OS === "ios" ? "padding" : undefined}
         >
           <ScrollView contentContainerStyle={styles.scrollContent}>
-
-
             <Animated.View
               style={[
                 styles.card,
@@ -141,7 +144,6 @@ export default function SignInScreen({ navigation, route }: Props) {
                 },
               ]}
             >
-
               {/* FLOATING LOGO */}
               <View style={styles.logoFloating}>
                 <Image
@@ -156,9 +158,7 @@ export default function SignInScreen({ navigation, route }: Props) {
                 Welcome back, please enter your details
               </Text>
 
-              <Text style={styles.profileText}>
-                {selectedRole} account
-              </Text>
+              <Text style={styles.profileText}>{selectedRole} account</Text>
 
               {/* SEGMENT */}
               <View style={styles.segment}>
@@ -266,7 +266,9 @@ export default function SignInScreen({ navigation, route }: Props) {
                   }}
                 />
 
-                <TouchableOpacity onPress={() => setSecureTextEntry(!secureTextEntry)}>
+                <TouchableOpacity
+                  onPress={() => setSecureTextEntry(!secureTextEntry)}
+                >
                   <Ionicons
                     name={secureTextEntry ? "eye-off-outline" : "eye-outline"}
                     size={20}
@@ -292,9 +294,7 @@ export default function SignInScreen({ navigation, route }: Props) {
                   <Text style={styles.buttonText}>Sign In</Text>
                 </Pressable>
               </Animated.View>
-
             </Animated.View>
-
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
@@ -311,14 +311,13 @@ export default function SignInScreen({ navigation, route }: Props) {
   );
 }
 
-
 const styles = StyleSheet.create({
   screen: { flex: 1 },
 
   scrollContent: {
     flexGrow: 1,
     justifyContent: "flex-end",
-    paddingTop: 100, // gives space for floating logo
+    paddingTop: 100,
   },
 
   card: {
@@ -327,7 +326,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 40,
     paddingBottom: 78,
     paddingHorizontal: 24,
-    paddingTop: 90, // increased space for floating logo
+    paddingTop: 90,
   },
 
   title: {
@@ -457,4 +456,4 @@ const styles = StyleSheet.create({
   },
 });
 
-//Added by Rivithi & Edited by Nadithi
+// Added by Rivithi & Edited by Nadithi

@@ -22,7 +22,7 @@ export type AuthStackParamList = {
   ResetPassword: { email: string; code: string };
 };
 
-// ✅ NEW - Accept onLoginSuccess as a prop
+// ✅ Accept onLoginSuccess as a prop
 type AuthNavigatorProps = {
   onLoginSuccess: () => void;
 };
@@ -42,7 +42,7 @@ export default function AuthNavigator({ onLoginSuccess }: AuthNavigatorProps) {
       <Stack.Screen name="Welcome" component={WelcomeScreen} />
       <Stack.Screen name="ChooseProfile" component={ChooseProfileScreen} />
 
-      {/* ✅ SignIn gets onLoginSuccess passed as extra prop */}
+      {/* ✅ children prop passes onLoginSuccess to SignInScreen */}
       <Stack.Screen
         name="SignIn"
         children={(props) => (
@@ -51,13 +51,18 @@ export default function AuthNavigator({ onLoginSuccess }: AuthNavigatorProps) {
       />
 
       <Stack.Screen name="SignUp" component={SignUpScreen} />
-      <Stack.Screen name="ForgotPasswordEmail" component={ForgotPasswordEmailScreen} />
-      <Stack.Screen name="ForgotPasswordOtp" component={ForgotPasswordOtpScreen} />
+      <Stack.Screen
+        name="ForgotPasswordEmail"
+        component={ForgotPasswordEmailScreen}
+      />
+      <Stack.Screen
+        name="ForgotPasswordOtp"
+        component={ForgotPasswordOtpScreen}
+      />
       <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
     </Stack.Navigator>
   );
 }
 
 // Added by Rivithi
-
 //Added by Rivithi
