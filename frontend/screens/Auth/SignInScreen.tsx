@@ -26,13 +26,20 @@ import { signInUser } from "../../services/authApi";
 
 
 type Props = NativeStackScreenProps<AuthStackParamList, "SignIn">;
+type SignInScreenProps = Props & {
+  onLoginSuccess?: () => void;
+};
 
 const BLUE = "#2EA8FF";
 const DARK_BLUE = "#1E3A8A";
 const PANEL_BLUE = "#EAF6FF";
 const WHITE = "#FFFFFF";
 
-export default function SignInScreen({ navigation, route }: Props) {
+export default function SignInScreen({
+  navigation,
+  route,
+  onLoginSuccess,
+}: SignInScreenProps) {
   const selectedRole = route.params.role;
 
   const [email, setEmail] = useState("");
@@ -112,6 +119,7 @@ export default function SignInScreen({ navigation, route }: Props) {
       if (role === "patient") parentNavigation?.replace("Patient");
       else if (role === "doctor") parentNavigation?.replace("Doctor");
       else parentNavigation?.replace("Pharmacy");
+      onLoginSuccess?.();
 
     } catch {
       Alert.alert("Error", "Sign in failed");
