@@ -7,6 +7,7 @@ interface AuthState {
   isAuthenticated: boolean;
   loading: boolean;
   error: string | null;
+  role: string | null; 
 }
 
 const initialState: AuthState = {
@@ -15,6 +16,7 @@ const initialState: AuthState = {
   isAuthenticated: false,
   loading: false,
   error: null,
+  role: null,
 };
 
 // Thunk — SignIn
@@ -36,7 +38,9 @@ export const SignInUser = createAsyncThunk(
       const data = await response.json();
 
       // Save token to AsyncStorage so doctorApi.ts can read it later
-      await AsyncStorage.setItem("accessToken", data.accessToken);
+      await AsyncStorage.setItem('accessToken', data.accessToken);
+      await AsyncStorage.setItem('userRole', data.user?.role ?? ''); // ✅ save role
+
 
       return data.accessToken;
     } catch (error) {
@@ -84,8 +88,10 @@ const authSlice = createSlice({
   reducers: {
     logout(state) {
       state.token = null;
+      state.role = null;
       state.isAuthenticated = false;
-      AsyncStorage.removeItem("accessToken");
+      AsyncStorage.removeItem('accessToken');
+      AsyncStorage.removeItem('userRole');
     },
   },
   extraReducers: (builder) => {
@@ -96,7 +102,9 @@ const authSlice = createSlice({
       })
       .addCase(SignInUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.token = action.payload;
+        //state.token = action.payload;
+        state.token = action.payload.token;
+        state.role = action.payload.role;  // ✅ store role
         state.isAuthenticated = true;
       })
       .addCase(SignInUser.rejected, (state, action) => {

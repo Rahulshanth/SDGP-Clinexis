@@ -1,4 +1,5 @@
-import RootNavigator from "../navigation";
+import RootNavigator from '../navigation';
+
 export default function Index() {
   return <RootNavigator />;
 }

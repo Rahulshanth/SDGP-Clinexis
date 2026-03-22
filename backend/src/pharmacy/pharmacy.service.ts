@@ -41,5 +41,4 @@ export class PharmacyService {
   async getPharmacyById(id: string) {
     return this.pharmacyModel.findById(id);
   }
-
-}
+} 

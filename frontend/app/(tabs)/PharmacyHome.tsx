@@ -1,3 +1,3 @@
-/*import PharmacyHomeScreen from '../../screens/pharmacy/PharmacyHome';
+import PharmacyHomeScreen from '../../screens/pharmacy/PharmacyHome';
 
-export default PharmacyHomeScreen;*/
+export default PharmacyHomeScreen;
