@@ -5,48 +5,47 @@ import AuthNavigator from "./AuthNavigator";
 import PatientNavigator from "./PatientNavigator";
 import DoctorNavigator from "./DoctorNavigator";
 import PharmacyNavigator from "./PharmacyNavigator";
- 
+
 export default function RootNavigator() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [userRole, setUserRole] = useState<string | null>(null);
- 
+
   const checkLogin = useCallback(async () => {
     try {
       const token = await AsyncStorage.getItem("token");
       const role = await AsyncStorage.getItem("userRole");
-      
-      console.log("Token:", token);
-      console.log("Role:", role);
-      
       setIsLoggedIn(!!token);
       setUserRole(role);
     } catch {
       setIsLoggedIn(false);
     }
   }, []);
- 
+
   useEffect(() => {
     clearTokenOnStart();
   }, []);
- 
-  // ✅ Clears token every app start (dev/testing mode)
 
+  // ✅ Clears token every app start (dev/testing mode)
   const clearTokenOnStart = async () => {
     await AsyncStorage.removeItem("token");
     await AsyncStorage.removeItem("userRole");
     setIsLoggedIn(false);
     setUserRole(null);
   };
- 
+
   if (isLoggedIn === null) return null;
- 
+
   // ✅ Render correct navigator based on role
   const renderHome = () => {
     if (userRole === "doctor") return <DoctorNavigator />;
     if (userRole === "pharmacy") return <PharmacyNavigator />;
     return <PatientNavigator />; // default patient
   };
- 
+
   // ✅ No NavigationContainer wrapper — expo-router provides it
-  return isLoggedIn ? renderHome() : <AuthNavigator onLoginSuccess={checkLogin} />;
+  return isLoggedIn ? (
+    renderHome()
+  ) : (
+    <AuthNavigator onLoginSuccess={checkLogin} />
+  );
 }

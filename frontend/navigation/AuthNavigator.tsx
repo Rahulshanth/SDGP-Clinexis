@@ -1,3 +1,6 @@
+
+
+
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
  
@@ -59,5 +62,4 @@ export default function AuthNavigator({ onLoginSuccess }: AuthNavigatorProps) {
 }
 
 // Added by Rivithi
-
 //Added by Rivithi
