@@ -1,196 +1,149 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
-  ActivityIndicator,
-  Alert,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
   View,
+  Text,
+  StyleSheet,
+  FlatList,
+  SafeAreaView,
+  TouchableOpacity,
 } from "react-native";
-import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
-import {
-  fetchCurrentSummary,
-  generateConsultationSummary,
-} from "../../store/summarySlice";
-import { useAppDispatch, useAppSelector } from "../../store/hooks";
-
-type CurrentSummaryRouteParams = {
-  CurrentSummary: { consultationId: string };
-};
 
 const COLORS = {
-  background: "#F7F8FC",
-  card: "#FFFFFF",
-  border: "#E6EAF2",
-  text: "#1F2937",
-  subtext: "#6B7280",
-  primary: "#2D6CDF",
-  primarySoft: "#E8F0FF",
-  danger: "#DC2626",
-  tagBg: "#F3F4F6",
+  primary: "#2EA7FF",
+  background: "#F5F7FB",
+  white: "#FFFFFF",
+  text: "#1E2A3A",
+  subtext: "#8A94A6",
+  border: "#E8EEF5",
 };
 
-const CurrentSummaryScreen = () => {
-  const navigation = useNavigation<any>();
-  const route = useRoute<RouteProp<CurrentSummaryRouteParams, "CurrentSummary">>();
-  const { consultationId } = route.params;
+const summaries = [
+  {
+    id: "1",
+    date: "2026-03-10",
+    doctor: "Dr. Perera",
+    summary:
+      "Patient reported headache and mild fever. Prescribed medication for 3 days.",
+  },
+  {
+    id: "2",
+    date: "2026-03-12",
+    doctor: "Dr. Silva",
+    summary:
+      "Follow-up consultation completed. Patient condition improved.",
+  },
+];
 
-  const dispatch = useAppDispatch();
-  const { currentSummary, loadingCurrent, generating, error } = useAppSelector(
-    (state) => state.summary
-  );
-
-  useEffect(() => {
-    dispatch(fetchCurrentSummary(consultationId));
-  }, [consultationId]);
-
-  useEffect(() => {
-    if (error) Alert.alert("Error", error);
-  }, [error]);
-
-  const handleGenerate = () => {
-    dispatch(generateConsultationSummary({ consultationId }));
-  };
-
-  if (loadingCurrent) {
-    return (
-      <SafeAreaView style={styles.centered}>
-        <ActivityIndicator size="large" color={COLORS.primary} />
-        <Text style={styles.loadingText}>Loading summary...</Text>
-      </SafeAreaView>
-    );
-  }
-
+const PatientSummaryScreen = ({ navigation }: any) => {
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" />
-      <ScrollView showsVerticalScrollIndicator={false}>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <Text style={styles.heading}>Consultation Summaries</Text>
+        <Text style={styles.subheading}>
+          View your previous consultation summaries and follow-up notes
+        </Text>
 
-        {/* Header */}
-        <View style={styles.headerCard}>
-          <Text style={styles.headerTitle}>Consultation Summary</Text>
-          <Text style={styles.headerSubtitle}>
-            AI-generated medical summary
-          </Text>
-        </View>
-
-        {currentSummary ? (
-          <>
-            {/* Patient Condition */}
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Patient Condition</Text>
-              <Text style={styles.bodyText}>{currentSummary.patientCondition}</Text>
-            </View>
-
-            {/* Key Symptoms */}
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Key Symptoms</Text>
-              <View style={styles.tagRow}>
-                {currentSummary.keySymptoms.map((symptom, i) => (
-                  <View key={i} style={styles.tag}>
-                    <Text style={styles.tagText}>{symptom}</Text>
-                  </View>
-                ))}
+        <FlatList
+          data={summaries}
+          keyExtractor={(item) => item.id}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 20 }}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              activeOpacity={0.85}
+              style={styles.card}
+              onPress={() =>
+                navigation?.navigate?.("PatientConsultationRecord", {
+                  summaryId: item.id,
+                })
+              }
+            >
+              <View style={styles.topRow}>
+                <Text style={styles.date}>{item.date}</Text>
+                <Text style={styles.openText}>Open</Text>
               </View>
+
+              <Text style={styles.doctor}>{item.doctor}</Text>
+              <Text style={styles.summary}>{item.summary}</Text>
+            </TouchableOpacity>
+          )}
+          ListEmptyComponent={
+            <View style={styles.emptyBox}>
+              <Text style={styles.emptyText}>No summaries available yet.</Text>
             </View>
-
-            {/* Diagnosis */}
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Diagnosis</Text>
-              <Text style={styles.bodyText}>{currentSummary.diagnosis}</Text>
-            </View>
-
-            {/* Treatment Plan */}
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Treatment Plan</Text>
-              <Text style={styles.bodyText}>{currentSummary.treatmentPlan}</Text>
-            </View>
-
-            {/* Medications */}
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Medications</Text>
-              <View style={styles.tagRow}>
-                {currentSummary.medications.map((med, i) => (
-                  <View key={i} style={[styles.tag, { backgroundColor: "#EFF6FF" }]}>
-                    <Text style={[styles.tagText, { color: COLORS.primary }]}>{med}</Text>
-                  </View>
-                ))}
-              </View>
-            </View>
-          </>
-        ) : (
-          <View style={styles.emptyCard}>
-            <Text style={styles.emptyText}>No summary yet for this consultation.</Text>
-          </View>
-        )}
-
-        {/* Buttons */}
-        <View style={styles.actionRow}>
-          <TouchableOpacity
-            style={styles.primaryButton}
-            onPress={handleGenerate}
-            disabled={generating}
-          >
-            <Text style={styles.primaryButtonText}>
-              {generating ? "Generating..." : "Generate New Summary"}
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.secondaryButton}
-            onPress={() => navigation.navigate("SummaryHistory")}
-          >
-            <Text style={styles.secondaryButtonText}>View History</Text>
-          </TouchableOpacity>
-        </View>
-
-      </ScrollView>
+          }
+        />
+      </View>
     </SafeAreaView>
   );
 };
 
-export default CurrentSummaryScreen;
-
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.background, padding: 16 },
-  centered: { flex: 1, backgroundColor: COLORS.background, justifyContent: "center", alignItems: "center" },
-  loadingText: { marginTop: 10, color: COLORS.subtext, fontSize: 14 },
-  headerCard: {
-    backgroundColor: COLORS.card, borderRadius: 18, padding: 16,
-    borderWidth: 1, borderColor: COLORS.border, marginBottom: 16,
+  safeArea: {
+    flex: 1,
+    backgroundColor: COLORS.background,
   },
-  headerTitle: { fontSize: 22, fontWeight: "700", color: COLORS.text },
-  headerSubtitle: { fontSize: 14, color: COLORS.subtext, marginTop: 6 },
-  section: {
-    backgroundColor: COLORS.card, borderRadius: 14, padding: 16,
-    borderWidth: 1, borderColor: COLORS.border, marginBottom: 12,
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.background,
+    padding: 16,
   },
-  sectionTitle: { fontSize: 15, fontWeight: "700", color: COLORS.text, marginBottom: 8 },
-  bodyText: { fontSize: 14, color: COLORS.text, lineHeight: 22 },
-  tagRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  tag: {
-    backgroundColor: COLORS.tagBg, borderRadius: 999,
-    paddingHorizontal: 12, paddingVertical: 6,
+  heading: {
+    fontSize: 24,
+    fontWeight: "700",
+    color: COLORS.text,
+    marginBottom: 6,
   },
-  tagText: { fontSize: 13, color: COLORS.text },
-  emptyCard: {
-    backgroundColor: COLORS.card, borderRadius: 14, padding: 18,
-    borderWidth: 1, borderColor: COLORS.border, marginBottom: 16,
+  subheading: {
+    fontSize: 14,
+    color: COLORS.subtext,
+    marginBottom: 18,
+    lineHeight: 20,
   },
-  emptyText: { color: COLORS.subtext, fontSize: 14, textAlign: "center" },
-  actionRow: { gap: 10, marginBottom: 30 },
-  primaryButton: {
-    backgroundColor: COLORS.primary, borderRadius: 14,
-    paddingVertical: 14, alignItems: "center",
+  card: {
+    backgroundColor: COLORS.white,
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: COLORS.border,
   },
-  primaryButtonText: { color: "#FFFFFF", fontSize: 15, fontWeight: "700" },
-  secondaryButton: {
-    backgroundColor: COLORS.card, borderRadius: 14,
-    paddingVertical: 14, alignItems: "center",
-    borderWidth: 1, borderColor: COLORS.primary,
+  topRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 8,
   },
-  secondaryButtonText: { color: COLORS.primary, fontSize: 15, fontWeight: "700" },
+  date: {
+    fontSize: 12,
+    color: COLORS.subtext,
+  },
+  openText: {
+    fontSize: 12,
+    color: COLORS.primary,
+    fontWeight: "700",
+  },
+  doctor: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: COLORS.primary,
+    marginBottom: 8,
+  },
+  summary: {
+    fontSize: 14,
+    color: COLORS.text,
+    lineHeight: 21,
+  },
+  emptyBox: {
+    marginTop: 40,
+    alignItems: "center",
+  },
+  emptyText: {
+    fontSize: 14,
+    color: COLORS.subtext,
+  },
 });
+
+export default PatientSummaryScreen;
+
+//edit by rivithi
