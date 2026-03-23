@@ -43,6 +43,8 @@
   },
   "devDependencies": {
     "@types/react": "~19.1.0",
+    "@types/webidl-conversions": "^7.0.3",
+    "@types/whatwg-url": "^13.0.0",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~10.0.0",
     "typescript": "~5.9.2"
