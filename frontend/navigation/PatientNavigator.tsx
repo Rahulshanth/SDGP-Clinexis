@@ -10,6 +10,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 // Patient Screens
 import PatientHomeScreen from "../screens/Patient/PatientHomeScreen";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import SharePrescriptionScreen from "../screens/Patient/SharePrescriptionScreen";
 import FindMedicinesScreen from "../screens/Patient/FindMedicinesScreen";
 import PatientProfileScreen from "../screens/Patient/PatientProfileScreen";
@@ -18,6 +19,8 @@ import VoiceRecorder from "../screens/Consultation/VoiceRecorder";
 
 =======
 <<<<<<< HEAD
+=======
+>>>>>>> develop
 import DoctorProfileScreen from "../screens/Patient/DoctorProfileScreen";
 
 /*import FindDoctorScreen from "../screens/Patient/FindDoctorScreen";
@@ -32,7 +35,6 @@ import PatientPharmacyScreen from "../screens/Patient/PatientPharmacyScreen";
 import PatientSummaryScreen from "../screens/Patient/PatientSummaryScreen";
 import PatientProfileScreen from "../screens/Patient/ PatientProfileScreen";
 import PatientAppointmentScreen from "../screens/Patient/PatientAppointmentsScreen";*/
-=======
 //import PatientProfileScreen from "../screens/Patient/PatientProfileScreen";
 //import PatientRemindersScreen from "../screens/Patient/PatientRemindersScreen";
 //import PatientPharmacyScreen from "../screens/Patient/PatientPharmacyScreen";
@@ -42,7 +44,6 @@ import LiveTranscript from "../screens/Consultation/LiveTranscript";
 import VoiceRecorder from "../screens/Consultation/VoiceRecorder";
 
 
->>>>>>> develop
 
 // ─── Stack param list (Vidu's screens) ───────────────────────
 export type PatientStackParamList = {

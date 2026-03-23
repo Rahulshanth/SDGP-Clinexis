@@ -26,19 +26,37 @@ import * as Haptics from "expo-haptics";
  
 import { AuthStackParamList } from "../../navigation/AuthNavigator";
 import { signInUser } from "../../services/authApi";
+<<<<<<< HEAD
  
+=======
+
+>>>>>>> develop
 // ✅ Props includes onLoginSuccess
 type Props = NativeStackScreenProps<AuthStackParamList, "SignIn"> & {
   onLoginSuccess: () => void;
 };
+<<<<<<< HEAD
  
+=======
+
+>>>>>>> develop
 const BLUE = "#2EA8FF";
 const DARK_BLUE = "#1E3A8A";
 const PANEL_BLUE = "#EAF6FF";
 const WHITE = "#FFFFFF";
+<<<<<<< HEAD
  
 // ✅ Accept onLoginSuccess from AuthNavigator
 export default function SignInScreen({ navigation, route, onLoginSuccess }: Props) {
+=======
+
+// ✅ Accept onLoginSuccess from AuthNavigator
+export default function SignInScreen({
+  navigation,
+  route,
+  onLoginSuccess,
+}: Props) {
+>>>>>>> develop
   const selectedRole = route.params.role;
  
   const [email, setEmail] = useState("");
@@ -109,15 +127,25 @@ export default function SignInScreen({ navigation, route, onLoginSuccess }: Prop
         email: email.trim(),
         password,
       });
+<<<<<<< HEAD
  
       const role = result?.user?.role ?? selectedRole ?? "patient";
       console.log("Logged in as:", role);
  
+=======
+
+      const role = result?.user?.role ?? selectedRole ?? "patient";
+      console.log("Logged in as:", role);
+
+>>>>>>> develop
       // ✅ This triggers checkLogin in RootNavigator
       // which reads token + role from AsyncStorage
       // and renders the correct home screen
       onLoginSuccess();
+<<<<<<< HEAD
  
+=======
+>>>>>>> develop
     } catch {
       Alert.alert("Error", "Sign in failed");
     } finally {
@@ -135,7 +163,10 @@ export default function SignInScreen({ navigation, route, onLoginSuccess }: Prop
           behavior={Platform.OS === "ios" ? "padding" : undefined}
         >
           <ScrollView contentContainerStyle={styles.scrollContent}>
+<<<<<<< HEAD
  
+=======
+>>>>>>> develop
             <Animated.View
               style={[
                 styles.card,
@@ -145,7 +176,10 @@ export default function SignInScreen({ navigation, route, onLoginSuccess }: Prop
                 },
               ]}
             >
+<<<<<<< HEAD
  
+=======
+>>>>>>> develop
               {/* FLOATING LOGO */}
               <View style={styles.logoFloating}>
                 <Image
@@ -159,11 +193,17 @@ export default function SignInScreen({ navigation, route, onLoginSuccess }: Prop
               <Text style={styles.subtitle}>
                 Welcome back, please enter your details
               </Text>
+<<<<<<< HEAD
  
               <Text style={styles.profileText}>
                 {selectedRole} account
               </Text>
  
+=======
+
+              <Text style={styles.profileText}>{selectedRole} account</Text>
+
+>>>>>>> develop
               {/* SEGMENT */}
               <View style={styles.segment}>
                 <View style={styles.segmentActive}>
@@ -269,8 +309,15 @@ export default function SignInScreen({ navigation, route, onLoginSuccess }: Prop
                     !password && animateLabel(passwordLabel, 0);
                   }}
                 />
+<<<<<<< HEAD
  
                 <TouchableOpacity onPress={() => setSecureTextEntry(!secureTextEntry)}>
+=======
+
+                <TouchableOpacity
+                  onPress={() => setSecureTextEntry(!secureTextEntry)}
+                >
+>>>>>>> develop
                   <Ionicons
                     name={secureTextEntry ? "eye-off-outline" : "eye-outline"}
                     size={20}
@@ -296,9 +343,13 @@ export default function SignInScreen({ navigation, route, onLoginSuccess }: Prop
                   <Text style={styles.buttonText}>Sign In</Text>
                 </Pressable>
               </Animated.View>
+<<<<<<< HEAD
  
             </Animated.View>
  
+=======
+            </Animated.View>
+>>>>>>> develop
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
@@ -314,7 +365,11 @@ export default function SignInScreen({ navigation, route, onLoginSuccess }: Prop
     </LinearGradient>
   );
 }
+<<<<<<< HEAD
  
+=======
+
+>>>>>>> develop
 const styles = StyleSheet.create({
   screen: { flex: 1 },
  
@@ -459,5 +514,10 @@ const styles = StyleSheet.create({
     borderRadius: 60,
   },
 });
+<<<<<<< HEAD
  
 // Added by Rivithi & Edited by Nadithi
+=======
+
+// Added by Rivithi & Edited by Nadithi
+>>>>>>> develop

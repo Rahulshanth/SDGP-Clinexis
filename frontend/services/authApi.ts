@@ -44,7 +44,8 @@ export const signInUser = async (
   const response = await api.post("/auth/login", payload);
 
   if (response.data?.accessToken) {
-    await AsyncStorage.setItem("token", response.data.accessToken);
+    await AsyncStorage.setItem("token", response.data.accessToken); 
+    //await AsyncStorage.setItem("accessToken", response.data.accessToken);
   }
 
   if (response.data?.user?.role) {

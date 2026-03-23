@@ -14,6 +14,8 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { getMyProfile, updateMyProfile } from "../../services/doctorApi";
+import { useNavigation } from '@react-navigation/native';
+import { CommonActions } from '@react-navigation/native';
 
 // ── Moved OUTSIDE the main component — fixes keyboard closing bug ─────────────
 const EditableField = ({
@@ -69,6 +71,7 @@ export default function DoctorEditProfileScreen() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [clinicLocation, setClinicLocation] = useState("");
   const [email, setEmail] = useState("");
+  const navigation = useNavigation();
 
   const [originalData, setOriginalData] = useState({
     name: "",
@@ -148,7 +151,10 @@ export default function DoctorEditProfileScreen() {
       {
         text: "Log Out",
         style: "destructive",
-        onPress: () => console.log("Logged out"),
+        //onPress: () => console.log("Logged out"),
+        onPress: () => navigation.dispatch(
+    CommonActions.reset({ index: 0, routes: [{ name: 'SignIn' }] })
+),
       },
     ]);
   };

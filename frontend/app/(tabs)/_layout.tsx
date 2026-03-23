@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Stack } from 'expo-router';
 
 export default function TabLayout() {
@@ -70,10 +71,13 @@ export default function TabLayout() {
 
 /*
 // app/(tabs)/_layout.tsx
+=======
+>>>>>>> develop
 import { Stack } from "expo-router";
-import React from "react";
-
 export default function TabLayout() {
   return <Stack screenOptions={{ headerShown: false }} />;
 }
+<<<<<<< HEAD
 */
+=======
+>>>>>>> develop
