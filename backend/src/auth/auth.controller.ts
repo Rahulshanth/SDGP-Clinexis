@@ -1,6 +1,6 @@
 /*import { Controller } from '@nestjs/common';*/
 
- // These are codes already existed.
+// These are codes already existed.
 
 // From here to
 import { Body, Controller, Post } from '@nestjs/common';
@@ -22,7 +22,5 @@ export class AuthController {
     return this.authService.login(dto);
   }
 }
-
-
 
 // here written and pasted by Rahul

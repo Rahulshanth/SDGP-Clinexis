@@ -8,26 +8,29 @@ import { LoginDto } from '../users/dto/login.dto';
 // Written by Rahul
 @Injectable()
 export class AuthService {
-    constructor(
-        private usersService: UsersService,
-        private jwtService: JwtService
-    ) {}
+  constructor(
+    private usersService: UsersService,
+    private jwtService: JwtService,
+  ) {}
 
-    async register (dto: CreateUserDto) {
-        const hashedPassword = await bcrypt.hash(dto.password, 10);
-        const user = await this.usersService.createUser({
-            ...dto,
-            password: hashedPassword
-        });
-        
-        return {message: 'User registered successfully'}
-    }
+  async register(dto: CreateUserDto) {
+    const hashedPassword = (await bcrypt.hash(dto.password, 10)) as string;
+    await this.usersService.createUser({
+      ...dto,
+      password: hashedPassword,
+    });
 
-    async login(dto: LoginDto) {
+    return { message: 'User registered successfully' };
+  }
+
+  async login(dto: LoginDto) {
     const user = await this.usersService.findByEmail(dto.email);
     if (!user) throw new UnauthorizedException('Invalid credentials');
 
-    const passwordMatch = await bcrypt.compare(dto.password, user.password);
+    const passwordMatch = (await bcrypt.compare(
+      dto.password,
+      user.password,
+    )) as boolean;
     if (!passwordMatch) throw new UnauthorizedException('Invalid credentials');
 
     const payload = {
@@ -38,9 +41,13 @@ export class AuthService {
 
     return {
       accessToken: this.jwtService.sign(payload),
+      user: {
+         id: user._id, 
+         role: user.role,
+         email: user.email,
+  },
     };
   }
 
-    // Upto this
-
+  // Upto this
 }

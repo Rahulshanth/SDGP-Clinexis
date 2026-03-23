@@ -1,7 +1,19 @@
-# Root environment file
+# Environment files
 .env
+
+# Node modules
+node_modules/
+
+# Build output
+dist/
+
+# Logs
+logs
+*.log
+npm-debug.log*
 
 # OS files
 .DS_Store
 Thumbs.db
 node_modules/
+info.txt
