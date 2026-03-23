@@ -22,7 +22,7 @@ import { MaterialIcons, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 
 import { AuthStackParamList } from "../../navigation/AuthNavigator";
-//import { registerUser } from "@/store/authSlice"; changed for Signup screen By rahul
+//p-import { registerUser } from "@/store/authSlice"; changed for Signup screen By rahul
 import { registerUser , registerPharmacyUser } from "../../services/authApi";
 
 type Props = NativeStackScreenProps<AuthStackParamList, "SignUp">;

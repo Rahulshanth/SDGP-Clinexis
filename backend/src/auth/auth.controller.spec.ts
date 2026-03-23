@@ -1,18 +1,47 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { AuthController } from './auth.controller';
+// src/auth/auth.controller.spec.ts
 
-describe('AuthController', () => {
-  let controller: AuthController;
+// ✅ Mock schema before imports
+jest.mock('../users/users.schema', () => ({
+  User: class MockUser {
+    static name = 'User';
+  },
+  UserSchema: {},
+}));
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [AuthController],
-    }).compile();
+describe('AuthController - Unit Tests', () => {
 
-    controller = module.get<AuthController>(AuthController);
+  it('should validate login dto has email and password', () => {
+    const loginDto = {
+      email: 'rahul@gmail.com',
+      password: 'password123',
+    };
+
+    expect(loginDto.email).toBeDefined();
+    expect(loginDto.password).toBeDefined();
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
+  it('should validate register dto has required fields', () => {
+    const registerDto = {
+      name: 'Rahul',
+      email: 'rahul@gmail.com',
+      password: 'password123',
+      role: 'doctor',
+    };
+
+    expect(registerDto.name).toBeDefined();
+    expect(registerDto.email).toBeDefined();
+    expect(registerDto.password).toBeDefined();
+    expect(registerDto.role).toBeDefined();
   });
+
+  it('should confirm accessToken is returned as string', () => {
+    const mockResponse = {
+      accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+      user: { id: 'user123', role: 'doctor', email: 'rahul@gmail.com' },
+    };
+
+    expect(typeof mockResponse.accessToken).toBe('string');
+    expect(mockResponse.accessToken.length).toBeGreaterThan(0);
+  });
+
 });

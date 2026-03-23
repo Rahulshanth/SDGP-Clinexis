@@ -1,4 +1,4 @@
-import React from "react";
+/*import React from "react";
 import {
   View,
   Text,
@@ -146,4 +146,4 @@ const styles = StyleSheet.create({
 
 export default PatientSummaryScreen;
 
-//edit by rivithi
+//edit by rivithi*/

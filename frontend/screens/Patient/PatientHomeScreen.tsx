@@ -91,14 +91,20 @@ const PatientHomeScreen = () => {
         </View>
 
         {/* ── From develop — Action buttons ── */}
-        <TouchableOpacity style={styles.primaryButton}>
-          <Text style={styles.primaryButtonText}>🎙️ Start New Recording</Text>
-        </TouchableOpacity>
+        <TouchableOpacity
+                style={styles.primaryButton}
+                onPress={() => navigation.navigate("VoiceRecorder")}
+              >
+                <Text style={styles.primaryButtonText}>🎙️ Start New Recording</Text>
+              </TouchableOpacity>
 
-        <TouchableOpacity style={styles.secondaryButton}>
-          <Text style={styles.secondaryButtonText}>
-            📋 View My Consultations
-          </Text>
+              <TouchableOpacity
+                style={styles.secondaryButton}
+                onPress={() => navigation.navigate("LiveTranscript")}
+              >
+                <Text style={styles.secondaryButtonText}>
+                  📋 View My Consultations
+                </Text>
         </TouchableOpacity>
 
         {/* Search Bar */}

@@ -1,4 +1,4 @@
-import React from "react";
+/*import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 
 const PatientProfileScreen = () => {
@@ -76,4 +76,4 @@ const styles = StyleSheet.create({
 
 export default PatientProfileScreen;
 
-//Added by Nadithi
+//Added by Nadithi*/

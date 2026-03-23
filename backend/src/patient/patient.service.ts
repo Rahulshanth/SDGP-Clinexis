@@ -8,6 +8,11 @@ export class PatientService {
   async searchDoctors(specialization: string) {
     return this.usersService.findBySpecialization(specialization);
   }
+
+  async searchDoctorsByName(name: string) {
+  return this.usersService.findByName(name);
+}
+
 }
 
 // Created by Rahul

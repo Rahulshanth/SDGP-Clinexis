@@ -13,11 +13,15 @@ import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { fetchConsultations } from "../../store/consultationSlice";
 import { createRemindersFromConsultation } from "../../services/reminderApi";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { DoctorStackParamList } from "../../navigation/DoctorNavigator";
 
 // ── Extract userId from JWT token ─────────────────────────────────────────────
 const getUserIdFromToken = async (): Promise<string | null> => {
   try {
-    const token = await AsyncStorage.getItem("accessToken");
+    const token = await AsyncStorage.getItem("token");
+    //Alert.alert("Token Check", `token exists: ${!!token}, value: ${token?.substring(0, 30)}`);
     if (!token) return null;
     const payload = token.split(".")[1];
     const decoded = JSON.parse(atob(payload));
@@ -37,6 +41,14 @@ const LiveTranscript = () => {
   const [selectedConsultId, setSelectedConsultId] = useState<string | null>(null);
   const [selectedParaIndex, setSelectedParaIndex] = useState<number | null>(null);
   const [creatingReminder, setCreatingReminder] = useState(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    AsyncStorage.getItem("userRole").then(setUserRole);
+  }, []);
+
+  type LiveTranscriptNavProp = NativeStackNavigationProp<DoctorStackParamList>;
+  const navigation = useNavigation<LiveTranscriptNavProp>();
 
   useEffect(() => {
     dispatch(fetchConsultations());
@@ -55,6 +67,9 @@ const LiveTranscript = () => {
 
   // ── Create reminder from selected paragraph ───────────────────────────────
   const handleCreateReminder = async () => {
+
+    //Alert.alert("Debug 1", `consultId: ${selectedConsultId}, paraIndex: ${selectedParaIndex}`);
+
     if (!selectedConsultId || selectedParaIndex === null) {
       Alert.alert(
         "Select a paragraph",
@@ -70,7 +85,13 @@ const LiveTranscript = () => {
 
     setCreatingReminder(true);
     try {
-      const patientId = await getUserIdFromToken();
+      //const patientId = await getUserIdFromToken();
+    const token = await AsyncStorage.getItem("token");
+    const token2 = await AsyncStorage.getItem("accessToken");
+    //Alert.alert("Debug 2", `token: ${token?.substring(0,20)}, token2: ${token2?.substring(0,20)}`);
+
+    const patientId = await getUserIdFromToken();
+    console.log("👤 patientId:", patientId);
       if (!patientId) {
         Alert.alert("Error", "Could not get user info. Please log in again.");
         return;
@@ -136,7 +157,9 @@ const LiveTranscript = () => {
 
       {/* Instruction */}
       <Text style={styles.instruction}>
-        💡 Tap a paragraph to select it, then press Create Reminder
+        {userRole === "doctor"
+    ? "💡 Tap a paragraph to select it, then press View Summary"
+    : "💡 Tap a paragraph to select it, then press Create Reminder"}
       </Text>
 
       {/* ── Consultations — nice card from develop + tappable paragraphs from HEAD ── */}
@@ -190,25 +213,45 @@ const LiveTranscript = () => {
         </View>
       ))}
 
-      {/* ── Create Reminder button — below all consultations ── */}
-      <TouchableOpacity
-        style={[
-          styles.createBtn,
-          (!hasSelection || creatingReminder) && styles.createBtnDisabled,
-        ]}
-        onPress={handleCreateReminder}
-        disabled={!hasSelection || creatingReminder}
-      >
-        {creatingReminder ? (
-          <ActivityIndicator size="small" color="#fff" />
-        ) : (
+      {/* ── Create Reminder button — PATIENTS ONLY below all consultations ── */}
+      {/* ── Action Buttons ── */}
+        {userRole === "patient" &&(
+        <TouchableOpacity
+          style={[
+            styles.createBtn,
+            (!hasSelection || creatingReminder) && styles.createBtnDisabled,
+          ]}
+          onPress={handleCreateReminder}
+          disabled={!hasSelection || creatingReminder}
+        >
+          {creatingReminder ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text style={styles.createBtnText}>
+              {hasSelection ? "🔔 Create Reminder" : "Select a paragraph first"}
+            </Text>
+          )}
+        </TouchableOpacity>)}
+
+        {/* ── NEW: View Summary Button ── DOCTOR ONLY*/}
+        {userRole === "doctor" &&(
+        <TouchableOpacity
+          style={[
+            styles.summaryBtn,
+            !hasSelection && styles.createBtnDisabled,
+          ]}
+          onPress={() => {
+            if (!selectedConsultId) return;
+            navigation.navigate("CurrentSummary", {
+              consultationId: selectedConsultId,
+            });
+          }}
+          disabled={!hasSelection}
+        >
           <Text style={styles.createBtnText}>
-            {hasSelection
-              ? "🔔 Create Reminder"
-              : "Select a paragraph first"}
+            {hasSelection ? "📋 View Summary" : "Select a paragraph first"}
           </Text>
-        )}
-      </TouchableOpacity>
+        </TouchableOpacity>)}
 
       <View style={{ height: 32 }} />
     </ScrollView>
@@ -292,4 +335,14 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     fontSize: 15,
   },
+
+  summaryBtn: {
+  backgroundColor: "#0F766E",  // teal color — different from reminder blue
+  borderRadius: 12,
+  paddingVertical: 16,
+  alignItems: "center",
+  marginTop: 8,
+  marginBottom: 16,
+},
+
 });

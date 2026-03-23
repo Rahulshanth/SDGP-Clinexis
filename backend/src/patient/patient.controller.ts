@@ -22,4 +22,12 @@ export class PatientController {
   searchDoctors(@Query('specialization') specialization: string) {
     return this.patientService.searchDoctors(specialization);
   }
+
+  // ADD this new endpoint below existing searchDoctors
+@Get('doctors/search-by-name')
+@Roles(UserRole.PATIENT)
+searchDoctorsByName(@Query('name') name: string) {
+  return this.patientService.searchDoctorsByName(name);
+}
+
 }

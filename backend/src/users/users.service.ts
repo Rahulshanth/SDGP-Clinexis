@@ -67,4 +67,13 @@ export class UsersService {
     }
     return user;
   }
+
+  // Search doctors by name — added for VoiceRecorder screen
+async findByName(name: string) {
+  return this.userModel.find({
+    role: 'doctor',
+    'profile.name': { $regex: name, $options: 'i' },
+  }).select('-password');
+}
+
 }

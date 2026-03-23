@@ -33,5 +33,14 @@ export const updateMyProfile = async (data: {
 // ── Vidu — get any doctor by ID (patient views doctor profile) ────────────────
 export const getDoctorById = async (id: string): Promise<Doctor> => {
   const response = await api.get(`/users/${id}`);
+  return response.data;};
+
+// ── Search doctors by name — for VoiceRecorder screen ────────────────────────
+export const searchDoctorsByName = async (name: string): Promise<Doctor[]> => {
+  const response = await api.get(
+    `/patient/doctors/search-by-name?name=${encodeURIComponent(name)}`,
+  );
   return response.data;
 };
+  
+
