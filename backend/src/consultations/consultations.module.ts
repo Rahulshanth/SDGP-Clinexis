@@ -2,12 +2,11 @@ import { Module } from '@nestjs/common';
 import { MulterModule } from '@nestjs/platform-express';
 import { ConsultationsController } from './consultations.controller';
 import { ConsultationsService } from './consultations.service';
-import { MongooseModule } from '@nestjs/mongoose';  // Updated according schemas by rahul
+import { MongooseModule } from '@nestjs/mongoose'; // Updated according schemas by rahul
 import {
   Consultation,
   ConsultationSchema,
 } from './schemas/consultation.schema'; // Updated according to schemas by rahul
-
 
 @Module({
   imports: [
