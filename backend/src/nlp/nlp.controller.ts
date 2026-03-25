@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+/*import { Controller, Post, Body } from '@nestjs/common';
 import { NlpService } from './nlp.service';
 
 // Controller responsible for handling NLP-related API requests
@@ -18,4 +18,4 @@ export class NlpController {
     // and extract medicine names using NLP logic
     return this.nlpService.extractMedicine(text);
   }
-}
+}*/

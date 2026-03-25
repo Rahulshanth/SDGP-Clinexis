@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+/*import { Module } from '@nestjs/common';
 import { NlpController } from './nlp.controller';
 import { NlpService } from './nlp.service';
 
@@ -6,4 +6,4 @@ import { NlpService } from './nlp.service';
   controllers: [NlpController],
   providers: [NlpService],
 })
-export class NlpModule {}
+export class NlpModule {}*/

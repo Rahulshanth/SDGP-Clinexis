@@ -1,3 +1,3 @@
-export interface MedicineResponse {
+/*export interface MedicineResponse {
   aiResponse: string;
-}
+}*/

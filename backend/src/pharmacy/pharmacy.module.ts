@@ -24,12 +24,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Pharmacy, PharmacySchema } from './schemas/pharmacy.schema';
 
 @Module({
-  /*
-  IMPORTS
 
-  This section loads modules and database schemas
-  used by this module.
-  */
   imports: [
     // Register Pharmacy schema with MongoDB
     // This allows NestJS to access the "pharmacies" collection
@@ -44,22 +39,10 @@ import { Pharmacy, PharmacySchema } from './schemas/pharmacy.schema';
     PharmacyMatchingModule,
   ],
 
-  /*
-  CONTROLLERS
 
-  Controllers handle HTTP requests coming from frontend.
-  */
-  controllers: [PharmacyController],
-
-  /*
-  PROVIDERS-Providers are services containing the main business logic.
-  */
   providers: [PharmacyService],
 
-  /*
-  EXPORTS-Exporting PharmacyService allows other modules
-  (like pharmacy-matching) to use its functions.
-  */
+  
   exports: [PharmacyService],
 })
 

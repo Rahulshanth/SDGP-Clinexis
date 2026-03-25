@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+/*import React, { useState } from "react";
 import { View, Text, TextInput, Button, FlatList } from "react-native";
 import axios from "axios";
 
@@ -52,4 +52,4 @@ export default function NlpMedicineScreen() {
 
     </View>
   );
-}
+}*/

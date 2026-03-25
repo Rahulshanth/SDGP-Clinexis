@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+/*import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 
 @Injectable()
@@ -43,4 +43,4 @@ ${text}
       medicines
     };
   }
-}
+}*/

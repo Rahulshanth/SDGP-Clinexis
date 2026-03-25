@@ -1,4 +1,4 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+/*import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 @Schema()
@@ -17,4 +17,4 @@ export class Medicine extends Document {
   duration: string;
 }
 
-export const MedicineSchema = SchemaFactory.createForClass(Medicine);
+export const MedicineSchema = SchemaFactory.createForClass(Medicine);*/

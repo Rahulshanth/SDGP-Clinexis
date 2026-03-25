@@ -1,4 +1,4 @@
-import axios from "axios";
+/*import axios from "axios";
 
 const API = axios.create({
   baseURL: "http://localhost:5001",
@@ -7,4 +7,4 @@ const API = axios.create({
 export const extractMedicines = async (text: string) => {
   const response = await API.post("/nlp/extract", { text });
   return response.data;
-};
+};*/

@@ -1,4 +1,4 @@
-import { useState } from "react";
+/*import { useState } from "react";
 import { extractMedicines } from "@/services/nlpApi";
 
 export const useNlp = () => {
@@ -21,4 +21,4 @@ export const useNlp = () => {
   };
 
   return { medicines, loading, error, extract };
-};
+};*/

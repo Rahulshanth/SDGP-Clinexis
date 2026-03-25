@@ -13,7 +13,7 @@ import { ConsultationsModule } from './consultations/consultations.module';
 import { PharmacyInventoryModule } from './pharmacy-inventory/pharmacy-inventory.module';
 
 import { RemindersModule } from './reminders/reminders.module';
-import { NlpModule } from './nlp/nlp.module';
+//import { NlpModule } from './nlp/nlp.module';
 
 @Module({
   imports: [
@@ -32,7 +32,7 @@ import { NlpModule } from './nlp/nlp.module';
     PharmacyInventoryModule,
     ConsultationsModule,
     RemindersModule,
-    NlpModule,
+    //NlpModule,
   ],
   controllers: [AppController],
   providers: [AppService],
