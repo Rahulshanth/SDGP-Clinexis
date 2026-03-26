@@ -8,13 +8,11 @@ import {
   TextInput,
   TouchableOpacity,
   Dimensions,
-  Platform,
 } from "react-native";
-import { Ionicons, MaterialIcons, Feather, FontAwesome5 } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { BlurView } from "expo-blur";
 
-const { height, width } = Dimensions.get("window");
+Dimensions.get("window");
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();

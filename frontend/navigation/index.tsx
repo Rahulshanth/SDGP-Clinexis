@@ -42,7 +42,7 @@ export default function RootNavigator() {
     return <PatientNavigator />; // default patient
   };
 
-  // ✅ No NavigationContainer wrapper — expo-router provides it
+  // No NavigationContainer wrapper — expo-router provides it
   return isLoggedIn ? (
     renderHome()
   ) : (

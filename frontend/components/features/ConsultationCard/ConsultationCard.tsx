@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity } from "react-native";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { fetchConsultationById } from "../../../store/consultationSlice";
 
@@ -13,6 +13,8 @@ const ConsultationCard: React.FC<Props> = ({ consultationId }) => {
   const { activeConsultationParagraphs, status, error } = useAppSelector(
     (state) => state.consultation
   );
+  const [selectedIndex] = useState<number | null>(null);
+  const [creatingReminder, setCreatingReminder] = useState(false);
 
   useEffect(() => {
     dispatch(fetchConsultationById(consultationId));
@@ -35,6 +37,15 @@ const ConsultationCard: React.FC<Props> = ({ consultationId }) => {
       </View>
     );
   }
+
+  const handleCreateReminder = async () => {
+    setCreatingReminder(true);
+    try {
+      // Add your reminder creation logic here
+    } finally {
+      setCreatingReminder(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -71,6 +82,11 @@ const ConsultationCard: React.FC<Props> = ({ consultationId }) => {
 export default ConsultationCard;
 
 const styles = StyleSheet.create({
+  centered: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   container: { padding: 4 },
   block: {
     marginBottom: 10,
@@ -81,6 +97,7 @@ const styles = StyleSheet.create({
     borderLeftColor: "#2563eb",
   },
   text: { fontSize: 14, color: "#1e293b", lineHeight: 22 },
+  speakerLabel: { fontSize: 12, fontWeight: "600", color: "#2563eb", marginBottom: 4 },
   emptyText: { color: "#999", textAlign: "center", padding: 16 },
   instruction: {
     fontSize: 12,

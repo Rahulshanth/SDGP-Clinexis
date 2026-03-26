@@ -45,13 +45,12 @@ export default function AuthNavigator({ onLoginSuccess }: AuthNavigatorProps) {
       <Stack.Screen name="Welcome" component={WelcomeScreen} />
       <Stack.Screen name="ChooseProfile" component={ChooseProfileScreen} />
  
-      {/* ✅ children prop passes onLoginSuccess to SignInScreen */}
-      <Stack.Screen
-        name="SignIn"
-        children={(props) => (
+      {/* ✅ nested children passes onLoginSuccess to SignInScreen */}
+      <Stack.Screen name="SignIn">
+        {(props) => (
           <SignInScreen {...props} onLoginSuccess={onLoginSuccess} />
         )}
-      />
+      </Stack.Screen>
  
       <Stack.Screen name="SignUp" component={SignUpScreen} />
       <Stack.Screen name="ForgotPasswordEmail" component={ForgotPasswordEmailScreen} />

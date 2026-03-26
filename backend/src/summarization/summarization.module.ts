@@ -37,3 +37,5 @@ import { Consultation, ConsultationSchema } from '../consultations/schemas/consu
   providers: [SummarizationService],
 })
 export class SummarizationModule {}
+
+//edit by rivithi

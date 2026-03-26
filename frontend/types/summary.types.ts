@@ -1,19 +1,24 @@
-export interface SummaryItem {
+export interface CurrentSummaryData {
   _id: string;
   consultationId: string;
-  patientName: string;
-  doctorName: string;
-  date: string;
-  summaryText: string;
-  extractedMedicines?: string[];
+  selectedText: string;
+  patientCondition: string;
+  keySymptoms: string[];
+  diagnosis: string;
+  treatmentPlan: string;
+  medications: string[];
+  createdAt: string;
+  updatedAt: string;
 }
 
-export interface ConsultationRecord {
+export interface SummaryHistoryItem {
   _id: string;
-  doctorName: string;
-  patientName: string;
-  date: string;
-  conversation: string;
+  consultationId: string;
+  patientCondition: string;
+  diagnosis: string;
+  createdAt: string;
 }
 
-//edit by rivithi
+export interface GenerateSummaryPayload {
+  consultationId: string;
+}
