@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
-import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity } from "react-native";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { fetchConsultationById } from "../../../store/consultationSlice";
 
 interface Props {
-  consultation: any; // or proper type if you have it
+  paragraphs: string[];
+  consultationId: string;
 }
 
 const ConsultationCard: React.FC<Props> = ({ consultationId }) => {
@@ -12,6 +13,8 @@ const ConsultationCard: React.FC<Props> = ({ consultationId }) => {
   const { activeConsultationParagraphs, status, error } = useAppSelector(
     (state) => state.consultation
   );
+  const [selectedIndex] = useState<number | null>(null);
+  const [creatingReminder, setCreatingReminder] = useState(false);
 
   useEffect(() => {
     dispatch(fetchConsultationById(consultationId));
@@ -35,40 +38,22 @@ const ConsultationCard: React.FC<Props> = ({ consultationId }) => {
     );
   }
 
+  const handleCreateReminder = async () => {
+    setCreatingReminder(true);
+    try {
+      // Add your reminder creation logic here
+    } finally {
+      setCreatingReminder(false);
+    }
+  };
+
   return (
     <View style={styles.container}>
-<<<<<<< HEAD
       {activeConsultationParagraphs.map((paragraph: string, index: number) => (
         <View key={index} style={styles.block}>
           <Text style={styles.speakerLabel}>Speaker {index + 1}</Text>
           <Text style={styles.text}>{paragraph}</Text>
         </View>
-=======
-      {/* Instruction */}
-      <Text style={styles.instruction}>
-        💡 Tap a paragraph to select it, then press Create Reminder
-      </Text>
-
-      {/* Paragraphs */}
-      {paragraphs.map((paragraph: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined, index: string | number | bigint | ((prevState: number | null) => number | null) | null | undefined) => (
-        <TouchableOpacity
-          key={index}
-          onPress={() =>
-            setSelectedIndex(index === selectedIndex ? null : index)
-          }
-          activeOpacity={0.8}
-        >
-          <View style={[
-            styles.block,
-            selectedIndex === index && styles.blockSelected,
-          ]}>
-            {selectedIndex === index && (
-              <Text style={styles.selectedTick}>✓ Selected</Text>
-            )}
-            <Text style={styles.text}>{paragraph}</Text>
-          </View>
-        </TouchableOpacity>
->>>>>>> 9b7dcf538e46af26144fa5d5018e9468fd9bbed0
       ))}
 
       {/* Create Reminder button */}
@@ -97,6 +82,11 @@ const ConsultationCard: React.FC<Props> = ({ consultationId }) => {
 export default ConsultationCard;
 
 const styles = StyleSheet.create({
+  centered: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   container: { padding: 4 },
   block: {
     marginBottom: 10,
@@ -107,6 +97,7 @@ const styles = StyleSheet.create({
     borderLeftColor: "#2563eb",
   },
   text: { fontSize: 14, color: "#1e293b", lineHeight: 22 },
+  speakerLabel: { fontSize: 12, fontWeight: "600", color: "#2563eb", marginBottom: 4 },
   emptyText: { color: "#999", textAlign: "center", padding: 16 },
   instruction: {
     fontSize: 12,

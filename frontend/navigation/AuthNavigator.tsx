@@ -1,12 +1,6 @@
-<<<<<<< HEAD
-
-<<<<<<< HEAD
-=======
 
 
->>>>>>> develop
-=======
->>>>>>> 9b7dcf538e46af26144fa5d5018e9468fd9bbed0
+
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
  
@@ -51,7 +45,7 @@ export default function AuthNavigator({ onLoginSuccess }: AuthNavigatorProps) {
       <Stack.Screen name="Welcome" component={WelcomeScreen} />
       <Stack.Screen name="ChooseProfile" component={ChooseProfileScreen} />
  
-      {/* children prop passes onLoginSuccess to SignInScreen */}
+      {/* ✅ nested children passes onLoginSuccess to SignInScreen */}
       <Stack.Screen name="SignIn">
         {(props) => (
           <SignInScreen {...props} onLoginSuccess={onLoginSuccess} />
@@ -67,3 +61,4 @@ export default function AuthNavigator({ onLoginSuccess }: AuthNavigatorProps) {
 }
 
 // Added by Rivithi
+//Added by Rivithi

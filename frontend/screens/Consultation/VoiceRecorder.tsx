@@ -1,20 +1,9 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  ActivityIndicator,
-  SafeAreaView,
-} from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons } from '@expo/vector-icons';
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { Audio } from 'expo-av';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { uploadConsultationAudio } from '../../store/consultationSlice';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { PatientStackParamList } from '../../navigation/PatientNavigator';
+import { useRouter } from 'expo-router';
 
 // TODO: replace with real auth state when login is ready
 // const TEST_PATIENT_ID = '69b8ead12a41401d6b03f912';
@@ -23,7 +12,7 @@ import { PatientStackParamList } from '../../navigation/PatientNavigator';
 const VoiceRecorder = () => {
   const [recording, setRecording] = useState<Audio.Recording | null>(null);
   const dispatch = useAppDispatch();
-  const navigation = useNavigation<NativeStackNavigationProp<PatientStackParamList>>();
+  const router = useRouter();
   const { status } = useAppSelector((state) => state.consultation);
 
   const startRecording = async () => {
@@ -79,196 +68,74 @@ const VoiceRecorder = () => {
     setRecording(null);
   };
 
-return (
-    <SafeAreaView style={styles.safeArea}>
-      {/* HEADER */}
-      <LinearGradient
-        colors={['#1E3A8A', '#2EA7FF']}
-        style={styles.header}
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Consultation Recording</Text>
+
+      <Text style={styles.subtitle}>
+        {recording ? '🔴 Recording in progress...' : 'Tap the mic to start'}
+      </Text>
+
+      {/* Mic Button */}
+      <TouchableOpacity
+        style={[styles.micButton, recording && styles.micButtonActive]}
+        onPress={recording ? stopRecording : startRecording}
+        disabled={status === 'loading'}
       >
-        <Text style={styles.headerTitle}>Consultation Recorder</Text>
-        <Text style={styles.headerSubtitle}>
-          Record and store patient consultations securely
-        </Text>
-      </LinearGradient>
+        <Text style={styles.micIcon}>{recording ? '⏹️' : '🎙️'}</Text>
+      </TouchableOpacity>
 
-      {/* MAIN CARD */}
-      <View style={styles.card}>
-        <View style={styles.content}>
-          
-          {/* STATUS TEXT */}
-          <Text style={styles.statusText}>
-            {recording ? 'Recording in progress...' : 'Tap to start recording'}
-          </Text>
+      <Text style={styles.micLabel}>
+        {recording ? 'Tap to Stop & Save' : 'Tap to Start Recording'}
+      </Text>
 
-          {/* MIC BUTTON */}
+      {status === 'loading' && (
+        <View style={styles.statusRow}>
+          <ActivityIndicator size="small" color="#2563eb" />
+          <Text style={styles.statusText}>  Uploading & transcribing...</Text>
+        </View>
+      )}
+
+      {status === 'succeeded' && (
+        <View>
+          <Text style={styles.successText}>✅ Consultation saved successfully!</Text>
           <TouchableOpacity
             style={styles.viewButton}
-            onPress={() => navigation.navigate('LiveTranscript')}
+            onPress={() => router.push('/live-transcript' as any)}
           >
-            <View style={styles.innerMic}>
-              <Ionicons
-                name={recording ? 'stop' : 'mic'}
-                size={36}
-                color="#FFFFFF"
-              />
-            </View>
+            <Text style={styles.viewButtonText}>View Transcript →</Text>
           </TouchableOpacity>
-
-          {/* LABEL */}
-          <Text style={styles.micLabel}>
-            {recording ? 'Tap to stop and save' : 'Start Recording'}
-          </Text>
-
-          {/* LOADING */}
-          {status === 'loading' && (
-            <View style={styles.statusRow}>
-              <ActivityIndicator size="small" color="#2EA7FF" />
-              <Text style={styles.uploadText}>
-                Uploading and processing audio...
-              </Text>
-            </View>
-          )}
-
-          {/* SUCCESS */}
-          {status === 'succeeded' && (
-            <View style={styles.successBox}>
-              <Ionicons name="checkmark-circle" size={48} color="green" />
-              <Text style={styles.successText}>
-                Consultation saved successfully
-              </Text>
-
-              <TouchableOpacity
-                style={styles.viewButton}
-                onPress={() => router.push('/live-transcript' as any)}
-              >
-                <Text style={styles.viewButtonText}>
-                  View Transcript
-                </Text>
-              </TouchableOpacity>
-            </View>
-          )}
         </View>
-      </View>
-    </SafeAreaView>
+      )}
+    </View>
   );
 };
 
 export default VoiceRecorder;
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#1E3A8A',
+  container: {
+    flex: 1, justifyContent: 'center',
+    alignItems: 'center', padding: 24,
+    backgroundColor: '#f9f9f9',
   },
-
-  header: {
-    padding: 20,
-    paddingBottom: 40,
+  title: { fontSize: 22, fontWeight: 'bold', color: '#1e3a5f', marginBottom: 8 },
+  subtitle: { fontSize: 14, color: '#666', marginBottom: 40 },
+  micButton: {
+    width: 100, height: 100, borderRadius: 50,
+    backgroundColor: '#2563eb', justifyContent: 'center',
+    alignItems: 'center', elevation: 6,
+    shadowColor: '#2563eb', shadowOpacity: 0.4, shadowRadius: 10,
   },
-
-  headerTitle: {
-    color: '#FFFFFF',
-    fontSize: 22,
-    fontWeight: '600',
-  },
-
-  headerSubtitle: {
-    color: '#DCEBFF',
-    fontSize: 13,
-    marginTop: 4,
-  },
-
-  card: {
-    flex: 1,
-    backgroundColor: '#F5F7FB',
-    borderTopLeftRadius: 32,
-    borderTopRightRadius: 32,
-    marginTop: -20,
-    padding: 24,
-  },
-
-  content: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  statusText: {
-    fontSize: 14,
-    color: '#6B7280',
-    marginBottom: 30,
-  },
-
-  micWrapper: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: '#2EA7FF',
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 8,
-    shadowColor: '#2EA7FF',
-    shadowOpacity: 0.3,
-    shadowRadius: 15,
-  },
-
-  micWrapperActive: {
-    backgroundColor: '#DC2626',
-    shadowColor: '#DC2626',
-  },
-
-  innerMic: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-  micLabel: {
-    marginTop: 18,
-    fontSize: 14,
-    color: '#1E2A3A',
-    fontWeight: '500',
-  },
-
-  statusRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 30,
-  },
-
-  uploadText: {
-    marginLeft: 8,
-    color: '#2EA7FF',
-    fontSize: 13,
-  },
-
-  successBox: {
-    marginTop: 30,
-    alignItems: 'center',
-  },
-
-  successText: {
-    marginTop: 10,
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#1E2A3A',
-  },
-
+  micButtonActive: { backgroundColor: '#dc2626' },
+  micIcon: { fontSize: 40 },
+  micLabel: { marginTop: 16, fontSize: 14, color: '#666' },
+  statusRow: { flexDirection: 'row', alignItems: 'center', marginTop: 24 },
+  statusText: { color: '#2563eb', fontSize: 14 },
+  successText: { color: 'green', fontWeight: 'bold', fontSize: 15, marginTop: 24, textAlign: 'center' },
   viewButton: {
-    marginTop: 16,
-    backgroundColor: '#2EA7FF',
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 10,
-  },
-
-  viewButtonText: {
-    color: '#FFFFFF',
-    fontWeight: '600',
+    marginTop: 12, backgroundColor: '#2563eb',
+    borderRadius: 10, padding: 12, alignItems: 'center',
   },
   viewButtonText: { color: 'white', fontWeight: '600' },
 });
