@@ -95,8 +95,19 @@ export default function SignUpScreen({ navigation, route }: Props) {
   const handleRegister = async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
-    if (!fullName || !email || !password || !confirmPassword) {
+    // Trim whitespace
+    const trimmedEmail = email.trim().toLowerCase();
+    const trimmedFullName = fullName.trim();
+
+    if (!trimmedFullName || !trimmedEmail || !password || !confirmPassword) {
       Alert.alert("Validation", "Please fill all fields");
+      return;
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmedEmail)) {
+      Alert.alert("Validation", "Please enter a valid email address");
       return;
     }
 
@@ -110,23 +121,23 @@ export default function SignUpScreen({ navigation, route }: Props) {
        
       if (role === "pharmacy") {
     await registerPharmacyUser({
-      email,
+      email: trimmedEmail,
       password,
       role,
-      profile: { name: fullName },
+      profile: { name: trimmedFullName },
       pharmacyDetails: {
-        name: fullName,
+        name: trimmedFullName,
         location,
         contactNumber,
       },
     });
         } else {
         await registerUser({
-          email,
+          email: trimmedEmail,
           password,
           role,
           profile: {
-            name: fullName,
+            name: trimmedFullName,
             ...(role === "doctor" && {
               phoneNumber,
               specialization,
@@ -141,8 +152,10 @@ export default function SignUpScreen({ navigation, route }: Props) {
       Alert.alert("Success", "Registered successfully");
       navigation.navigate("SignIn", { role });
 
-    } catch {
-      Alert.alert("Error", "Registration failed");
+    } catch (error: any) {
+      console.error("Registration error:", error);
+      const errorMessage = error?.response?.data?.message || error?.message || "Registration failed";
+      Alert.alert("Error", errorMessage);
     } finally {
       setLoading(false);
     }

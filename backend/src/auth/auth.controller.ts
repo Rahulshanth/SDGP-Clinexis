@@ -14,11 +14,13 @@ export class AuthController {
 
   @Post('register')
   register(@Body() dto: CreateUserDto) {
+    console.log('Register endpoint received:', JSON.stringify(dto));
     return this.authService.register(dto);
   }
 
   @Post('login')
   login(@Body() dto: LoginDto) {
+    console.log('Login endpoint received:', dto.email);
     return this.authService.login(dto);
   }
 }

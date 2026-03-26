@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, BadRequestException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
@@ -14,13 +14,31 @@ export class AuthService {
   ) {}
 
   async register(dto: CreateUserDto) {
-    const hashedPassword = (await bcrypt.hash(dto.password, 10)) as string;
-    await this.usersService.createUser({
-      ...dto,
-      password: hashedPassword,
-    });
+    try {
+      console.log('Register attempt with email:', dto.email);
+      
+      // Check if user already exists
+      const existingUser = await this.usersService.findByEmail(dto.email);
+      if (existingUser) {
+        throw new BadRequestException('Email already registered');
+      }
 
-    return { message: 'User registered successfully' };
+      const hashedPassword = (await bcrypt.hash(dto.password, 10)) as string;
+      await this.usersService.createUser({
+        ...dto,
+        password: hashedPassword,
+      });
+
+      console.log('User registered successfully:', dto.email);
+      return { message: 'User registered successfully' };
+    } catch (error: any) {
+      console.error('Registration error:', error);
+      // Handle duplicate key error from MongoDB
+      if (error.code === 11000) {
+        throw new BadRequestException('Email already registered');
+      }
+      throw error;
+    }
   }
 
   async login(dto: LoginDto) {

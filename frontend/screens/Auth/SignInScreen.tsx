@@ -93,30 +93,35 @@ export default function SignInScreen({ navigation, route, onLoginSuccess }: Prop
  
   const handleSignIn = async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
- 
-    if (!email.trim() || !password.trim()) {
+
+    const trimmedEmail = email.trim().toLowerCase();
+    const trimmedPassword = password.trim();
+
+    if (!trimmedEmail || !trimmedPassword) {
       Alert.alert("Validation", "Please enter email and password");
       return;
     }
- 
+
     try {
       setLoading(true);
- 
+
       const result = await signInUser({
-        email: email.trim(),
-        password,
+        email: trimmedEmail,
+        password: trimmedPassword,
       });
- 
+
       const role = result?.user?.role ?? selectedRole ?? "patient";
       console.log("Logged in as:", role);
- 
+
       // ✅ This triggers checkLogin in RootNavigator
       // which reads token + role from AsyncStorage
       // and renders the correct home screen
       onLoginSuccess();
  
-    } catch {
-      Alert.alert("Error", "Sign in failed");
+    } catch (error: any) {
+      console.error("Sign in error:", error?.response?.data || error?.message);
+      const errorMessage = error?.response?.data?.message || error?.message || "Sign in failed";
+      Alert.alert("Error", errorMessage);
     } finally {
       setLoading(false);
     }

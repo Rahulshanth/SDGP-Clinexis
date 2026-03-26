@@ -40,54 +40,69 @@ export type SignInResponse = {
 export const signInUser = async (
   payload: SignInPayload
 ): Promise<SignInResponse> => {
-  //const response = await api.post("/auth/SignIn", payload);
-  const response = await api.post("/auth/login", payload);
+  try {
+    console.log('Attempting login with email:', payload.email);
+    
+    const response = await api.post("/auth/login", payload);
 
-  if (response.data?.accessToken) {
-    await AsyncStorage.setItem("token", response.data.accessToken); 
-    //await AsyncStorage.setItem("accessToken", response.data.accessToken);
+    if (response.data?.accessToken) {
+      await AsyncStorage.setItem("token", response.data.accessToken); 
+    }
+
+    if (response.data?.user?.role) {
+      await AsyncStorage.setItem("userRole", response.data.user.role);
+    }
+
+    console.log('Login successful');
+    return response.data;
+  } catch (error: any) {
+    console.error("Sign in error:", error?.response?.data || error?.message);
+    throw error;
   }
-
-  if (response.data?.user?.role) {
-    await AsyncStorage.setItem("userRole", response.data.user.role);
-  }
-
-  return response.data;
 };
 
 export const registerUser = async (payload: RegisterPayload) => {
-  const response = await api.post("/auth/register", payload);
-  return response.data;
+  try {
+    const response = await api.post("/auth/register", payload);
+    return response.data;
+  } catch (error: any) {
+    console.error("Register user error:", error?.response?.data || error.message);
+    throw error;
+  }
 };
 
 export const registerPharmacyUser = async (
   payload: RegisterPharmacyPayload
 ) => {
-  // Step 1: Create user account in users collection
-  const userResponse = await api.post("/auth/register", {
-    email: payload.email,
-    password: payload.password,
-    role: "pharmacy",
-    profile: { name: payload.pharmacyDetails.name },
-  });
-
   try {
-    // Step 2: Create pharmacy profile in pharmacyprofiles collection
-    await api.post("/api/pharmacy-profile", {
-      name: payload.pharmacyDetails.name,
+    // Step 1: Create user account in users collection
+    const userResponse = await api.post("/auth/register", {
       email: payload.email,
-      location: payload.pharmacyDetails.location,
-      contactNumber: payload.pharmacyDetails.contactNumber,
-      medicines: payload.pharmacyDetails.medicines || [],
+      password: payload.password,
+      role: "pharmacy",
+      profile: { name: payload.pharmacyDetails.name },
     });
-  } catch (profileError) {
-    // ⚠️ Step 2 failed — user account was created but profile failed
-    console.log("Profile creation failed:", profileError);
-    throw new Error("Account created but profile setup failed. Please try logging in.");
-  }
 
-  return userResponse.data;
-  
+    try {
+      // Step 2: Create pharmacy profile in pharmacyprofiles collection
+      await api.post("/api/pharmacy-profile", {
+        name: payload.pharmacyDetails.name,
+        email: payload.email,
+        location: payload.pharmacyDetails.location,
+        contactNumber: payload.pharmacyDetails.contactNumber,
+        medicines: payload.pharmacyDetails.medicines || [],
+      });
+    } catch (profileError: any) {
+      // ⚠️ Step 2 failed — user account was created but profile failed
+      console.error("Profile creation failed:", profileError?.response?.data || profileError.message);
+      throw new Error("Account created but profile setup failed. Please try logging in.");
+    }
+
+    return userResponse.data;
+  } catch (error: any) {
+    console.error("Register pharmacy user error:", error?.response?.data || error.message);
+    throw error;
+  }
 };
 
 export const logoutUser = async () => {

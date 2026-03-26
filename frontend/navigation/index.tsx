@@ -43,4 +43,5 @@ export default function RootNavigator() {
   };
  
   // ✅ No NavigationContainer wrapper — expo-router provides it
-  return isLoggedIn ? renderHome() : <AuthNavigator onLoginSuccess={checkLogin} />;}
+  return isLoggedIn ? renderHome() : <AuthNavigator onLoginSuccess={checkLogin} />;
+}

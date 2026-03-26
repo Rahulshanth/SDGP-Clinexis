@@ -59,5 +59,4 @@ export default function AuthNavigator({ onLoginSuccess }: AuthNavigatorProps) {
 }
 
 // Added by Rivithi
-
 //Added by Rivithi
