@@ -1,7 +1,10 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> 9b7dcf538e46af26144fa5d5018e9468fd9bbed0
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Provider } from 'react-redux';
@@ -21,6 +24,7 @@ export default function RootLayout() {
       <StatusBar style="auto" />
     </Provider>
   );
+<<<<<<< HEAD
 <<<<<<< HEAD
 }
 =======
@@ -105,3 +109,6 @@ export default function RootLayout() {
 >>>>>>> develop
 =======
 >>>>>>> develop
+=======
+}
+>>>>>>> 9b7dcf538e46af26144fa5d5018e9468fd9bbed0

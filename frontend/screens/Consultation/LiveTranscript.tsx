@@ -27,6 +27,7 @@ const getUserIdFromToken = async (): Promise<string | null> => {
   }
 };
 
+
 const LiveTranscript = () => {
   const dispatch = useAppDispatch();
   const { consultations, status, error } = useAppSelector(
@@ -40,7 +41,7 @@ const LiveTranscript = () => {
 
   useEffect(() => {
     dispatch(fetchConsultations());
-  }, []);
+  }, [dispatch]);
 
   // ── Handle paragraph tap ──────────────────────────────────────────────────
   const handleParaTap = (consultId: string, index: number) => {

@@ -1,10 +1,14 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 9b7dcf538e46af26144fa5d5018e9468fd9bbed0
 import { Stack } from 'expo-router';
 
 export default function TabLayout() {
   return (
     <Stack screenOptions={{ headerShown: false }} />
   );
+<<<<<<< HEAD
 }
   
 
@@ -81,3 +85,6 @@ export default function TabLayout() {
 */
 =======
 >>>>>>> develop
+=======
+}
+>>>>>>> 9b7dcf538e46af26144fa5d5018e9468fd9bbed0

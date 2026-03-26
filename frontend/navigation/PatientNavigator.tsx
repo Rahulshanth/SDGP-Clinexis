@@ -1,27 +1,38 @@
 import React from "react";
-<<<<<<< HEAD
 import { Ionicons } from "@expo/vector-icons";
-=======
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
->>>>>>> develop
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+<<<<<<< HEAD
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+=======
+import { Ionicons } from "@expo/vector-icons";
+import { View, StyleSheet } from "react-native";
+>>>>>>> dc0336c (Modified the Patient Navigator Interface)
 
 // Patient Screens
 import PatientHomeScreen from "../screens/Patient/PatientHomeScreen";
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9b7dcf538e46af26144fa5d5018e9468fd9bbed0
 import SharePrescriptionScreen from "../screens/Patient/SharePrescriptionScreen";
 import FindMedicinesScreen from "../screens/Patient/FindMedicinesScreen";
 import PatientProfileScreen from "../screens/Patient/PatientProfileScreen";
 import LiveTranscript from "../screens/Consultation/LiveTranscript";
 import VoiceRecorder from "../screens/Consultation/VoiceRecorder";
+import SharePrescriptionScreen from "../screens/Patient/SharePrescriptionScreen";
+import FindMedicinesScreen from "../screens/Patient/FindMedicinesScreen";
 
+
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 =======
 >>>>>>> develop
 import DoctorProfileScreen from "../screens/Patient/DoctorProfileScreen";
+=======
+>>>>>>> 9b7dcf538e46af26144fa5d5018e9468fd9bbed0
 
 /*import FindDoctorScreen from "../screens/Patient/FindDoctorScreen";
 import BookAppointmentScreen from "../screens/Patient/BookAppointmentScreen";
@@ -35,6 +46,7 @@ import PatientPharmacyScreen from "../screens/Patient/PatientPharmacyScreen";
 import PatientSummaryScreen from "../screens/Patient/PatientSummaryScreen";
 import PatientProfileScreen from "../screens/Patient/ PatientProfileScreen";
 import PatientAppointmentScreen from "../screens/Patient/PatientAppointmentsScreen";*/
+<<<<<<< HEAD
 //import PatientProfileScreen from "../screens/Patient/PatientProfileScreen";
 //import PatientRemindersScreen from "../screens/Patient/PatientRemindersScreen";
 //import PatientPharmacyScreen from "../screens/Patient/PatientPharmacyScreen";
@@ -44,6 +56,8 @@ import LiveTranscript from "../screens/Consultation/LiveTranscript";
 import VoiceRecorder from "../screens/Consultation/VoiceRecorder";
 
 
+=======
+>>>>>>> 9b7dcf538e46af26144fa5d5018e9468fd9bbed0
 
 // ─── Stack param list (Vidu's screens) ───────────────────────
 export type PatientStackParamList = {
@@ -89,16 +103,37 @@ export type PatientStackParamList = {
 
 // ─── Tab param list (Nadithi's tabs) ───────────────────────
 // Added by Nadithi
->>>>>>> develop
+
 export type PatientTabParamList = {
   Home: undefined;
   SharePrescription: undefined;
   FindMedicines: undefined;
   Profile: undefined;
+=======
+=======
+import PatientProfileScreen from "../screens/Patient/PatientProfileScreen";
+>>>>>>> 988926a (Made few changes in the Patient Navigator)
+import LiveTranscript from "../screens/Consultation/LiveTranscript";
+import VoiceRecorder from "../screens/Consultation/VoiceRecorder";
+
+export type PatientTabParamList = {
+  Home: undefined;
+  Record: undefined;
+  Transcripts: undefined;
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> dc0336c (Modified the Patient Navigator Interface)
+=======
+=======
+  Pharmacy: undefined;
+  Share: undefined;
+>>>>>>> 1550f6d (Initial commit - Clinexis frontend)
+  Profile: undefined;
+>>>>>>> 988926a (Made few changes in the Patient Navigator)
 };
 
-<<<<<<< HEAD
 export type PatientStackParamList = {
+  
   PatientTabs: undefined;
   VoiceRecorder: undefined;
   LiveTranscript: undefined;
@@ -110,6 +145,7 @@ export type PatientStackParamList = {
     | undefined;
 };
 
+<<<<<<< HEAD
 const Tab = createBottomTabNavigator<PatientTabParamList>();
 const Stack = createNativeStackNavigator<PatientStackParamList>();
 
@@ -153,10 +189,60 @@ function PatientTabs() {
         options={{ title: "Medicines" }}
       />
       <Tab.Screen name="Profile" component={PatientProfileScreen} options={{ title: "Profile" }} />
+=======
+const COLORS = {
+  primary: "#2EA7FF",
+  inactive: "#8A94A6",
+};
+
+export default function PatientNavigator() {
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarShowLabel: false,
+        tabBarStyle: styles.tabBar,
+
+        tabBarIcon: ({ focused }) => {
+          let iconName: any;
+
+          if (route.name === "Home") iconName = "home-outline";
+          else if (route.name === "Record") iconName = "mic-outline";
+          else if (route.name === "Transcripts") iconName = "document-text-outline";
+          else if (route.name === "Pharmacy") iconName = "medkit-outline";
+          else if (route.name === "Share") iconName = "share-social-outline";
+          else if (route.name === "Profile") iconName = "person-outline";
+
+          return (
+            <View style={styles.iconWrapper}>
+              <Ionicons
+                name={iconName}
+                size={22}
+                color={focused ? COLORS.primary : COLORS.inactive}
+              />
+            </View>
+          );
+        },
+      })}
+    >
+      <Tab.Screen name="Home" component={PatientHomeScreen} />
+      <Tab.Screen name="Record" component={VoiceRecorder} />
+      <Tab.Screen name="Transcripts" component={LiveTranscript} />
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> dc0336c (Modified the Patient Navigator Interface)
+=======
+=======
+      <Tab.Screen name="Pharmacy" component={FindMedicinesScreen} />
+      <Tab.Screen name="Share" component={SharePrescriptionScreen} />
+>>>>>>> 1550f6d (Initial commit - Clinexis frontend)
+      <Tab.Screen name="Profile" component={PatientProfileScreen} />
+>>>>>>> 988926a (Made few changes in the Patient Navigator)
     </Tab.Navigator>
   );
 }
 
+<<<<<<< HEAD
 export default function PatientNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -168,53 +254,35 @@ export default function PatientNavigator() {
   );
 }
 =======
-const Stack = createNativeStackNavigator<PatientStackParamList>();
-const Tab = createBottomTabNavigator<PatientTabParamList>();
+const styles = StyleSheet.create({
+  tabBar: {
+    position: "absolute",
+    bottom: 15,
+    left: 20,
+    right: 20,
+    elevation: 10,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    height: 60,
+    borderTopWidth: 0,
+  },
 
-// Stack navigator for Vidu's appointment flow screens
-function PatientStackNavigator() {
-  return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="PatientHome" component={PatientHomeScreen} />
-      <Stack.Screen name="DoctorProfile" component={DoctorProfileScreen} />
+  iconWrapper: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 8,
+  },
+<<<<<<< HEAD
+<<<<<<< HEAD
+});
 
-      {/*
-      <Stack.Screen name="FindDoctor" component={FindDoctorScreen} />
-      <Stack.Screen name="BookAppointment" component={BookAppointmentScreen} />
-      <Stack.Screen
-        name="AppointmentConfirm"
-        component={AppointmentConfirmScreen}
-      />
-      <Stack.Screen name="MyAppointments" component={MyAppointmentsScreen} />
-      */}
-    </Stack.Navigator>
-  );
-}
+//Added by Nadithi
+>>>>>>> dc0336c (Modified the Patient Navigator Interface)
+=======
+});
+>>>>>>> 988926a (Made few changes in the Patient Navigator)
+=======
+});
 
-// Tab navigator — Added by Nadithi
-// Vidu added PatientStackNavigator inside Home tab
-export default function PatientNavigator() {
-  return (
-    <Tab.Navigator
-      screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: "#1E3A8A",
-        tabBarInactiveTintColor: "#6b7280",
-      }}
-    >
-      <Tab.Screen
-        name="Home"
-        component={PatientStackNavigator}
-        options={{ headerShown: false }}
-      />
-      {/* Nadithi uncomments these tabs when screens are ready:
-      <Tab.Screen name="Reminders" component={PatientRemindersScreen} />
-      <Tab.Screen name="Pharmacy" component={PatientPharmacyScreen} />
-      <Tab.Screen name="Summary" component={PatientSummaryScreen} />
-      <Tab.Screen name="Appointments" component={PatientAppointmentScreen} />
-      <Tab.Screen name="Profile" component={PatientProfileScreen} />
-      */}
-    </Tab.Navigator>
-  );
-}
->>>>>>> develop
+//Added by Nadithi
+>>>>>>> 1550f6d (Initial commit - Clinexis frontend)

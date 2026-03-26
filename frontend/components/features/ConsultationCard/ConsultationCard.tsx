@@ -4,8 +4,7 @@ import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { fetchConsultationById } from "../../../store/consultationSlice";
 
 interface Props {
-  paragraphs: string[];
-  consultationId: string;
+  consultation: any; // or proper type if you have it
 }
 
 const ConsultationCard: React.FC<Props> = ({ consultationId }) => {
@@ -38,11 +37,38 @@ const ConsultationCard: React.FC<Props> = ({ consultationId }) => {
 
   return (
     <View style={styles.container}>
+<<<<<<< HEAD
       {activeConsultationParagraphs.map((paragraph: string, index: number) => (
         <View key={index} style={styles.block}>
           <Text style={styles.speakerLabel}>Speaker {index + 1}</Text>
           <Text style={styles.text}>{paragraph}</Text>
         </View>
+=======
+      {/* Instruction */}
+      <Text style={styles.instruction}>
+        💡 Tap a paragraph to select it, then press Create Reminder
+      </Text>
+
+      {/* Paragraphs */}
+      {paragraphs.map((paragraph: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined, index: string | number | bigint | ((prevState: number | null) => number | null) | null | undefined) => (
+        <TouchableOpacity
+          key={index}
+          onPress={() =>
+            setSelectedIndex(index === selectedIndex ? null : index)
+          }
+          activeOpacity={0.8}
+        >
+          <View style={[
+            styles.block,
+            selectedIndex === index && styles.blockSelected,
+          ]}>
+            {selectedIndex === index && (
+              <Text style={styles.selectedTick}>✓ Selected</Text>
+            )}
+            <Text style={styles.text}>{paragraph}</Text>
+          </View>
+        </TouchableOpacity>
+>>>>>>> 9b7dcf538e46af26144fa5d5018e9468fd9bbed0
       ))}
 
       {/* Create Reminder button */}
