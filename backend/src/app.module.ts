@@ -35,6 +35,4 @@ import { RemindersModule } from './reminders/reminders.module';
   // controllers: [AppController],
   // providers: [AppService],
 })
-
 export class AppModule {}
-
