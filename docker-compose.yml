@@ -1,0 +1,16 @@
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: clinexis-mongodb
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: clinexis
+      MONGO_INITDB_ROOT_PASSWORD: clinexis123
+      MONGO_INITDB_DATABASE: clinexis
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:

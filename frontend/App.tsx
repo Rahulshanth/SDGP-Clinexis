@@ -16,14 +16,17 @@ export default function App() {
 }*/
 
 import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import AuthNavigator from "./navigation/AuthNavigator";
+import { Provider } from "react-redux";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { store } from "./store";
+import RootNavigator from "./navigation";
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <AuthNavigator />
-    </NavigationContainer>
+    <Provider store={store}>
+      <SafeAreaProvider>
+        <RootNavigator />
+      </SafeAreaProvider>
+    </Provider>
   );
 }
-                                           //Don't DELETE OR MAKE CHANGES IN THIS
