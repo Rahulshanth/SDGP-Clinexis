@@ -16,7 +16,6 @@ import { UpdatePharmacyDto } from './dto/update-pharmacy.dto';
 // Mark this class as a NestJS service
 @Injectable()
 export class PharmacyProfileService {
-
   // Inject PharmacyProfile MongoDB model
   constructor(
     @InjectModel(PharmacyProfile.name)
@@ -62,7 +61,6 @@ export class PharmacyProfileService {
 
   // Delete pharmacy profile
   async remove(id: string) {
-
     const deleted = await this.pharmacyModel.findByIdAndDelete(id);
 
     // If pharmacy not found

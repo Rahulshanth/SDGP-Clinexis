@@ -10,7 +10,6 @@ export type MedicineDocument = Medicine & Document;
 // Define the schema with automatic createdAt and updatedAt timestamps
 @Schema({ timestamps: true })
 export class Medicine {
-
   // Medicine name (example: Paracetamol)
   @Prop({ required: true })
   name: string;

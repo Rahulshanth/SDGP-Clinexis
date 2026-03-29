@@ -1,4 +1,4 @@
-// All by Vidu  Updated on 2026/03/10
+// All by Vidu  Updated on 2026/03/19
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -13,7 +13,6 @@ import {
   CreateRemindersFromConsultationDto,
 } from './dto/create-reminder.dto';
 
-// Timing keywords extracted from fullTranscript
 const TIMING_MAP: Record<string, { hour: number; minute: number }> = {
   morning: { hour: 7, minute: 0 },
   afternoon: { hour: 13, minute: 0 },
@@ -41,39 +40,34 @@ export class RemindersService {
       if (transcript.includes(keyword)) {
         const reminderTime = new Date();
         reminderTime.setHours(time.hour, time.minute, 0, 0);
-
-        // If time already passed today, schedule for tomorrow
         if (reminderTime < new Date()) {
           reminderTime.setDate(reminderTime.getDate() + 1);
         }
-
         const reminder = new this.reminderModel({
           patientId: dto.patientId,
           doctorId: dto.doctorId,
           consultationId: dto.consultationId,
           type: ReminderType.MEDICINE,
           title: `Medicine Reminder (${keyword})`,
-          message: `Time to take your medicine. Doctor's note: ${dto.fullTranscript}`,
+          message: `Time to take your ${keyword} medicine as advised by your doctor.`,
           reminderTime,
           sent: false,
         });
-
         const saved = await reminder.save();
         createdReminders.push(saved);
       }
     }
-
     return createdReminders;
   }
 
-  // PATIENT: Create manual medicine reminder
+  // PATIENT: Create manual reminder — FIXED: now uses dto.type instead of hardcoding MEDICINE
   async createMedicineReminder(
     patientId: string,
     dto: CreateReminderDto,
   ): Promise<Reminder> {
     const reminder = new this.reminderModel({
       patientId,
-      type: ReminderType.MEDICINE,
+      type: dto.type, // ✅ was: ReminderType.MEDICINE (hardcoded — bug fixed)
       title: dto.title,
       message: dto.message,
       reminderTime: new Date(dto.reminderTime),

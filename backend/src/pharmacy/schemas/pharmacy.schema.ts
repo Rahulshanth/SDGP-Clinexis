@@ -1,4 +1,3 @@
-
 // Import decorators and helpers from NestJS mongoose package
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 

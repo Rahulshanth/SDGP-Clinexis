@@ -10,7 +10,6 @@ import { Medicine, MedicineDocument } from './schemas/medicine.schema';
 
 @Injectable()
 export class PharmacyInventoryService {
-
   // Inject Medicine model so we can perform database operations
   constructor(
     @InjectModel(Medicine.name)
@@ -19,7 +18,6 @@ export class PharmacyInventoryService {
 
   // Add a new medicine to pharmacy inventory
   async addMedicine(data: any) {
-
     // Create new medicine document
     const medicine = new this.medicineModel(data);
 
@@ -29,19 +27,20 @@ export class PharmacyInventoryService {
 
   // Get all medicines belonging to a pharmacy
   async getMedicines(pharmacyId: string) {
-
     // Find medicines where pharmacyId matches
     return this.medicineModel.find({ pharmacyId });
   }
 
   // Update stock quantity of a medicine
-  async updateStock(id: string, quantity: number) {
-
-    // Find medicine by ID and update quantity
-    return this.medicineModel.findByIdAndUpdate(
-      id,
-      { quantity }, // new quantity value
-      { new: true }, // return updated document
-    );
+  async updateStock(id: string, quantity: number, price?: number) {
+  const updateData: any = { quantity };
+  if (price !== undefined) {
+    updateData.price = price;
   }
+  return this.medicineModel.findByIdAndUpdate(
+    id,
+    updateData,
+    { new: true },
+  );
+}
 }

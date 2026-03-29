@@ -25,9 +25,7 @@ import { SummarizationService } from './summarization.service';
 
 @Controller('consultations')
 export class SummarizationController {
-  constructor(
-    private readonly summarizationService: SummarizationService,
-  ) {}
+  constructor(private readonly summarizationService: SummarizationService) {}
 
   @Post(':id/summarize')
   async summarize(@Param('id') consultationId: string) {

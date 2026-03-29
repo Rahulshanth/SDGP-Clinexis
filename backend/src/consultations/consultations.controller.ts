@@ -54,7 +54,8 @@ export class ConsultationsController {
   @Roles(UserRole.DOCTOR, UserRole.PATIENT)
   @Get(':id')
   async getConsultationById(@Param('id') id: string, @Req() req: any) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    // eslint-disable-next-line prettier/prettier
+     
     const user = req.user as { role: string; userId: string };
 
     const consultation = await this.consultationsService.findById(id);
@@ -92,6 +93,10 @@ export class ConsultationsController {
   @Get()
   async getAllConsultations(@Req() req: any) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    //const user = { role: 'doctor', userId: '69b8eaa82a41401d6b03f910' };
+    //const user = { role: 'patient', userId: '69b8ead12a41401d6b03f912' };
+
+
     const user = req.user as { role: string; userId: string };
 
     let consultations: any[];
@@ -108,10 +113,9 @@ export class ConsultationsController {
       throw new ForbiddenException('Access denied');
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return consultations;
   }
 }
 
 //Finish by Rahul on 25 th Feb
-// git checkout feature/voice-to-text
+//git checkout feature/voice-to-text

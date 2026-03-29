@@ -3,7 +3,6 @@ import { PharmacyInventoryService } from './pharmacy-inventory.service';
 
 @Controller('api/pharmacy-inventory')
 export class PharmacyInventoryController {
-
   constructor(private readonly inventoryService: PharmacyInventoryService) {}
 
   // Add medicine
@@ -21,6 +20,6 @@ export class PharmacyInventoryController {
   // Update stock
   @Put('update/:id')
   updateStock(@Param('id') id: string, @Body() body: any) {
-    return this.inventoryService.updateStock(id, body.quantity);
+    return this.inventoryService.updateStock(id, body.quantity, body.price);
   }
 }

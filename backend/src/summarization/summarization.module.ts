@@ -23,8 +23,14 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { SummarizationController } from './summarization.controller';
 import { SummarizationService } from './summarization.service';
-import { Summarization, SummarizationSchema } from './schemas/summarization.schema';
-import { Consultation, ConsultationSchema } from '../consultations/schemas/consultation.schema';
+import {
+  Summarization,
+  SummarizationSchema,
+} from './schemas/summarization.schema';
+import {
+  Consultation,
+  ConsultationSchema,
+} from '../consultations/schemas/consultation.schema';
 
 @Module({
   imports: [

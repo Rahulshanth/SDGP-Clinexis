@@ -4,6 +4,12 @@ import { protos } from '@google-cloud/speech';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Consultation } from './schemas/consultation.schema';
+import ffmpeg from 'fluent-ffmpeg';
+import * as ffmpegInstaller from '@ffmpeg-installer/ffmpeg';
+import { Readable } from 'stream';
+import * as os from 'os';
+import * as path from 'path';
+import * as fs from 'fs';
 
 @Injectable()
 export class ConsultationsService {
@@ -16,14 +22,14 @@ export class ConsultationsService {
     // Render/Production: decode from base64
     if (process.env.GOOGLE_SERVICE_ACCOUNT_BASE64) {
       //console.log('✅ Google credentials found! Loading from Base64... -RAHUL-');
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
       const credentials = JSON.parse(
         Buffer.from(
           process.env.GOOGLE_SERVICE_ACCOUNT_BASE64,
           'base64',
         ).toString('utf8'),
       );
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
       this.speechClient = new SpeechClient({ credentials });
     } else {
       //console.log('❌ Google credentials NOT found in .env!');
@@ -32,14 +38,46 @@ export class ConsultationsService {
     }
   }
 
+  private async convertToWav(inputBuffer: Buffer): Promise<Buffer> {
+  ffmpeg.setFfmpegPath(ffmpegInstaller.path);
+
+  const tempInput = path.join(os.tmpdir(), `input_${Date.now()}.mp4`);
+  const tempOutput = path.join(os.tmpdir(), `output_${Date.now()}.wav`);
+
+  fs.writeFileSync(tempInput, inputBuffer);
+
+  return new Promise((resolve, reject) => {
+    ffmpeg(tempInput)
+      .audioFrequency(48000)
+      .audioChannels(1)
+      .audioCodec('pcm_s16le')
+      .format('wav')
+      .on('end', () => {
+        const wavBuffer = fs.readFileSync(tempOutput);
+        fs.unlinkSync(tempInput);
+        fs.unlinkSync(tempOutput);
+        resolve(wavBuffer);
+      })
+      .on('error', (err) => {
+        reject(err);
+      })
+      .save(tempOutput);
+  });
+}
+
   async processAndSaveAudio(
     audioBuffer: Buffer,
     doctorId: string,
     patientId: string,
   ): Promise<{ consultationId: any; paragraphs: string[] }> {
     // Restrict the return type to reduce errors
+
+     console.log('Audio buffer size:', audioBuffer.length);
+     console.log('Audio first bytes:', audioBuffer.subarray(0, 12).toString('hex'));
+
     try {
-      const audioBytes = audioBuffer.toString('base64');
+      const wavBuffer = await this.convertToWav(audioBuffer);
+      const audioBytes = wavBuffer.toString('base64'); //
 
       const request: protos.google.cloud.speech.v1.IRecognizeRequest = {
         audio: {
@@ -104,20 +142,17 @@ export class ConsultationsService {
   private groupBySpeaker(words: any[]): string[] {
     const paragraphs: string[] = [];
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     let currentSpeaker = words[0].speakerTag as number;
     let currentSentence = '';
 
     for (const wordInfo of words) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if ((wordInfo.speakerTag as number) !== currentSpeaker) {
         paragraphs.push(currentSentence.trim());
         currentSentence = '';
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         currentSpeaker = wordInfo.speakerTag as number;
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       currentSentence += (wordInfo.word as string) + ' ';
     }
 
