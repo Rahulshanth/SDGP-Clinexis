@@ -1,5 +1,5 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface AuthState {
   token: string | null;
@@ -17,34 +17,37 @@ const initialState: AuthState = {
   error: null,
 };
 
-// Thunk — Login
-export const loginUser = createAsyncThunk(
-  'auth/login',
-  async (credentials: { email: string; password: string }, { rejectWithValue }) => {
+// Thunk — SignIn
+export const SignInUser = createAsyncThunk(
+  "auth/SignIn",
+  async (
+    credentials: { email: string; password: string },
+    { rejectWithValue },
+  ) => {
     try {
-      const response = await fetch('http://10.0.2.2:3000/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("http://10.31.13.60:5001/auth/SignIn", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(credentials),
       });
 
-      if (!response.ok) throw new Error('Login failed');
+      if (!response.ok) throw new Error("SignIn failed");
 
       const data = await response.json();
 
       // Save token to AsyncStorage so doctorApi.ts can read it later
-      await AsyncStorage.setItem('accessToken', data.accessToken);
+      await AsyncStorage.setItem("accessToken", data.accessToken);
 
       return data.accessToken;
     } catch (error) {
-      return rejectWithValue('Invalid email or password');
+      return rejectWithValue("Invalid email or password");
     }
   },
 );
 
 // Thunk — Register
 export const registerUser = createAsyncThunk(
-  'auth/register',
+  "auth/register",
   async (
     userData: {
       email: string;
@@ -60,43 +63,43 @@ export const registerUser = createAsyncThunk(
     { rejectWithValue },
   ) => {
     try {
-      const response = await fetch('http://10.0.2.2:3000/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("http://10.31.13.60:5001/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(userData),
       });
 
-      if (!response.ok) throw new Error('Registration failed');
+      if (!response.ok) throw new Error("Registration failed");
 
       return await response.json();
     } catch (error) {
-      return rejectWithValue('Registration failed');
+      return rejectWithValue("Registration failed");
     }
   },
 );
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
     logout(state) {
       state.token = null;
       state.isAuthenticated = false;
-      AsyncStorage.removeItem('accessToken');
+      AsyncStorage.removeItem("accessToken");
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(loginUser.pending, (state) => {
+      .addCase(SignInUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(loginUser.fulfilled, (state, action) => {
+      .addCase(SignInUser.fulfilled, (state, action) => {
         state.loading = false;
         state.token = action.payload;
         state.isAuthenticated = true;
       })
-      .addCase(loginUser.rejected, (state, action) => {
+      .addCase(SignInUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
