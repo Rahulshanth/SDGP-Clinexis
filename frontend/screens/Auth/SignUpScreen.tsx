@@ -1,31 +1,101 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
-  ActivityIndicator,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
   SafeAreaView,
+  ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
+  Animated,
+  Easing,
+  Pressable,
+  Image,
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { LinearGradient } from "expo-linear-gradient";
+import { MaterialIcons, FontAwesome5, Ionicons } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
+
 import { AuthStackParamList } from "../../navigation/AuthNavigator";
-import { registerUser } from "../../services/authService";
+//import { registerUser } from "@/store/authSlice"; changed for Signup screen By rahul
+import { registerUser , registerPharmacyUser } from "../../services/authApi";
 
 type Props = NativeStackScreenProps<AuthStackParamList, "SignUp">;
 
-export default function SignOutScreen({ navigation }: Props) {
+const BLUE = "#2EA8FF";
+const DARK_BLUE = "#1E3A8A";
+const PANEL_BLUE = "#EAF6FF";
+const WHITE = "#FFFFFF";
+
+export default function SignUpScreen({ navigation, route }: Props) {
+  const { role } = route.params;
+
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [specialization, setSpecialization] = useState("");
+  const [hospitalName, setHospitalName] = useState("");
+  const [clinicLocation, setClinicLocation] = useState("");
+
+  const [location, setLocation] = useState("");        // pharmacy
+  const [contactNumber, setContactNumber] = useState(""); // pharmacy
+
   const [secureTextEntry, setSecureTextEntry] = useState(true);
-  const [confirmSecureTextEntry, setConfirmSecureTextEntry] = useState(true);
+  const [confirmSecureTextEntry] = useState(true);
+
   const [loading, setLoading] = useState(false);
 
+  // animations
+  const slideAnim = useRef(new Animated.Value(120)).current;
+  const opacityAnim = useRef(new Animated.Value(0)).current;
+  const buttonScale = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 600,
+        easing: Easing.out(Easing.exp),
+        useNativeDriver: true,
+      }),
+      Animated.timing(opacityAnim, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [opacityAnim, slideAnim]);
+
+  // PASSWORD STRENGTH
+  const getStrength = () => {
+    let score = 0;
+    if (password.length >= 6) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/[0-9]/.test(password)) score++;
+    if (/[^A-Za-z0-9]/.test(password)) score++;
+    return score;
+  };
+
+  const strength = getStrength();
+
+  const getStrengthColor = () => {
+    if (strength <= 1) return "red";
+    if (strength === 2) return "orange";
+    if (strength === 3) return "#2EA8FF";
+    return "green";
+  };
+
   const handleRegister = async () => {
-    if (!fullName.trim() || !email.trim() || !password || !confirmPassword) {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+
+    if (!fullName || !email || !password || !confirmPassword) {
       Alert.alert("Validation", "Please fill all fields");
       return;
     }
@@ -37,225 +107,398 @@ export default function SignOutScreen({ navigation }: Props) {
 
     try {
       setLoading(true);
+       
+      if (role === "pharmacy") {
+    await registerPharmacyUser({
+      email,
+      password,
+      role,
+      profile: { name: fullName },
+      pharmacyDetails: {
+        name: fullName,
+        location,
+        contactNumber,
+      },
+    });
+        } else {
+        await registerUser({
+          email,
+          password,
+          role,
+          profile: {
+            name: fullName,
+            ...(role === "doctor" && {
+              phoneNumber,
+              specialization,
+              hospitalName,
+              clinicLocation,
+            }),
+            ...(role === "patient" && { phoneNumber }),
+          },
+        });
+      }
 
-      const result = await registerUser({
-        fullName: fullName.trim(),
-        email: email.trim(),
-        password,
-        role: "PATIENT",
-      });
+      Alert.alert("Success", "Registered successfully");
+      navigation.navigate("SignIn", { role });
 
-      console.log("Register success:", result);
-      Alert.alert("Success", "User registered successfully");
-
-      navigation.navigate("SignIn");
-    } catch (error: any) {
-      console.log("Register error:", error?.response?.data || error.message);
-
-      Alert.alert(
-        "Registration Failed",
-        error?.response?.data?.message || "Something went wrong"
-      );
+    } catch {
+      Alert.alert("Error", "Registration failed");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.card}>
-        <Text style={styles.title}>Sign Up</Text>
-        <Text style={styles.subtitle}>
-          Welcome back, please enter your details
-        </Text>
+    <LinearGradient colors={[DARK_BLUE, BLUE, "#6EC6FF"]} style={styles.screen}>
+      <StatusBar barStyle="light-content" />
 
-        <View style={styles.tabContainer}>
-          <TouchableOpacity
-            style={styles.inactiveTab}
-            onPress={() => navigation.navigate("SignIn")}
-          >
-            <Text style={styles.inactiveTabText}>Sign In</Text>
-          </TouchableOpacity>
+      <SafeAreaView style={{ flex: 1 }}>
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
+        >
+          <ScrollView contentContainerStyle={styles.scrollContent}>
 
-          <TouchableOpacity style={styles.activeTab}>
-            <Text style={styles.activeTabText}>Sign Up</Text>
-          </TouchableOpacity>
+            {/* FLOATING LOGO */}
+            <Animated.View
+              style={[
+                styles.card,
+                {
+                  transform: [{ translateY: slideAnim }],
+                  opacity: opacityAnim,
+                },
+              ]}
+            >
+
+              {/* FLOATING LOGO */}
+              <View style={styles.logoFloating}>
+                <Image
+                  source={require("../../assets/images/Logo.png")}
+                  style={styles.logo}
+                />
+              </View>
+
+              <Text style={styles.title}>Sign Up</Text>
+
+              {/* SEGMENT */}
+              <View style={styles.segment}>
+                <TouchableOpacity
+                  style={styles.segmentInactive}
+                  onPress={() => navigation.navigate("SignIn", { role })}
+                >
+                  <Text style={styles.segmentInactiveText}>Sign In</Text>
+                </TouchableOpacity>
+
+                <View style={styles.segmentActive}>
+                  <Text style={styles.segmentActiveText}>Sign Up</Text>
+                </View>
+              </View>
+
+              {/* NAME */}
+              <View style={styles.inputWrapper}>
+                <MaterialIcons name="person" size={18} color="#6B7280" />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Full Name"
+                  value={fullName}
+                  onChangeText={setFullName}
+                />
+              </View>
+
+              {/* EMAIL */}
+              <View style={styles.inputWrapper}>
+                <MaterialIcons name="email" size={18} color="#6B7280" />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Email"
+                  value={email}
+                  onChangeText={setEmail}
+                />
+              </View>
+
+              {/* PASSWORD */}
+              <View style={styles.inputWrapper}>
+                <FontAwesome5 name="lock" size={16} color="#6B7280" />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Password"
+                  secureTextEntry={secureTextEntry}
+                  value={password}
+                  onChangeText={setPassword}
+                />
+                <TouchableOpacity onPress={() => setSecureTextEntry(!secureTextEntry)}>
+                  <Ionicons name="eye-outline" size={20} />
+                </TouchableOpacity>
+              </View>
+
+               {/* PHONE NUMBER — shown for all roles */}
+               {(role === "patient" || role === "doctor") && (
+              <View style={styles.inputWrapper}>
+                <MaterialIcons name="phone" size={18} color="#6B7280" />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Phone Number"
+                  value={phoneNumber}
+                  onChangeText={setPhoneNumber}
+                  keyboardType="phone-pad"
+                />
+              </View>
+              )}
+
+              {/* DOCTOR ONLY FIELDS */}
+              {role === "doctor" && (
+                <>
+                  <View style={styles.inputWrapper}>
+                    <MaterialIcons name="local-hospital" size={18} color="#6B7280" />
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Specialization (e.g. Neurologist)"
+                      value={specialization}
+                      onChangeText={setSpecialization}
+                    />
+                  </View>
+
+                  <View style={styles.inputWrapper}>
+                    <MaterialIcons name="business" size={18} color="#6B7280" />
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Hospital Name"
+                      value={hospitalName}
+                      onChangeText={setHospitalName}
+                    />
+                  </View>
+
+                  <View style={styles.inputWrapper}>
+                    <MaterialIcons name="location-on" size={18} color="#6B7280" />
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Clinic Location"
+                      value={clinicLocation}
+                      onChangeText={setClinicLocation}
+                    />
+                  </View>
+                </>
+              )}
+
+              {/* PHARMACY ONLY FIELDS */}
+              {role === "pharmacy" && (
+                <>
+                  <View style={styles.inputWrapper}>
+                    <MaterialIcons name="location-on" size={18} color="#6B7280" />
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Pharmacy Location (e.g. Colombo)"
+                      value={location}
+                      onChangeText={setLocation}
+                    />
+                  </View>
+
+                  <View style={styles.inputWrapper}>
+                    <MaterialIcons name="phone" size={18} color="#6B7280" />
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Contact Number"
+                      value={contactNumber}
+                      onChangeText={setContactNumber}
+                      keyboardType="phone-pad"
+                    />
+                  </View>
+                </>
+              )}
+
+
+              {/*  STRENGTH BAR */}
+              <View style={styles.strengthBarContainer}>
+                <View
+                  style={[
+                    styles.strengthBar,
+                    {
+                      width: `${(strength / 4) * 100}%`,
+                      backgroundColor: getStrengthColor(),
+                    },
+                  ]}
+                />
+              </View>
+
+              {/* CONFIRM PASSWORD */}
+              <View style={styles.inputWrapper}>
+                <FontAwesome5 name="lock" size={16} color="#6B7280" />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Confirm Password"
+                  secureTextEntry={confirmSecureTextEntry}
+                  value={confirmPassword}
+                  onChangeText={setConfirmPassword}
+                />
+              </View>
+
+              {/* BUTTON */}
+              <Animated.View style={{ transform: [{ scale: buttonScale }] }}>
+                <Pressable
+                  onPress={handleRegister}
+                  android_ripple={{ color: "#ffffff40" }}
+                  style={styles.button}
+                >
+                  <Text style={styles.buttonText}>Sign Up</Text>
+                </Pressable>
+              </Animated.View>
+
+            </Animated.View>
+
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+
+      {loading && (
+        <View style={styles.overlay}>
+          <View style={styles.loaderBox}>
+            <Text style={{ color: BLUE }}>Creating account...</Text>
+          </View>
         </View>
-
-        <TextInput
-          style={styles.input}
-          placeholder="Full Name"
-          placeholderTextColor="#6B7280"
-          value={fullName}
-          onChangeText={setFullName}
-        />
-
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          placeholderTextColor="#6B7280"
-          keyboardType="email-address"
-          autoCapitalize="none"
-          value={email}
-          onChangeText={setEmail}
-        />
-
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          placeholderTextColor="#6B7280"
-          secureTextEntry={secureTextEntry}
-          value={password}
-          onChangeText={setPassword}
-        />
-
-        <TouchableOpacity onPress={() => setSecureTextEntry(!secureTextEntry)}>
-          <Text style={styles.smallLink}>
-            {secureTextEntry ? "Show password" : "Hide password"}
-          </Text>
-        </TouchableOpacity>
-
-        <TextInput
-          style={styles.input}
-          placeholder="Confirm your password"
-          placeholderTextColor="#6B7280"
-          secureTextEntry={confirmSecureTextEntry}
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-        />
-
-        <TouchableOpacity
-          onPress={() =>
-            setConfirmSecureTextEntry(!confirmSecureTextEntry)
-          }
-        >
-          <Text style={styles.smallLink}>
-            {confirmSecureTextEntry ? "Show confirm password" : "Hide confirm password"}
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.primaryButton}
-          onPress={handleRegister}
-          disabled={loading}
-        >
-          {loading ? (
-            <ActivityIndicator color="#1D4ED8" />
-          ) : (
-            <Text style={styles.primaryButtonText}>Sign Up</Text>
-          )}
-        </TouchableOpacity>
-
-        <Text style={styles.bottomText}>
-          Already have an account?{" "}
-          <Text
-            style={styles.bottomLink}
-            onPress={() => navigation.navigate("SignIn")}
-          >
-            Sign In
-          </Text>
-        </Text>
-      </View>
-    </SafeAreaView>
+      )}
+    </LinearGradient>
   );
 }
 
-const BLUE = "#2EA8FF";
-const LIGHT_BLUE = "#CFEAFF";
-
 const styles = StyleSheet.create({
-  container: {
+  screen: { flex: 1 },
+
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: "flex-end",
+    paddingTop: 100, // important for logo spacing
+  },
+
+  card: {
+    backgroundColor: PANEL_BLUE,
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+    paddingBottom: 60,
+    paddingHorizontal: 24,
+    paddingTop: 90, // space for floating logo
+  },
+
+  title: {
+    fontSize: 28,
+    fontWeight: "800",
+    textAlign: "center",
+    color: BLUE,
+    marginBottom: 10,
+  },
+
+  subtitle: {
+    textAlign: "center",
+    color: "#6B7280",
+    marginBottom: 15,
+  },
+
+  segment: {
+    flexDirection: "row",
+    backgroundColor: "#DFF1FF",
+    borderRadius: 20,
+    padding: 4,
+    marginBottom: 18,
+  },
+
+  segmentActive: {
     flex: 1,
-    backgroundColor: "#111827",
+    backgroundColor: BLUE,
+    padding: 10,
+    borderRadius: 16,
+    alignItems: "center",
+  },
+
+  segmentInactive: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  segmentActiveText: {
+    color: WHITE,
+    fontWeight: "700",
+  },
+
+  segmentInactiveText: {
+    color: BLUE,
+  },
+
+  inputWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: WHITE,
+    borderRadius: 14,
+    paddingHorizontal: 12,
+    marginBottom: 14,
+    position: "relative",
+  },
+
+  input: {
+    flex: 1,
+    paddingVertical: 14,
+    marginLeft: 6,
+  },
+
+  label: {
+    position: "absolute",
+    left: 40,
+    backgroundColor: WHITE,
+    paddingHorizontal: 4,
+    color: "#6B7280",
+  },
+
+  button: {
+    backgroundColor: BLUE,
+    padding: 16,
+    borderRadius: 14,
+    alignItems: "center",
+  },
+
+  buttonText: {
+    color: WHITE,
+    fontWeight: "800",
+  },
+
+  overlay: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    backgroundColor: "#00000040",
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 16,
   },
-  card: {
-    width: "100%",
-    maxWidth: 360,
-    backgroundColor: BLUE,
-    borderTopLeftRadius: 120,
-    borderTopRightRadius: 120,
-    borderBottomLeftRadius: 18,
-    borderBottomRightRadius: 18,
-    paddingHorizontal: 22,
-    paddingVertical: 34,
-    alignItems: "center",
-  },
-  title: {
-    fontSize: 34,
-    fontWeight: "800",
-    color: "#FFFFFF",
-    marginTop: 30,
-  },
-  subtitle: {
-    fontSize: 12,
-    color: "#EAF6FF",
-    marginTop: 8,
-    marginBottom: 18,
-    textAlign: "center",
-  },
-  tabContainer: {
-    flexDirection: "row",
-    marginBottom: 20,
-  },
-  activeTab: {
-    backgroundColor: "#FFFFFF",
-    paddingVertical: 8,
-    paddingHorizontal: 18,
-    borderRadius: 16,
-    marginLeft: 8,
-  },
-  inactiveTab: {
-    backgroundColor: "#DFF1FF",
-    paddingVertical: 8,
-    paddingHorizontal: 18,
+
+  loaderBox: {
+    backgroundColor: WHITE,
+    padding: 20,
     borderRadius: 16,
   },
-  activeTabText: {
-    color: BLUE,
-    fontWeight: "700",
+
+  strengthBarContainer: {
+  height: 6,
+  backgroundColor: "#ddd",
+  borderRadius: 10,
+  marginBottom: 12,
   },
-  inactiveTabText: {
-    color: BLUE,
-    fontWeight: "700",
+
+  strengthBar: {
+  height: 6,
+  borderRadius: 10,
   },
-  input: {
-    width: "100%",
-    backgroundColor: LIGHT_BLUE,
-    borderRadius: 8,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    marginBottom: 12,
-    color: "#111827",
+
+  logoFloating: {
+    position: "absolute",
+    top: -100,
+    alignSelf: "center",
+    zIndex: 10,
   },
-  smallLink: {
-    width: "100%",
-    color: "#FFFFFF",
-    fontSize: 12,
-    marginBottom: 12,
-  },
-  primaryButton: {
-    width: "100%",
-    backgroundColor: "#FFFFFF",
-    paddingVertical: 13,
-    borderRadius: 8,
-    alignItems: "center",
-    marginTop: 4,
-    marginBottom: 14,
-  },
-  primaryButtonText: {
-    color: BLUE,
-    fontSize: 15,
-    fontWeight: "800",
-  },
-  bottomText: {
-    color: "#FFFFFF",
-    fontSize: 12,
-  },
-  bottomLink: {
-    fontWeight: "800",
-    textDecorationLine: "underline",
+
+  logo: {
+    width: 200,
+    height: 200,
+    borderRadius: 60,
+    padding: 12,
   },
 });
+
+//Added by Rivithi & Editted by Nadithi
