@@ -1,5 +1,5 @@
 //edited by vidu
-/*
+
 import React, { useState } from "react";
 import {
   View,
@@ -197,8 +197,6 @@ export default function DoctorAppointmentsScreen() {
 
   return (
     <SafeAreaView style={styles.safe}>
-      // Header 
-
       <View style={styles.header}>
         <View>
           <Text style={styles.headerTitle}>Appointments</Text>
@@ -220,7 +218,6 @@ export default function DoctorAppointmentsScreen() {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        // Month + Calendar 
 
         <View style={styles.calendarSection}>
           <View style={styles.monthRow}>
@@ -273,8 +270,6 @@ export default function DoctorAppointmentsScreen() {
           </ScrollView>
         </View>
 
-        // Tabs 
-
         <View style={styles.tabRow}>
           {(["Upcoming", "Completed", "Cancelled"] as const).map((t) => (
             <TouchableOpacity
@@ -293,8 +288,6 @@ export default function DoctorAppointmentsScreen() {
             </TouchableOpacity>
           ))}
         </View>
-
-        // Appointments List 
 
         <View style={styles.listContainer}>
           {tab === "Upcoming" ? (
@@ -391,7 +384,7 @@ const styles = StyleSheet.create({
   viewBtn: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 6 },
   viewBtnActive: { backgroundColor: "#fff" },
   viewBtnText: { fontSize: 16, color: "#94A3B8" },
-  viewBtnTextActive: { color: "#1E3A8A" },
+  viewBtnTextActive: { color: "#2563EB" },
   weekRow: { flexDirection: "row" },
   dayChip: {
     alignItems: "center",
@@ -402,7 +395,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F8FAFC",
     minWidth: 52,
   },
-  dayChipActive: { backgroundColor: "#1E3A8A" },
+  dayChipActive: { backgroundColor: "#2563EB" },
   dayName: { fontSize: 12, color: "#64748B", fontWeight: "500" },
   dayNameActive: { color: "#fff" },
   dayDate: { fontSize: 20, fontWeight: "700", color: "#1E293B", marginTop: 2 },
@@ -411,7 +404,7 @@ const styles = StyleSheet.create({
     width: 5,
     height: 5,
     borderRadius: 3,
-    backgroundColor: "#3B82F6",
+    backgroundColor: "#2563EB",
     marginTop: 4,
   },
   tabRow: {
@@ -428,9 +421,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderBottomColor: "transparent",
   },
-  tabActive: { borderBottomColor: "#1E3A8A" },
+  tabActive: { borderBottomColor: "#2563EB" },
   tabText: { fontSize: 14, fontWeight: "600", color: "#94A3B8" },
-  tabTextActive: { color: "#1E3A8A" },
+  tabTextActive: { color: "#2563EB" },
   listContainer: { paddingHorizontal: 20, paddingTop: 16 },
   scheduleLabel: {
     fontSize: 11,
@@ -462,7 +455,7 @@ const styles = StyleSheet.create({
   cardTime: {
     fontSize: 12,
     fontWeight: "700",
-    color: "#1E3A8A",
+    color: "#2563EB",
     textAlign: "center",
   },
   cardBody: { flex: 1, padding: 14 },
@@ -481,7 +474,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  initialsText: { fontSize: 15, fontWeight: "700", color: "#1E3A8A" },
+  initialsText: { fontSize: 15, fontWeight: "700", color: "#2563EB" },
   nameRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -495,11 +488,11 @@ const styles = StyleSheet.create({
   typeBadgeVideo: { backgroundColor: "#EFF6FF" },
   typeText: { fontSize: 10, fontWeight: "700" },
   typeTextInPerson: { color: "#16A34A" },
-  typeTextVideo: { color: "#1E3A8A" },
+  typeTextVideo: { color: "#2563EB" },
   actionRow: { flexDirection: "row", gap: 8 },
   markBtn: {
     flex: 1,
-    backgroundColor: "#1E3A8A",
+    backgroundColor: "#2563EB",
     borderRadius: 10,
     paddingVertical: 10,
     alignItems: "center",
@@ -538,4 +531,3 @@ const styles = StyleSheet.create({
   emptyState: { alignItems: "center", paddingVertical: 40 },
   emptyText: { fontSize: 15, color: "#94A3B8" },
 });
-*/

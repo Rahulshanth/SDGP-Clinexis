@@ -22,7 +22,7 @@ import { MaterialIcons, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 
 import { AuthStackParamList } from "../../navigation/AuthNavigator";
-//p-import { registerUser } from "@/store/authSlice"; changed for Signup screen By rahul
+//import { registerUser } from "@/store/authSlice"; changed for Signup screen By rahul
 import { registerUser , registerPharmacyUser } from "../../services/authApi";
 
 type Props = NativeStackScreenProps<AuthStackParamList, "SignUp">;
@@ -95,19 +95,8 @@ export default function SignUpScreen({ navigation, route }: Props) {
   const handleRegister = async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
-    // Trim whitespace
-    const trimmedEmail = email.trim().toLowerCase();
-    const trimmedFullName = fullName.trim();
-
-    if (!trimmedFullName || !trimmedEmail || !password || !confirmPassword) {
+    if (!fullName || !email || !password || !confirmPassword) {
       Alert.alert("Validation", "Please fill all fields");
-      return;
-    }
-
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(trimmedEmail)) {
-      Alert.alert("Validation", "Please enter a valid email address");
       return;
     }
 
@@ -121,23 +110,23 @@ export default function SignUpScreen({ navigation, route }: Props) {
        
       if (role === "pharmacy") {
     await registerPharmacyUser({
-      email: trimmedEmail,
+      email,
       password,
       role,
-      profile: { name: trimmedFullName },
+      profile: { name: fullName },
       pharmacyDetails: {
-        name: trimmedFullName,
+        name: fullName,
         location,
         contactNumber,
       },
     });
         } else {
         await registerUser({
-          email: trimmedEmail,
+          email,
           password,
           role,
           profile: {
-            name: trimmedFullName,
+            name: fullName,
             ...(role === "doctor" && {
               phoneNumber,
               specialization,
@@ -152,10 +141,8 @@ export default function SignUpScreen({ navigation, route }: Props) {
       Alert.alert("Success", "Registered successfully");
       navigation.navigate("SignIn", { role });
 
-    } catch (error: any) {
-      console.error("Registration error:", error);
-      const errorMessage = error?.response?.data?.message || error?.message || "Registration failed";
-      Alert.alert("Error", errorMessage);
+    } catch {
+      Alert.alert("Error", "Registration failed");
     } finally {
       setLoading(false);
     }

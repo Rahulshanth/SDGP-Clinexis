@@ -20,38 +20,41 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialIcons, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
- 
+
 import { AuthStackParamList } from "../../navigation/AuthNavigator";
 import { signInUser } from "../../services/authApi";
- 
-// ✅ Props includes onLoginSuccess
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+//Props
 type Props = NativeStackScreenProps<AuthStackParamList, "SignIn"> & {
   onLoginSuccess: () => void;
 };
- 
+
 const BLUE = "#2EA8FF";
 const DARK_BLUE = "#1E3A8A";
 const PANEL_BLUE = "#EAF6FF";
 const WHITE = "#FFFFFF";
- 
-// ✅ Accept onLoginSuccess from AuthNavigator
-export default function SignInScreen({ navigation, route, onLoginSuccess }: Props) {
+
+export default function SignInScreen({
+  navigation,
+  route,
+  onLoginSuccess,
+}: Props) {
   const selectedRole = route.params.role;
- 
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [loading, setLoading] = useState(false);
   const [focused, setFocused] = useState<string | null>(null);
- 
-  // animations
+
   const slideAnim = useRef(new Animated.Value(120)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
   const buttonScale = useRef(new Animated.Value(1)).current;
- 
+
   const emailLabel = useRef(new Animated.Value(0)).current;
   const passwordLabel = useRef(new Animated.Value(0)).current;
- 
+
   useEffect(() => {
     Animated.parallel([
       Animated.timing(slideAnim, {
@@ -67,7 +70,7 @@ export default function SignInScreen({ navigation, route, onLoginSuccess }: Prop
       }),
     ]).start();
   }, [opacityAnim, slideAnim]);
- 
+
   const animateLabel = (anim: Animated.Value, toValue: number) => {
     Animated.timing(anim, {
       toValue,
@@ -75,14 +78,14 @@ export default function SignInScreen({ navigation, route, onLoginSuccess }: Prop
       useNativeDriver: false,
     }).start();
   };
- 
+
   const pressIn = () => {
     Animated.spring(buttonScale, {
       toValue: 0.96,
       useNativeDriver: true,
     }).start();
   };
- 
+
   const pressOut = () => {
     Animated.spring(buttonScale, {
       toValue: 1,
@@ -90,54 +93,47 @@ export default function SignInScreen({ navigation, route, onLoginSuccess }: Prop
       useNativeDriver: true,
     }).start();
   };
- 
-  const handleSignIn = async () => {
-    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
-    const trimmedEmail = email.trim().toLowerCase();
-    const trimmedPassword = password.trim();
 
-    if (!trimmedEmail || !trimmedPassword) {
-      Alert.alert("Validation", "Please enter email and password");
-      return;
-    }
 
-    try {
-      setLoading(true);
+const handleSignIn = async () => {
+  await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
-      const result = await signInUser({
-        email: trimmedEmail,
-        password: trimmedPassword,
-      });
+  if (!email.trim() || !password.trim()) {
+    Alert.alert("Validation", "Please enter email and password");
+    return;
+  }
 
-      const role = result?.user?.role ?? selectedRole ?? "patient";
-      console.log("Logged in as:", role);
+  try {
+    setLoading(true);
 
-      // ✅ This triggers checkLogin in RootNavigator
-      // which reads token + role from AsyncStorage
-      // and renders the correct home screen
-      onLoginSuccess();
- 
-    } catch (error: any) {
-      console.error("Sign in error:", error?.response?.data || error?.message);
-      const errorMessage = error?.response?.data?.message || error?.message || "Sign in failed";
-      Alert.alert("Error", errorMessage);
-    } finally {
-      setLoading(false);
-    }
-  };
- 
+    const result = await signInUser({
+      email: email.trim(),
+      password,
+    });
+
+    const role = result?.user?.role ?? selectedRole ?? "patient";
+    await AsyncStorage.setItem("userRole", role);
+    onLoginSuccess();
+
+  } catch (error) {
+    console.log(error);
+    Alert.alert("Error", "Sign in failed");
+  } finally {
+    setLoading(false);
+  }
+};
+
   return (
     <LinearGradient colors={[DARK_BLUE, BLUE, "#6EC6FF"]} style={styles.screen}>
       <StatusBar barStyle="light-content" />
- 
+
       <SafeAreaView style={{ flex: 1 }}>
         <KeyboardAvoidingView
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "padding" : undefined}
         >
           <ScrollView contentContainerStyle={styles.scrollContent}>
- 
             <Animated.View
               style={[
                 styles.card,
@@ -147,31 +143,28 @@ export default function SignInScreen({ navigation, route, onLoginSuccess }: Prop
                 },
               ]}
             >
- 
-              {/* FLOATING LOGO */}
+              {/* LOGO */}
               <View style={styles.logoFloating}>
                 <Image
                   source={require("../../assets/images/Logo.png")}
                   style={styles.logo}
                 />
               </View>
- 
+
               <Text style={styles.title}>Sign In</Text>
- 
+
               <Text style={styles.subtitle}>
                 Welcome back, please enter your details
               </Text>
- 
-              <Text style={styles.profileText}>
-                {selectedRole} account
-              </Text>
- 
+
+              <Text style={styles.profileText}>{selectedRole} account</Text>
+
               {/* SEGMENT */}
               <View style={styles.segment}>
                 <View style={styles.segmentActive}>
                   <Text style={styles.segmentActiveText}>Sign In</Text>
                 </View>
- 
+
                 <TouchableOpacity
                   style={styles.segmentInactive}
                   onPress={() =>
@@ -181,7 +174,7 @@ export default function SignInScreen({ navigation, route, onLoginSuccess }: Prop
                   <Text style={styles.segmentInactiveText}>Sign Up</Text>
                 </TouchableOpacity>
               </View>
- 
+
               {/* EMAIL */}
               <View
                 style={[
@@ -189,26 +182,10 @@ export default function SignInScreen({ navigation, route, onLoginSuccess }: Prop
                   focused === "email" && styles.inputFocused,
                 ]}
               >
-                <Animated.Text
-                  style={[
-                    styles.label,
-                    {
-                      top: emailLabel.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: [16, -8],
-                      }),
-                      fontSize: emailLabel.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: [14, 11],
-                      }),
-                    },
-                  ]}
-                >
-                  Email
-                </Animated.Text>
- 
+                <Animated.Text style={styles.label}>Email</Animated.Text>
+
                 <MaterialIcons name="email" size={18} color="#6B7280" />
- 
+
                 <TextInput
                   style={styles.input}
                   value={email}
@@ -226,7 +203,7 @@ export default function SignInScreen({ navigation, route, onLoginSuccess }: Prop
                   }}
                 />
               </View>
- 
+
               {/* PASSWORD */}
               <View
                 style={[
@@ -234,26 +211,10 @@ export default function SignInScreen({ navigation, route, onLoginSuccess }: Prop
                   focused === "password" && styles.inputFocused,
                 ]}
               >
-                <Animated.Text
-                  style={[
-                    styles.label,
-                    {
-                      top: passwordLabel.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: [16, -8],
-                      }),
-                      fontSize: passwordLabel.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: [14, 11],
-                      }),
-                    },
-                  ]}
-                >
-                  Password
-                </Animated.Text>
- 
+                <Animated.Text style={styles.label}>Password</Animated.Text>
+
                 <FontAwesome5 name="lock" size={16} color="#6B7280" />
- 
+
                 <TextInput
                   style={styles.input}
                   secureTextEntry={secureTextEntry}
@@ -271,41 +232,39 @@ export default function SignInScreen({ navigation, route, onLoginSuccess }: Prop
                     !password && animateLabel(passwordLabel, 0);
                   }}
                 />
- 
-                <TouchableOpacity onPress={() => setSecureTextEntry(!secureTextEntry)}>
+
+                <TouchableOpacity
+                  onPress={() => setSecureTextEntry(!secureTextEntry)}
+                >
                   <Ionicons
                     name={secureTextEntry ? "eye-off-outline" : "eye-outline"}
                     size={20}
                   />
                 </TouchableOpacity>
               </View>
- 
+
               <TouchableOpacity
                 onPress={() => navigation.navigate("ForgotPasswordEmail")}
               >
                 <Text style={styles.forgot}>Forgot password?</Text>
               </TouchableOpacity>
- 
+
               {/* BUTTON */}
               <Animated.View style={{ transform: [{ scale: buttonScale }] }}>
                 <Pressable
                   onPress={handleSignIn}
                   onPressIn={pressIn}
                   onPressOut={pressOut}
-                  android_ripple={{ color: "#ffffff40" }}
                   style={styles.button}
                 >
                   <Text style={styles.buttonText}>Sign In</Text>
                 </Pressable>
               </Animated.View>
- 
             </Animated.View>
- 
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
- 
-      {/* LOADING OVERLAY */}
+
       {loading && (
         <View style={styles.overlay}>
           <View style={styles.loaderBox}>
@@ -316,16 +275,11 @@ export default function SignInScreen({ navigation, route, onLoginSuccess }: Prop
     </LinearGradient>
   );
 }
- 
+
 const styles = StyleSheet.create({
   screen: { flex: 1 },
- 
-  scrollContent: {
-    flexGrow: 1,
-    justifyContent: "flex-end",
-    paddingTop: 100,
-  },
- 
+  scrollContent: { flexGrow: 1, justifyContent: "flex-end", paddingTop: 100 },
+
   card: {
     backgroundColor: PANEL_BLUE,
     borderTopLeftRadius: 40,
@@ -334,27 +288,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingTop: 90,
   },
- 
+
   title: {
     fontSize: 30,
     fontWeight: "800",
     textAlign: "center",
     color: BLUE,
-    marginBottom: 10,
   },
- 
+
   subtitle: {
     textAlign: "center",
     color: "#6B7280",
-    marginBottom: 7,
+    marginBottom: 10,
   },
- 
+
   profileText: {
     textAlign: "center",
     marginBottom: 20,
     color: "#374151",
   },
- 
+
   segment: {
     flexDirection: "row",
     backgroundColor: "#DFF1FF",
@@ -362,7 +315,7 @@ const styles = StyleSheet.create({
     padding: 4,
     marginBottom: 18,
   },
- 
+
   segmentActive: {
     flex: 1,
     backgroundColor: BLUE,
@@ -370,22 +323,22 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: "center",
   },
- 
+
   segmentInactive: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
   },
- 
+
   segmentActiveText: {
     color: WHITE,
     fontWeight: "700",
   },
- 
+
   segmentInactiveText: {
     color: BLUE,
   },
- 
+
   inputWrapper: {
     flexDirection: "row",
     alignItems: "center",
@@ -393,46 +346,47 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     paddingHorizontal: 12,
     marginBottom: 14,
-    position: "relative",
   },
- 
+
   inputFocused: {
     borderWidth: 1.5,
     borderColor: BLUE,
   },
- 
+
   input: {
     flex: 1,
     paddingVertical: 14,
     marginLeft: 6,
   },
- 
+
   label: {
     position: "absolute",
     left: 40,
+    top: -8,
+    fontSize: 11,
     color: "#6B7280",
     backgroundColor: WHITE,
     paddingHorizontal: 4,
   },
- 
+
   forgot: {
     textAlign: "right",
     color: BLUE,
     marginBottom: 18,
   },
- 
+
   button: {
     backgroundColor: BLUE,
     padding: 16,
     borderRadius: 14,
     alignItems: "center",
   },
- 
+
   buttonText: {
     color: WHITE,
     fontWeight: "800",
   },
- 
+
   overlay: {
     position: "absolute",
     width: "100%",
@@ -441,25 +395,22 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
- 
+
   loaderBox: {
     backgroundColor: WHITE,
     padding: 20,
     borderRadius: 16,
   },
- 
+
   logoFloating: {
     position: "absolute",
     top: -100,
     alignSelf: "center",
-    zIndex: 10,
   },
- 
+
   logo: {
     width: 200,
     height: 200,
     borderRadius: 60,
   },
 });
- 
-// Added by Rivithi & Edited by Nadithi

@@ -1,358 +1,233 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
-  View, Text, TouchableOpacity, StyleSheet,
-  ActivityIndicator, TextInput, FlatList,
-  ScrollView, Alert,
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Animated,
 } from 'react-native';
 import { Audio } from 'expo-av';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { uploadConsultationAudio } from '../../store/consultationSlice';
 import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { PatientStackParamList } from '../../navigation/PatientNavigator';
-import { searchDoctorsByName } from '../../services/doctorApi';
-import { Doctor } from '../../store/doctorSlice';
-
-const getUserIdFromToken = async (): Promise<string | null> => {
-  try {
-    const token = await AsyncStorage.getItem("token");
-    if (!token) return null;
-    const payload = token.split(".")[1];
-    const decoded = JSON.parse(atob(payload));
-    return decoded.sub || decoded.userId || null;
-  } catch {
-    return null;
-  }
-};
-
-type VoiceRecorderNavProp = NativeStackNavigationProp<PatientStackParamList>;
+import { Ionicons } from "@expo/vector-icons";
 
 const VoiceRecorder = () => {
   const [recording, setRecording] = useState<Audio.Recording | null>(null);
+  const [timer, setTimer] = useState(0);
+
+  const pulseAnim = useRef(new Animated.Value(1)).current;
+
   const dispatch = useAppDispatch();
-  const navigation = useNavigation<VoiceRecorderNavProp>();
+  const navigation = useNavigation<any>();
   const { status } = useAppSelector((state) => state.consultation);
 
-  // ── Doctor search state ───────────────────────────────────────────────────
-  const [doctorSearch, setDoctorSearch] = useState('');
-  const [doctorResults, setDoctorResults] = useState<Doctor[]>([]);
-  const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
-  const [searching, setSearching] = useState(false);
+  // ⏱ TIMER + ANIMATION
+  useEffect(() => {
+    let interval: any;
 
-  // ── Search doctors by name ────────────────────────────────────────────────
-  const handleDoctorSearch = async (text: string) => {
-    setDoctorSearch(text);
-    setSelectedDoctor(null); // clear selection when typing again
+    if (recording) {
+      interval = setInterval(() => {
+        setTimer((t) => t + 1);
+      }, 1000);
 
-    if (text.trim().length < 2) {
-      setDoctorResults([]);
-      return;
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(pulseAnim, {
+            toValue: 1.15,
+            duration: 600,
+            useNativeDriver: true,
+          }),
+          Animated.timing(pulseAnim, {
+            toValue: 1,
+            duration: 600,
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
+    } else {
+      setTimer(0);
+      pulseAnim.setValue(1);
     }
 
-    setSearching(true);
-    try {
-      const results = await searchDoctorsByName(text);
-      setDoctorResults(results);
-    } catch {
-      setDoctorResults([]);
-    } finally {
-      setSearching(false);
-    }
+    return () => clearInterval(interval);
+  }, [pulseAnim, recording]);
+
+  const formatTime = (sec: number) => {
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return `${m}:${s < 10 ? '0' : ''}${s}`;
   };
 
-  // ── Select a doctor from results ──────────────────────────────────────────
-  const handleSelectDoctor = (doctor: Doctor) => {
-    setSelectedDoctor(doctor);
-    setDoctorSearch(doctor.profile.name); // show name in search bar
-    setDoctorResults([]); // hide dropdown
-  };
-
-  // ── Start recording ───────────────────────────────────────────────────────
+  // START
   const startRecording = async () => {
-    if (!selectedDoctor) {
-      Alert.alert('Select a Doctor', 'Please search and select a doctor first.');
-      return;
-    }
-
     await Audio.requestPermissionsAsync();
-    await Audio.setAudioModeAsync({
-      allowsRecordingIOS: true,
-      playsInSilentModeIOS: true,
-    });
 
-    const { recording } = await Audio.Recording.createAsync({
-      android: {
-        extension: '.wav',
-        outputFormat: Audio.AndroidOutputFormat.DEFAULT,
-        audioEncoder: Audio.AndroidAudioEncoder.DEFAULT,
-        sampleRate: 48000,
-        numberOfChannels: 1,
-        bitRate: 128000,
-      },
-      ios: {
-        extension: '.wav',
-        audioQuality: Audio.IOSAudioQuality.HIGH,
-        sampleRate: 48000,
-        numberOfChannels: 1,
-        bitRate: 128000,
-        linearPCMBitDepth: 16,
-        linearPCMIsBigEndian: false,
-        linearPCMIsFloat: false,
-      },
-      web: {},
-    });
+    const { recording } = await Audio.Recording.createAsync(
+      Audio.RecordingOptionsPresets.HIGH_QUALITY
+    );
 
     setRecording(recording);
   };
 
-  // ── Stop recording & upload ───────────────────────────────────────────────
+  // STOP
   const stopRecording = async () => {
-  if (!recording || !selectedDoctor) return;
+    if (!recording) return;
 
-  // ── guard against double-stop ──────────────────────────────────────────
-  const currentRecording = recording;
-  setRecording(null); // ← clear state FIRST before unloading
+    const rec = recording;
+    setRecording(null);
 
-  try {
-    await currentRecording.stopAndUnloadAsync();
-  } catch {
-    // already unloaded — safe to ignore
-  }
+    await rec.stopAndUnloadAsync();
 
-  const uri = currentRecording.getURI();
-  if (!uri) return;
+    const uri = rec.getURI();
 
-  // ── Get real patientId from JWT token ───────────────────────────────────
-  const patientId = await getUserIdFromToken();
-  if (!patientId) {
-    Alert.alert('Error', 'Could not get patient info. Please log in again.');
-    return;
-  }
+    const formData = new FormData();
+    formData.append("file", {
+      uri,
+      type: "audio/wav",
+      name: "consultation.wav"
+    } as any);
 
-  const formData = new FormData();
-  formData.append('file', {
-    uri,
-    type: 'audio/wav',
-    name: 'consultation.wav',
-  } as any);
-
-  formData.append('doctorId', selectedDoctor._id);  // ← real doctor ID
-  formData.append('patientId', patientId);           // ← real patient ID
-
-  dispatch(uploadConsultationAudio(formData));
-};
+    dispatch(uploadConsultationAudio(formData));
+  };
 
   return (
-    <ScrollView
-      style={styles.scroll}
-      contentContainerStyle={styles.container}
-      keyboardShouldPersistTaps="handled"
-    >
-      <Text style={styles.title}>Consultation Recording</Text>
+    <View style={styles.container}>
 
-      {/* ── Doctor Search ─────────────────────────────────────────────────── */}
-      <View style={styles.searchSection}>
-        <Text style={styles.searchLabel}>🔍 Search Doctor by Name</Text>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Type doctor name..."
-          placeholderTextColor="#94A3B8"
-          value={doctorSearch}
-          onChangeText={handleDoctorSearch}
-          editable={!recording} // disable while recording
-        />
-
-        {/* Loading indicator */}
-        {searching && (
-          <ActivityIndicator
-            size="small"
-            color="#2563eb"
-            style={{ marginTop: 8 }}
-          />
-        )}
-
-        {/* Doctor results dropdown */}
-        {doctorResults.length > 0 && (
-          <View style={styles.dropdown}>
-            {doctorResults.map((doctor) => (
-              <TouchableOpacity
-                key={doctor._id}
-                style={styles.dropdownItem}
-                onPress={() => handleSelectDoctor(doctor)}
-              >
-                <Text style={styles.dropdownName}>
-                  {doctor.profile.name}
-                </Text>
-                <Text style={styles.dropdownSpec}>
-                  {doctor.profile.specialization} •{' '}
-                  {doctor.profile.hospitalName}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        )}
-
-        {/* Selected doctor card */}
-        {selectedDoctor && (
-          <View style={styles.selectedCard}>
-            <Text style={styles.selectedLabel}>✅ Selected Doctor</Text>
-            <Text style={styles.selectedName}>
-              {selectedDoctor.profile.name}
-            </Text>
-            <Text style={styles.selectedSpec}>
-              {selectedDoctor.profile.specialization} •{' '}
-              {selectedDoctor.profile.hospitalName}
-            </Text>
-          </View>
-        )}
+      {/* 🔷 HEADER */}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Consultation Recorder</Text>
+        <Text style={styles.headerSub}>
+          Record and store patient consultations securely
+        </Text>
       </View>
 
-      {/* ── Recording section ─────────────────────────────────────────────── */}
-      <Text style={styles.subtitle}>
-        {recording
-          ? '🔴 Recording in progress...'
-          : selectedDoctor
-          ? 'Tap the mic to start'
-          : 'Select a doctor first, then record'}
-      </Text>
+      {/* 🔥 CENTER AREA */}
+      <View style={styles.center}>
 
-      <TouchableOpacity
-        style={[
-          styles.micButton,
-          recording && styles.micButtonActive,
-          !selectedDoctor && styles.micButtonDisabled,
-        ]}
-        onPress={recording ? stopRecording : startRecording}
-        disabled={status === 'loading'}
-      >
-        <Text style={styles.micIcon}>{recording ? '⏹️' : '🎙️'}</Text>
-      </TouchableOpacity>
+        <Text style={styles.helperText}>
+          {recording ? "Recording in progress" : "Tap to start recording"}
+        </Text>
 
-      <Text style={styles.micLabel}>
-        {recording ? 'Tap to Stop & Save' : 'Tap to Start Recording'}
-      </Text>
-
-      {status === 'loading' && (
-        <View style={styles.statusRow}>
-          <ActivityIndicator size="small" color="#2563eb" />
-          <Text style={styles.statusText}>  Uploading & transcribing...</Text>
-        </View>
-      )}
-
-      {status === 'succeeded' && (
-        <View>
-          <Text style={styles.successText}>
-            ✅ Consultation saved! Both doctor and patient can view it.
-          </Text>
+        {/* 🎤 MIC */}
+        <Animated.View style={{ transform: [{ scale: pulseAnim }] }}>
           <TouchableOpacity
-            style={styles.viewButton}
-            onPress={() => navigation.navigate('LiveTranscript')}
+            style={[
+              styles.micButton,
+              recording && styles.micActive
+            ]}
+            onPress={recording ? stopRecording : startRecording}
           >
-            <Text style={styles.viewButtonText}>View Transcript →</Text>
+            <Ionicons
+              name={recording ? "stop" : "mic"}
+              size={40}
+              color="#fff"
+            />
           </TouchableOpacity>
-        </View>
-      )}
-    </ScrollView>
+        </Animated.View>
+
+        {/* ⏱ TIMER */}
+        {recording && (
+          <Text style={styles.timer}>{formatTime(timer)}</Text>
+        )}
+
+        {/*TRANSCRIPT */}
+        {status === "succeeded" && (
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate("LiveTranscript")}
+          >
+            <Text style={styles.buttonText}>View Transcript →</Text>
+          </TouchableOpacity>
+        )}
+
+      </View>
+    </View>
   );
 };
 
 export default VoiceRecorder;
 
 const styles = StyleSheet.create({
-  scroll: { flex: 1, backgroundColor: '#f9f9f9' },
   container: {
-    padding: 24,
-    alignItems: 'center',
-    paddingBottom: 40,
-  },
-  title: {
-    fontSize: 22, fontWeight: 'bold',
-    color: '#1e3a5f', marginBottom: 24,
+    flex: 1,
+    backgroundColor: "#F5F7FB",
   },
 
-  // ── Search styles ──────────────────────────────────────────────────────────
-  searchSection: { width: '100%', marginBottom: 32 },
-  searchLabel: {
-    fontSize: 14, fontWeight: '600',
-    color: '#1e3a5f', marginBottom: 8,
+  // HEADER
+  header: {
+    backgroundColor: "#2563EB",
+    paddingTop: 50,
+    paddingBottom: 24,
+    paddingHorizontal: 20,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
   },
-  searchInput: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    fontSize: 15,
-    color: '#1E293B',
-    width: '100%',
+
+  headerTitle: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "700",
   },
-  dropdown: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
+
+  headerSub: {
+    color: "#E0E7FF",
+    fontSize: 12,
     marginTop: 4,
-    overflow: 'hidden',
-  },
-  dropdownItem: {
-    padding: 14,
-    borderBottomWidth: 0.5,
-    borderBottomColor: '#F1F5F9',
-  },
-  dropdownName: {
-    fontSize: 15, fontWeight: '600', color: '#1E293B',
-  },
-  dropdownSpec: {
-    fontSize: 12, color: '#64748B', marginTop: 2,
-  },
-  selectedCard: {
-    backgroundColor: '#EFF6FF',
-    borderRadius: 12,
-    padding: 14,
-    marginTop: 10,
-    borderWidth: 1,
-    borderColor: '#BFDBFE',
-    width: '100%',
-  },
-  selectedLabel: {
-    fontSize: 11, fontWeight: '700',
-    color: '#1D4ED8', marginBottom: 4,
-  },
-  selectedName: {
-    fontSize: 16, fontWeight: '700', color: '#1E293B',
-  },
-  selectedSpec: {
-    fontSize: 13, color: '#64748B', marginTop: 2,
   },
 
-  // ── Recording styles ───────────────────────────────────────────────────────
-  subtitle: {
-    fontSize: 14, color: '#666',
-    marginBottom: 24, textAlign: 'center',
+  // CENTER
+  center: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingBottom: 80, // space for tab bar
   },
+
+  helperText: {
+    color: "#6B7280",
+    fontSize: 13,
+    marginBottom: 24,
+  },
+
+  // MIC
   micButton: {
-    width: 100, height: 100, borderRadius: 50,
-    backgroundColor: '#2563eb', justifyContent: 'center',
-    alignItems: 'center', elevation: 6,
-    shadowColor: '#2563eb', shadowOpacity: 0.4, shadowRadius: 10,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: "#2563EB",
+    justifyContent: "center",
+    alignItems: "center",
+
+    shadowColor: "#2563EB",
+    shadowOpacity: 0.35,
+    shadowRadius: 14,
+    elevation: 10,
   },
-  micButtonActive: { backgroundColor: '#dc2626' },
-  micButtonDisabled: { backgroundColor: '#93C5FD' },
-  micIcon: { fontSize: 40 },
-  micLabel: { marginTop: 16, fontSize: 14, color: '#666' },
-  statusRow: {
-    flexDirection: 'row', alignItems: 'center', marginTop: 24,
+
+  micActive: {
+    backgroundColor: "#DC2626",
   },
-  statusText: { color: '#2563eb', fontSize: 14 },
-  successText: {
-    color: 'green', fontWeight: 'bold',
-    fontSize: 15, marginTop: 24, textAlign: 'center',
+
+  // TIMER
+  timer: {
+    marginTop: 18,
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#111827",
   },
-  viewButton: {
-    marginTop: 12, backgroundColor: '#2563eb',
-    borderRadius: 10, padding: 12, alignItems: 'center',
+
+  // BUTTON
+  button: {
+    marginTop: 24,
+    backgroundColor: "#2563EB",
+    paddingVertical: 12,
+    paddingHorizontal: 28,
+    borderRadius: 12,
   },
-  viewButtonText: { color: 'white', fontWeight: '600' },
+
+  buttonText: {
+    color: "#fff",
+    fontWeight: "600",
+  },
 });

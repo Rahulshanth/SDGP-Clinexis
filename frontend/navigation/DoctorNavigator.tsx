@@ -1,52 +1,122 @@
 import React from "react";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import DoctorHomeScreen from "../screens/Doctor/DoctorHomeScreen";
-import LiveTranscript from "../screens/Consultation/LiveTranscript";
-import DoctorEditProfileScreen from "../screens/Doctor/DoctorEditProfileScreen";
-import CurrentSummaryScreen from "../screens/Summary/CurrentSummaryScreen";
-import SummaryHistoryScreen from "../screens/Summary/SummaryHistoryScreen";
+import { Ionicons } from "@expo/vector-icons";
 
+// Screens
+import DoctorHomeScreen from "../screens/Doctor/DoctorHomeScreen";
+//import DoctorSettingsScreen from "../screens/Doctor/DoctorSettings";
+import DoctorEditProfileScreen from "../screens/Doctor/DoctorEditProfileScreen";
+import DoctorProfileScreen from "../screens/Doctor/DoctorProfileScreen";
+
+// FIXED IMPORTS
+import VoiceRecorderScreen from "../screens/Consultation/VoiceRecorder";
+import LiveTranscriptScreen from "../screens/Consultation/LiveTranscript";
+import AppointmentsScreen from "../screens/Doctor/DoctorAppointmentsScreen";
+
+const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 
 export type DoctorStackParamList = {
-  DoctorHome: undefined;
-  LiveTranscript: undefined;
-  DoctorEditProfile: undefined; 
-  CurrentSummary: { consultationId: string }; // ← needs consultationId
-  SummaryHistory: undefined;
+  DoctorProfile: undefined;
+  DoctorEditProfile: undefined;
+  Home: undefined;
+  Recorder: undefined;
+  Summary: undefined;
+  Settings: undefined;
 };
 
-const Stack = createNativeStackNavigator<DoctorStackParamList>();
-
-export default function DoctorNavigator() {
+// 🔹 SETTINGS STACK
+function SettingsStack() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: true }}>
-      <Stack.Screen name="DoctorHome" component={DoctorHomeScreen}
-      options={{ title: 'Home' }} />
-
-    <Stack.Screen
-        name="LiveTranscript"
-        component={LiveTranscript}
-        options={{ title: 'Consultation Records' }}
-      />
-
-    <Stack.Screen
+    <Stack.Navigator>{/*
+      <Stack.Screen
+        name="DoctorSettings"
+        component={DoctorSettingsScreen}
+        options={{ headerShown: false }}
+      />*/}
+      <Stack.Screen
         name="DoctorEditProfile"
         component={DoctorEditProfileScreen}
-        options={{ title: 'My Profile', headerShown: false }}  
-        // headerShown: false because DoctorEditProfileScreen has its own header
-      />  
-
-    <Stack.Screen
-        name="CurrentSummary"
-        component={CurrentSummaryScreen}
-        options={{ title: 'Consultation Summary' }}
+        options={{ title: "Edit Profile" }}
       />
-      <Stack.Screen
-        name="SummaryHistory"
-        component={SummaryHistoryScreen}
-        options={{ title: 'Summary History' }}
-      />  
-
     </Stack.Navigator>
+  );
+}
+
+
+// 🔥 MAIN NAVIGATOR
+export default function DoctorNavigator() {
+  return (
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: "#2563EB",
+        tabBarInactiveTintColor: "#94A3B8",
+        tabBarStyle: {
+          height: 70,
+          paddingBottom: 10,
+          borderTopWidth: 0,
+          elevation: 10,
+        },
+      }}
+    >
+
+      {/* HOME */}
+      <Tab.Screen
+        name="Home"
+        component={DoctorHomeScreen}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="home" size={22} color={color} />
+          ),
+        }}
+      />
+
+      {/*Appoinments*/}
+      <Tab.Screen
+        name="Appointments"
+        component={AppointmentsScreen}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="calendar" size={22} color={color} />
+          ),
+        }}
+      />
+
+
+      {/* VOICE RECORDER */}
+      <Tab.Screen
+        name="Recorder"
+        component={VoiceRecorderScreen}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="mic" size={24} color={color} />
+          ),
+        }}
+      />
+
+      {/*CONSULTATION SUMMARY */}
+      <Tab.Screen
+        name="Summary"
+        component={LiveTranscriptScreen}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="document-text" size={22} color={color} />
+          ),
+        }}
+      />
+
+      {/*SETTINGS */}
+      <Tab.Screen
+        name="Settings"
+        component={SettingsStack}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="settings" size={22} color={color} />
+          ),
+        }}
+      />
+    </Tab.Navigator>
   );
 }

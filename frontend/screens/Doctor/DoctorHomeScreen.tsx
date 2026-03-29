@@ -1,97 +1,174 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-//import { useRouter } from 'expo-router';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { DoctorStackParamList } from '../../navigation/DoctorNavigator';
+import React, { useEffect, useRef } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TextInput,
+  TouchableOpacity,
+  Animated,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
-type DoctorNavProp = NativeStackNavigationProp<DoctorStackParamList, 'DoctorHome'>;
+export default function DoctorHomeScreen() {
+  const navigation = useNavigation<any>();
 
-const DoctorHomeScreen = () => {
-  //const router = useRouter();
-  const navigation = useNavigation<DoctorNavProp>();
-
-
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Welcome, Doctor 👨‍⚕️</Text>
-
-      <TouchableOpacity
-        style={styles.primaryButton}
-        //onPress={() => router.push('/live-transcript' as any)} Commented By Rahul
-        onPress={() => navigation.navigate('LiveTranscript')} 
-      >
-        <Text style={styles.primaryButtonText}>📋 View My Consultations</Text>
-      </TouchableOpacity>
-
-      {/* ── NEW: Profile Button ── */}
-      <TouchableOpacity
-        style={styles.secondaryButton}
-        onPress={() => navigation.navigate('DoctorEditProfile')}
-      >
-        <Text style={styles.secondaryButtonText}>👤 My Profile</Text>
-      </TouchableOpacity>
-
-    </View>
-  );
-};
-
-export default DoctorHomeScreen;
-
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: '#f9f9f9', justifyContent: 'center' },
-  title: { fontSize: 22, fontWeight: 'bold', color: '#1e3a5f', marginBottom: 30, textAlign: 'center' },
-  primaryButton: {
-    backgroundColor: '#2563eb', borderRadius: 12,
-    padding: 16, alignItems: 'center',
-  },
-  primaryButtonText: { color: 'white', fontSize: 16, fontWeight: '600' },
-  // ── NEW ──
-  secondaryButton: {
-    backgroundColor: '#EFF6FF',
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#BFDBFE',
-  },
-  secondaryButtonText: {
-    color: '#1E3A8A',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-
-});
-
-
-
-
-
-
-
-
-/*import React, { useEffect } from "react";
-import { View } from "react-native";
-import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { fetchConsultations } from "../../store/consultationSlice";
-import ConsultationCard from "../../components/features/ConsultationCard/ConsultationCard";
-//import DoctorProfileScreen from "./DoctorProfileScreen";
-
-const DoctorHomeScreen = () => {
-  const dispatch = useAppDispatch();
-  const { consultations } = useAppSelector((state) => state.consultation);
+  // Animations
+  const fade = useRef(new Animated.Value(0)).current;
+  const slide = useRef(new Animated.Value(30)).current;
 
   useEffect(() => {
-    dispatch(fetchConsultations());
-  }, []);
+    Animated.parallel([
+      Animated.timing(fade, {
+        toValue: 1,
+        duration: 600,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slide, {
+        toValue: 0,
+        duration: 600,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [fade, slide]);
 
   return (
-    <View>
-      {consultations.map((consult) => (
-        <ConsultationCard key={consult._id} consultationId={consult._id} />
-      ))}
-    </View>
-  );
-};
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      <Animated.View
+        style={{ opacity: fade, transform: [{ translateY: slide }] }}
+      >
+        {/* HEADER */}
+        <View style={styles.header}>
+          <View>
+            <Text style={styles.title}>Dr. Michael</Text>
+          </View>
 
-export default DoctorHomeScreen;*/
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Settings")}
+          >
+            <Ionicons name="notifications-outline" size={22} />
+          </TouchableOpacity>
+        </View>
+
+        {/* SEARCH */}
+        <View style={styles.searchBox}>
+          <Ionicons name="search" size={18} color="#888" />
+          <TextInput placeholder="Search patients, records..." />
+        </View>
+
+        {/* OVERVIEW */}
+        <Text style={styles.section}>Overview</Text>
+
+        <View style={styles.cardsRow}>
+          <TouchableOpacity style={[styles.card, styles.primaryCard]}>
+            <Text style={styles.cardNumber}>142</Text>
+            <Text style={styles.cardText}>Patients</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.card}>
+            <Text style={styles.cardNumberDark}>08</Text>
+            <Text style={styles.cardText}>Consultations</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.card}>
+            <Text style={styles.cardNumberDark}>05</Text>
+            <Text style={styles.cardText}>Reports</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* QUICK ACTION */}
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate("LiveTranscript")}
+        >
+          <Text style={styles.buttonText}>Start Consultation</Text>
+        </TouchableOpacity>
+      </Animated.View>
+    </ScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#F5F7FB",
+    padding: 16,
+  },
+
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 20,
+  },
+
+  greeting: {
+    color: "#6B7280",
+  },
+
+  title: {
+    fontSize: 20,
+    fontWeight: "800",
+  },
+
+  searchBox: {
+    flexDirection: "row",
+    backgroundColor: "#fff",
+    padding: 12,
+    borderRadius: 14,
+    marginBottom: 20,
+    gap: 10,
+  },
+
+  section: {
+    fontWeight: "700",
+    marginBottom: 10,
+  },
+
+  cardsRow: {
+    flexDirection: "row",
+    gap: 10,
+    marginBottom: 20,
+  },
+
+  card: {
+    flex: 1,
+    backgroundColor: "#fff",
+    padding: 16,
+    borderRadius: 16,
+    alignItems: "center",
+    elevation: 3,
+  },
+
+  primaryCard: {
+    backgroundColor: "#2563EB",
+  },
+
+  cardNumber: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "800",
+  },
+
+  cardNumberDark: {
+    fontSize: 18,
+    fontWeight: "800",
+  },
+
+  cardText: {
+    fontSize: 12,
+    color: "#6B7280",
+  },
+
+  button: {
+    backgroundColor: "#2563EB",
+    padding: 16,
+    borderRadius: 14,
+    alignItems: "center",
+  },
+
+  buttonText: {
+    color: "#fff",
+    fontWeight: "700",
+  },
+});

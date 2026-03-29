@@ -13,12 +13,12 @@ import {
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { PatientStackParamList } from "../../navigation/PatientNavigator";
 import { getDoctorById } from "../../services/doctorApi";
 import { Doctor } from "../../store/doctorSlice";
+import { DoctorStackParamList } from "../../navigation/DoctorNavigator";
 
-type Nav = NativeStackNavigationProp<PatientStackParamList, "DoctorProfile">;
-type Route = RouteProp<PatientStackParamList, "DoctorProfile">;
+type Nav = NativeStackNavigationProp<DoctorStackParamList>;
+type Route = RouteProp<DoctorStackParamList, "DoctorProfile">;
 
 const TIME_SLOTS = [
   "09:00 AM",
@@ -41,7 +41,7 @@ export default function DoctorProfileScreen() {
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
   const insets = useSafeAreaInsets();
-  const { doctor: doctorParam } = route.params;
+  const doctorParam = route?.params?.doctor ?? null;
 
   const [doctor, setDoctor] = useState<Doctor | null>(null);
   const [loading, setLoading] = useState(true);
@@ -110,8 +110,15 @@ export default function DoctorProfileScreen() {
         >
           <Text style={styles.backArrow}>←</Text>
         </TouchableOpacity>
+
         <Text style={styles.headerTitle}>Doctor Profile</Text>
-        <View style={{ width: 32 }} />
+
+        <TouchableOpacity
+          style={styles.editBtn}
+          onPress={() => navigation.navigate("DoctorEditProfile")}
+        >
+          <Text style={styles.editText}>Edit</Text>
+        </TouchableOpacity>
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -298,7 +305,7 @@ const styles = StyleSheet.create({
   loadingText: { marginTop: 12, fontSize: 15, color: "#94A3B8" },
   errorText: { fontSize: 15, color: "#DC2626", marginBottom: 12 },
   retryBtn: {
-    backgroundColor: "#1E3A8A",
+    backgroundColor: "#2563EB",
     borderRadius: 10,
     paddingVertical: 10,
     paddingHorizontal: 24,
@@ -310,7 +317,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingBottom: 12,
-    backgroundColor: "#1E3A8A",
+    backgroundColor: "#2563EB",
   },
   backBtn: { padding: 4 },
   backArrow: { fontSize: 20, color: "#fff" },
@@ -352,7 +359,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   stat: { flex: 1, alignItems: "center" },
-  statValue: { fontSize: 20, fontWeight: "700", color: "#1E3A8A" },
+  statValue: { fontSize: 20, fontWeight: "700", color: "#2563EB" },
   statLabel: { fontSize: 11, color: "#94A3B8", marginTop: 2 },
   statDivider: { width: 1, backgroundColor: "#BFDBFE" },
   body: { paddingHorizontal: 16, paddingTop: 16 },
@@ -371,7 +378,7 @@ const styles = StyleSheet.create({
   infoTitle: { fontSize: 14, fontWeight: "600", color: "#1E293B", flex: 1 },
   infoSub: { fontSize: 12, color: "#94A3B8", marginTop: 2 },
   mapIcon: { fontSize: 16 },
-  feeAmount: { fontSize: 18, fontWeight: "700", color: "#1E3A8A" },
+  feeAmount: { fontSize: 18, fontWeight: "700", color: "#2563EB" },
   feeSub: { fontSize: 11, color: "#94A3B8" },
   section: { marginTop: 20 },
   sectionHeader: {
@@ -392,7 +399,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     marginRight: 8,
   },
-  dayChipActive: { backgroundColor: "#1E3A8A", borderColor: "#1E3A8A" },
+  dayChipActive: { backgroundColor: "#2563EB", borderColor: "#2563EB" },
   dayName: { fontSize: 12, color: "#64748B", fontWeight: "500" },
   dayNameActive: { color: "#fff" },
   dayDate: {
@@ -411,7 +418,7 @@ const styles = StyleSheet.create({
     borderColor: "#E5E7EB",
     backgroundColor: "#fff",
   },
-  slotChipActive: { backgroundColor: "#1E3A8A", borderColor: "#1E3A8A" },
+  slotChipActive: { backgroundColor: "#2563EB", borderColor: "#2563EB" },
   slotText: { fontSize: 13, color: "#475569", fontWeight: "500" },
   slotTextActive: { color: "#fff" },
   footer: {
@@ -436,4 +443,17 @@ const styles = StyleSheet.create({
     color: "#94A3B8",
     marginTop: 6,
   },
+
+  editBtn: {
+  backgroundColor: "#EFF6FF",
+  paddingHorizontal: 12,
+  paddingVertical: 6,
+  borderRadius: 10,
+},
+
+editText: {
+  color: "#2563EB",
+  fontWeight: "600",
+  fontSize: 13,
+},
 });

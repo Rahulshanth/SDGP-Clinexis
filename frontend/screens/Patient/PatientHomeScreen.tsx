@@ -27,9 +27,10 @@ import { PatientStackParamList } from "../../navigation/PatientNavigator";
 // ── Vidu added navigation type ────────────────────────────────────────────────
 type Nav = NativeStackNavigationProp<PatientStackParamList>;
 
+
 // ── From develop — color constants ────────────────────────────────────────────
 const COLORS = {
-  primary: "#2EA7FF",
+  primary: "#2563EB",
   background: "#F5F7FB",
   white: "#FFFFFF",
   text: "#1E2A3A",
@@ -48,7 +49,7 @@ const PatientHomeScreen = () => {
 
   useEffect(() => {
     dispatch(fetchConsultations());
-  }, []);
+  }, [dispatch]);
 
   const handleSearch = (text: string) => {
     setSearchText(text);
@@ -127,7 +128,7 @@ const PatientHomeScreen = () => {
             {error && <Text style={styles.errorText}>{error}</Text>}
             {!loading && doctors.length === 0 && (
               <Text style={styles.emptyText}>
-                No doctors found for "{searchText}"
+                No doctors found for &apos;{searchText}&apos;
               </Text>
             )}
 
