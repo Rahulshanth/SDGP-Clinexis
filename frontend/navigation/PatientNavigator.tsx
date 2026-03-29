@@ -1,22 +1,117 @@
 import React from "react";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import PatientHome from "../screens/Patient/PatientHome";
-import Reminders from "../screens/Reminders/RemindersScreen";
-import Pharmacy from "../screens/Pharmacy/PharmacyScreen";
-import Summary from "../screens/Summary/SummaryScreen";
+// Patient Screens
+import PatientHomeScreen from "../screens/Patient/PatientHomeScreen";
+import DoctorProfileScreen from "../screens/Patient/DoctorProfileScreen";
+import LiveTranscript from "../screens/Consultation/LiveTranscript";
+import VoiceRecorder from "../screens/Consultation/VoiceRecorder";
 
-const Tab = createBottomTabNavigator();
+/*import FindDoctorScreen from "../screens/Patient/FindDoctorScreen";
+import BookAppointmentScreen from "../screens/Patient/BookAppointmentScreen";
+import AppointmentConfirmScreen from "../screens/Patient/AppointmentConfirmScreen";
+import MyAppointmentsScreen from "../screens/Patient/MyAppointmentsScreen";
+*/
 
-const PatientNavigator = () => {
-  return (
-    <Tab.Navigator>
-      <Tab.Screen name="Home" component={PatientHome} />
-      <Tab.Screen name="Reminders" component={Reminders} />
-      <Tab.Screen name="Pharmacy" component={Pharmacy} />
-      <Tab.Screen name="Summary" component={Summary} />
-    </Tab.Navigator>
-  );
+// Nadithi's tabs (uncomment when screens are ready)
+/*import PatientRemindersScreen from "../screens/Patient/PatientReminderScreen";
+import PatientPharmacyScreen from "../screens/Patient/PatientPharmacyScreen";
+import PatientSummaryScreen from "../screens/Patient/PatientSummaryScreen";
+import PatientProfileScreen from "../screens/Patient/PatientProfileScreen";
+import PatientAppointmentScreen from "../screens/Patient/PatientAppointmentsScreen";*/
+
+// ─── Stack param list ───────────────────────
+export type PatientStackParamList = {
+  PatientHome: undefined;
+  FindDoctor: undefined;
+  DoctorProfile: {
+    doctor: {
+      id: string;
+      name: string;
+      specialty: string;
+      hospital: string;
+      image: string;
+      rating: number;
+      reviews: number;
+      earliest: string;
+    };
+  };
+  BookAppointment: {
+    doctor: {
+      id?: string;
+      name: string;
+      specialty: string;
+      hospital: string;
+      image: string;
+    };
+    selectedSlot: string;
+    selectedDay: string;
+  };
+  AppointmentConfirm: {
+    doctor: {
+      name: string;
+      specialty: string;
+      hospital: string;
+      image: string;
+    };
+    date: string;
+    time: string;
+    consultType: string;
+    fee: string;
+  };
+  MyAppointments: undefined;
 };
 
-export default PatientNavigator;
+// ─── Tab param list ───────────────────────
+export type PatientTabParamList = {
+  Home: undefined;
+  Reminders: undefined;
+  Pharmacy: undefined;
+  Summary: undefined;
+  Appointments: undefined;
+  Profile: undefined;
+};
+
+const Stack = createNativeStackNavigator<PatientStackParamList>();
+const Tab = createBottomTabNavigator<PatientTabParamList>();
+
+function PatientStackNavigator() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="PatientHome" component={PatientHomeScreen} />
+      <Stack.Screen name="DoctorProfile" component={DoctorProfileScreen} />
+      {/*
+      <Stack.Screen name="FindDoctor" component={FindDoctorScreen} />
+      <Stack.Screen name="BookAppointment" component={BookAppointmentScreen} />
+      <Stack.Screen name="AppointmentConfirm" component={AppointmentConfirmScreen} />
+      <Stack.Screen name="MyAppointments" component={MyAppointmentsScreen} />
+      */}
+    </Stack.Navigator>
+  );
+}
+
+export default function PatientNavigator() {
+  return (
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: "#1E3A8A",
+        tabBarInactiveTintColor: "#6b7280",
+      }}
+    >
+      <Tab.Screen
+        name="Home"
+        component={PatientStackNavigator}
+        options={{ headerShown: false }}
+      />
+      {/* Nadithi uncomments these tabs when screens are ready:
+      <Tab.Screen name="Reminders" component={PatientRemindersScreen} />
+      <Tab.Screen name="Pharmacy" component={PatientPharmacyScreen} />
+      <Tab.Screen name="Summary" component={PatientSummaryScreen} />
+      <Tab.Screen name="Appointments" component={PatientAppointmentScreen} />
+      <Tab.Screen name="Profile" component={PatientProfileScreen} />
+      */}
+    </Tab.Navigator>
+  );
+}
