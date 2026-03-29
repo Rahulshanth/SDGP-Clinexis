@@ -1,7 +1,4 @@
-
-
-                                                // COMMENTED BY RAHUL ON 6TH MARCH
-
+// COMMENTED BY RAHUL ON 6TH MARCH
 
 /*import { Link } from 'expo-router';
 import { StyleSheet } from 'react-native';
@@ -31,4 +28,16 @@ const styles = StyleSheet.create({
     marginTop: 15,
     paddingVertical: 15,
   },
-}); */
+}); 
+
+export default function Modal() {
+  return null;
+}
+*/
+
+// app/modal.tsx - modified by Vidu for testing
+/*
+export default function ModalScreen() {
+  return null;
+}
+*/
